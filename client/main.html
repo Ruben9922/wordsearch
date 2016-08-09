@@ -1,25 +1,111 @@
 <head>
-  <title>wordsearch</title>
+    <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet" type="text/css">
 </head>
 
-<body>
-  <h1>Welcome to Meteor!</h1>
-
-  {{> hello}}
-  {{> info}}
-</body>
-
-<template name="hello">
-  <button>Click Me</button>
-  <p>You've pressed the button {{counter}} times.</p>
+<template name="main">
+    {{> navigation}}
+    <div class="container">
+        {{> yield}}
+    </div>
+    {{> footer}}
 </template>
 
-<template name="info">
-  <h2>Learn Meteor!</h2>
-  <ul>
-    <li><a href="https://www.meteor.com/try" target="_blank">Do the Tutorial</a></li>
-    <li><a href="http://guide.meteor.com" target="_blank">Follow the Guide</a></li>
-    <li><a href="https://docs.meteor.com" target="_blank">Read the Docs</a></li>
-    <li><a href="https://forums.meteor.com" target="_blank">Discussions</a></li>
-  </ul>
+<template name="navigation">
+    <nav class="navbar navbar-inverse navbar-static-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{{pathFor route='home'}}">Wordsearch App</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="{{#if isCurrent 'home'}}active{{/if}}">
+                        <a href="{{pathFor route='home'}}">Home{{#if isCurrent 'home'}}<span class="sr-only"> (current)</span>{{/if}}</a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="{{#if isCurrent 'register'}}active{{/if}}">
+                        <a href="{{pathFor route='register'}}">Register{{#if isCurrent 'register'}}<span class="sr-only"> (current)</span>{{/if}}</a>
+                    </li>
+                    <li class="{{#if isCurrent 'login'}}active{{/if}}">
+                        <a href="{{pathFor route='login'}}">Login{{#if isCurrent 'login'}}<span class="sr-only"> (current)</span>{{/if}}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</template>
+
+<template name="footer">
+    <nav class="navbar navbar-default navbar-fixed-bottom">
+        <div class="container">
+            <ul class="nav navbar-nav navbar-right">
+                <li>Ruben Dougall</li>
+            </ul>
+        </div>
+    </nav>
+</template>
+
+<template name="home">
+    <div class="page-header">
+        <h1>Home</h1>
+    </div>
+    {{#unless showNewWordsearch}}
+        {{> create}}
+    {{else}}
+        {{> newWordsearch}}
+    {{/unless}}
+</template>
+
+<template name="create">
+    <form class="form-horizontal">
+        <div class="form-group">
+            <label for="size" class="control-label col-sm-2">Size</label>
+            <div class="col-sm-10">
+                <input type="number" class="form-control" id="size" name="size" min="1" max="40">
+                {{#if size}}
+                    <span class="help-block">Your wordsearch will be {{size}} &times; {{size}} letters.</span>
+                {{/if}}
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="words" class="control-label col-sm-2">Words</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="words" name="words">
+                {{#unless isArrayEmpty words}}
+                    <span class="help-block">Your wordsearch will contain the following words: {{wordsString}}.</span>
+                {{/unless}}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+</template>
+
+<template name="newWordsearch">
+    <table class="center-block wordsearch">
+        <tbody>
+            {{#each row in wordsearch}}
+                <tr>
+                    {{#each letter in row}}
+                        <td>
+                            {{letter}}
+                        </td>
+                    {{/each}}
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+    <br>
+    <div class="text-center">
+        <button type="button" class="btn btn-primary" id="createAnotherWordsearchButton">Create another wordsearch</button>
+        <button type="button" class="btn btn-default" id="regenerateWordsearchButton">Regenerate wordsearch</button>
+    </div>
 </template>
