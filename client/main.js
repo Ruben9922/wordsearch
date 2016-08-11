@@ -35,12 +35,13 @@ function generateWordsearch(size, words) {
 
 function placeWord(wordsearch, word, direction) {
   // Height and width store how much space the word takes up to ensure whole of word is placed inside wordsearch
-  var height = (direction === directions.HORIZONTAL ? 0 : word.length);
-  var width = (direction === directions.VERTICAL ? 0 : word.length);
+  var height = (direction === directions.HORIZONTAL ? 1 : word.length);
+  var width = (direction === directions.VERTICAL ? 1 : word.length);
   var wordOrigin = {
-    row: Math.floor(Math.random() * (wordsearch.length - height)), // Need to change so doesn't just stick to top left corner
-    column: Math.floor(Math.random() * (wordsearch[0].length - width))
+    row: Math.floor(Math.random() * (wordsearch.length + 1 - height)),
+    column: Math.floor(Math.random() * (wordsearch[0].length + 1 - width))
   };
+
   //console.log('dir ' + direction);
   for (var j = 0; j < word.length; j++) {
     var rowIncrement = (direction === directions.VERTICAL || direction === directions.DIAGONAL_DOWN ? j : (direction === directions.DIAGONAL_UP ? j : 0)); // Need to get DIAGONAL_UP to work
