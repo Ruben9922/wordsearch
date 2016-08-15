@@ -38,13 +38,13 @@ function placeWord(wordsearch, word, direction) {
   var height = (direction === directions.HORIZONTAL ? 1 : word.length);
   var width = (direction === directions.VERTICAL ? 1 : word.length);
   var wordOrigin = {
-    row: Math.floor(Math.random() * (wordsearch.length + 1 - height)),
+    row: Math.floor((Math.random() * (wordsearch.length + 1 - height)) + (direction === directions.DIAGONAL_UP ? height - 1 : 0)),
     column: Math.floor(Math.random() * (wordsearch[0].length + 1 - width))
   };
 
   //console.log('dir ' + direction);
   for (var j = 0; j < word.length; j++) {
-    var rowIncrement = (direction === directions.VERTICAL || direction === directions.DIAGONAL_DOWN ? j : (direction === directions.DIAGONAL_UP ? j : 0)); // Need to get DIAGONAL_UP to work
+    var rowIncrement = (direction === directions.VERTICAL || direction === directions.DIAGONAL_DOWN ? j : (direction === directions.DIAGONAL_UP ? -j : 0));
     var columnIncrement = (direction === directions.HORIZONTAL || direction === directions.DIAGONAL_DOWN || direction === directions.DIAGONAL_UP ? j : 0);
     //console.log('Placing letter ' + word.charAt(j) + ' at ' + (wordOrigin.row + rowIncrement) + ',' + (wordOrigin.column + columnIncrement));
     wordsearch[wordOrigin.row + rowIncrement][wordOrigin.column + columnIncrement] = word.charAt(j);
