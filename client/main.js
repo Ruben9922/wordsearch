@@ -48,13 +48,15 @@ function placeWord(wordsearch, word, direction) {
   // Place each letter into wordsearch according to chosen direction
   //console.log('dir ' + direction);
   for (var j = 0; j < word.length; j++) {
-    // Row and column "increments" store position of each letter relative to word origin
-    var rowIncrement = (direction === directions.VERTICAL || direction === directions.DIAGONAL_DOWN ? j : (direction === directions.DIAGONAL_UP ? -j : 0));
-    var columnIncrement = (direction === directions.HORIZONTAL || direction === directions.DIAGONAL_DOWN || direction === directions.DIAGONAL_UP ? j : 0);
+    // Letter position stores position of letter relative to word origin
+    var letterPosition = {
+      row: (direction === directions.VERTICAL || direction === directions.DIAGONAL_DOWN ? j : (direction === directions.DIAGONAL_UP ? -j : 0)),
+      column: (direction === directions.HORIZONTAL || direction === directions.DIAGONAL_DOWN || direction === directions.DIAGONAL_UP ? j : 0)
+    };
 
     // Place letter into wordsearch array
-    //console.log('Placing letter ' + word.charAt(j) + ' at ' + (wordOrigin.row + rowIncrement) + ',' + (wordOrigin.column + columnIncrement));
-    wordsearch[wordOrigin.row + rowIncrement][wordOrigin.column + columnIncrement] = word.charAt(j);
+    //console.log('Placing letter ' + word.charAt(j) + ' at ' + (wordOrigin.row + letterPosition.row) + ',' + (wordOrigin.column + letterPosition.column));
+    wordsearch[wordOrigin.row + letterPosition.row][wordOrigin.column + letterPosition.column] = word.charAt(j);
   }
 }
 
