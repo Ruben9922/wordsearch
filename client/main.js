@@ -7,7 +7,7 @@ function reverseString(string) {
 }
 
 // Generates a `size` x `size` wordsearch using given array of words
-// Returns 2D array
+// Returns 2-dimensional array
 function generateWordsearch(size, words) {
   var wordsearch = new Array(size);
   for (var i = 0; i < wordsearch.length; i++) {
@@ -24,8 +24,9 @@ function generateWordsearch(size, words) {
     // Randomly choose direction of word and whether word should be backwards
     var direction = Math.floor(Math.random() * 4);
     var backwards = Math.random() >= 0.5;
+
     if (backwards) {
-      word = reverseString(word);
+      word = reverseString(word); // Might be quicker to place directly into wordsearch in reverse rather than reverse beforehand
     }
     placeWord(wordsearch, word, direction);
   }
@@ -37,15 +38,21 @@ function placeWord(wordsearch, word, direction) {
   // Height and width store how much space the word takes up to ensure whole of word is placed inside wordsearch
   var height = (direction === directions.HORIZONTAL ? 1 : word.length);
   var width = (direction === directions.VERTICAL ? 1 : word.length);
+  // Word origin stores where word 'starts'
+  // First letter is placed here then remaining letters are placed incrementally further away in chosen direction
   var wordOrigin = {
     row: Math.floor((Math.random() * (wordsearch.length + 1 - height)) + (direction === directions.DIAGONAL_UP ? height - 1 : 0)),
     column: Math.floor(Math.random() * (wordsearch[0].length + 1 - width))
   };
 
+  // Place each letter into wordsearch according to chosen direction
   //console.log('dir ' + direction);
   for (var j = 0; j < word.length; j++) {
+    // Row and column "increments" store position of each letter relative to word origin
     var rowIncrement = (direction === directions.VERTICAL || direction === directions.DIAGONAL_DOWN ? j : (direction === directions.DIAGONAL_UP ? -j : 0));
     var columnIncrement = (direction === directions.HORIZONTAL || direction === directions.DIAGONAL_DOWN || direction === directions.DIAGONAL_UP ? j : 0);
+
+    // Place letter into wordsearch array
     //console.log('Placing letter ' + word.charAt(j) + ' at ' + (wordOrigin.row + rowIncrement) + ',' + (wordOrigin.column + columnIncrement));
     wordsearch[wordOrigin.row + rowIncrement][wordOrigin.column + columnIncrement] = word.charAt(j);
   }
@@ -146,7 +153,7 @@ Template.create.helpers({
     return Template.instance().words.get();
   },
   // Since Meteor currently doesn't support @last (or similar) in templates
-  'wordsString': function() {
+  'wordsString': function() { // Could replace with a $last in the template
     var words = Template.instance().words.get();
     var wordsString = words.join(", ");
     // Replace last instance of ', ' in string with ' and '
