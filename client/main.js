@@ -1,19 +1,19 @@
 function reverseString(string) {
   var result = '';
   for (var i = string.length - 1; i >= 0; i--) {
-    result += string[i];
+    result += string[i]; // Need to change
   }
   return result;
 }
 
-// Generates a `size` x `size` wordsearch using given array of words
+// Generates a size x size wordsearch using given array of words
 // Returns 2-dimensional array
 function generateWordsearch(size, words) {
   var wordsearch = new Array(size);
   for (var i = 0; i < wordsearch.length; i++) {
     wordsearch[i] = new Array(size);
     for (var j = 0; j < wordsearch[i].length; j++) {
-      wordsearch[i][j] = '-';
+      wordsearch[i][j] = null;
     }
   }
 
@@ -28,8 +28,16 @@ function generateWordsearch(size, words) {
     if (backwards) {
       word = reverseString(word); // Might be quicker to place directly into wordsearch in reverse rather than reverse beforehand
     }
-    placeWord(wordsearch, word, direction);
+    var successful;
+    var x = 0;
+    do {
+      successful = placeWord(wordsearch, word, direction);
+    } while (!successful && ++x < maxAttemptCount);
+    if (!successful) {
+      return null;
+    }
   }
+  fillWithRandomLetters(wordsearch);
 
   return wordsearch;
 }
@@ -44,6 +52,8 @@ function placeWord(wordsearch, word, direction) {
     row: Math.floor((Math.random() * (wordsearch.length + 1 - height)) + (direction === directions.DIAGONAL_UP ? height - 1 : 0)),
     column: Math.floor(Math.random() * (wordsearch[0].length + 1 - width))
   };
+  var letterPositions = new Array(word.length);
+  var oldLetters = new Array(word.length);
 
   // Place each letter into wordsearch according to chosen direction
   //console.log('dir ' + direction);
@@ -54,9 +64,42 @@ function placeWord(wordsearch, word, direction) {
       column: (direction === directions.HORIZONTAL || direction === directions.DIAGONAL_DOWN || direction === directions.DIAGONAL_UP ? j : 0)
     };
 
-    // Place letter into wordsearch array
-    //console.log('Placing letter ' + word.charAt(j) + ' at ' + (wordOrigin.row + letterPosition.row) + ',' + (wordOrigin.column + letterPosition.column));
-    wordsearch[wordOrigin.row + letterPosition.row][wordOrigin.column + letterPosition.column] = word.charAt(j);
+    var row = wordOrigin.row + letterPosition.row;
+    var column = wordOrigin.column + letterPosition.column;
+    var currentValue = wordsearch[row][column];
+    var letter = word.charAt(j);
+    //console.log('CU ' + currentValue);
+    // If value at chosen position (currentValue) is null or same letter as the letter to be placed,
+    // and if current letter is not the last letter and same as currentValue (to prevent words completely overlapping),
+    // place word in wordsearch and add to letterPosition array after storing current value
+    // Otherwise replace all letters from this word that have been placed in the wordsearch with their previous values
+    if ((currentValue === null || currentValue === letter) && !(j === word.length - 1 && currentValue === letter)) {
+      //console.log('Placing letter ' + letter + ' at ' + row + ',' + column);
+      oldLetters[j] = currentValue;
+      //console.log(oldLetters[j]);
+      wordsearch[row][column] = letter;
+      letterPositions[j] = letterPosition;
+    } else {
+      // Replace first j letters in this word, which have already been placed in wordsearch, with previous values
+      // Does this since checking cells before placing word would also have worst-case time of O(n^2) but may happen more often - might change this later
+      for (var k = 0; k < j; k++) {
+        //console.log('Erasing letter at ' + (wordOrigin.row + letterPositions[k].row) + ',' + (wordOrigin.column + letterPositions[k].column));
+        wordsearch[wordOrigin.row + letterPositions[k].row][wordOrigin.column + letterPositions[k].column] = oldLetters[k];
+      }
+      return false;
+    }
+  }
+  return true;
+}
+
+function fillWithRandomLetters(wordsearch) {
+  var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  for (var i = 0; i < wordsearch.length; i++) {
+    for (var j = 0; j < wordsearch[i].length; j++) {
+      if (wordsearch[i][j] === null) {
+        wordsearch[i][j] = letters[Math.floor(Math.random() * letters.length)];
+      }
+    }
   }
 }
 
@@ -71,6 +114,7 @@ var directions = Object.freeze({
   DIAGONAL_DOWN : 2,
   DIAGONAL_UP: 3
 });
+var maxAttemptCount = 30;
 
 // Set validator defaults and add additional validation methods
 $.validator.setDefaults({
@@ -205,6 +249,9 @@ Template.newWordsearch.onCreated(function() {
 Template.newWordsearch.helpers({
   'wordsearch': function() {
     return Template.instance().wordsearch.get();
+  },
+  'maxAttemptCount': function() {
+    return maxAttemptCount;
   }
 });
 
@@ -217,5 +264,6 @@ Template.newWordsearch.events({
     var words = Session.get('words');
     var wordsearch = generateWordsearch(size, words);
     template.wordsearch.set(wordsearch);
+    //console.log(wordsearch);
   }
 })
