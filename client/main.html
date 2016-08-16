@@ -108,6 +108,12 @@
         <p class="text-center text-danger"><b>Failed to generate wordsearch after at least {{maxAttemptCount}} attempts.</b><br>Try creating a larger wordsearch, perhaps with smaller and/or fewer words, or just press the <i>Regenerate wordsearch</i> button a few more times.</p>
     {{/if}}
     <br>
+    <ul class="list-group center-block text-center">
+        {{#each words}}
+            <li class="list-group-item">{{this.toUpperCase}}</li>
+        {{/each}}
+    </ul>
+    <br>
     <div class="text-center">
         <button type="button" class="btn btn-primary" id="createAnotherWordsearchButton">Create another wordsearch</button>
         <button type="button" class="btn btn-default" id="regenerateWordsearchButton">Regenerate wordsearch</button>

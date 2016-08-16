@@ -252,6 +252,9 @@ Template.newWordsearch.helpers({
   },
   'maxAttemptCount': function() {
     return maxAttemptCount;
+  },
+  'words': function() {
+    return Session.get('words');
   }
 });
 

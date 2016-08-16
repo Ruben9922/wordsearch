@@ -10,3 +10,7 @@
 .wordsearch > tbody > tr > td {
     padding: 4px 9px;
 }
+
+.list-group {
+    max-width: 300px;
+}
