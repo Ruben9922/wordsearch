@@ -158,8 +158,9 @@ Template.home.helpers({
 });
 
 Template.create.onCreated(function() {
-  this.size = new ReactiveVar(0);
-  this.words = new ReactiveVar([]);
+  this.state = new ReactiveDict();
+  this.state.set('size', 0);
+  this.state.set('words', []);
 });
 
 Template.create.onRendered(function() {
@@ -193,14 +194,14 @@ Template.create.onRendered(function() {
 
 Template.create.helpers({
   'size': function() {
-    return Template.instance().size.get();
+    return Template.instance().state.get('size');
   },
   'words': function() {
-    return Template.instance().words.get();
+    return Template.instance().state.get('words');
   },
   // Since Meteor currently doesn't support @last (or similar) in templates
   'wordsString': function() { // Could replace with a $last in the template
-    var words = Template.instance().words.get();
+    var words = Template.instance().state.get('words');
     var wordsString = words.join(", ");
     // Replace last instance of ', ' in string with ' and '
     // From a comment on Stack Overflow - http://stackoverflow.com/a/2729686/3806231
@@ -218,18 +219,18 @@ Template.create.events({
     var sizeInput = $(event.target);
     if (sizeInput.valid()) {
       var size = Number(sizeInput.val());
-      template.size.set(size);
+      template.state.set('size', size);
     } else {
-      template.size.set(0);
+      template.state.set('size', 0);
     }
   },
   'input #words': function(event, template) {
     var wordsInput = $(event.target);
     if (wordsInput.valid()) {
       var words = wordsInput.val().split(',');
-      template.words.set(words);
+      template.state.set('words', words);
     } else {
-      template.words.set([]);
+      template.state.set('words', []);
     }
   },
   'submit form': function(event) {

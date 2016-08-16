@@ -24,3 +24,4 @@ iron:router
 themeteorchef:jquery-validation
 raix:handlebar-helpers
 session
+reactive-dict
