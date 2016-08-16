@@ -8,7 +8,7 @@ function reverseString(string) {
 
 // Generates a size x size wordsearch using given array of words
 // Returns 2-dimensional array
-function generateWordsearch(size, words) {
+function generateWordsearch(size, words, allowBackwards) {
   var wordsearch = new Array(size);
   for (var i = 0; i < wordsearch.length; i++) {
     wordsearch[i] = new Array(size);
@@ -23,7 +23,7 @@ function generateWordsearch(size, words) {
     var word = words[i].toUpperCase(); // Need to check if word can fit
     // Randomly choose direction of word and whether word should be backwards
     var direction = Math.floor(Math.random() * 4);
-    var backwards = Math.random() >= 0.5;
+    var backwards = allowBackwards && Math.random() >= 0.5;
 
     if (backwards) {
       word = reverseString(word); // Might be quicker to place directly into wordsearch in reverse rather than reverse beforehand
@@ -185,9 +185,11 @@ Template.create.onRendered(function() {
     submitHandler: function(event) {
       var size = Number($('[name=size]').val());
       var words = $('[name=words]').val().split(',');
+      var allowBackwards = $('.js-allow-backwards').prop('checked');
       Session.set('size', size);
       Session.set('words', words);
       Session.set('showNewWordsearch', true);
+      Session.set('allowBackwards', allowBackwards);
     }
   })
 });
@@ -242,7 +244,8 @@ Template.newWordsearch.onCreated(function() {
   this.wordsearch = new ReactiveVar([]);
   var size = Session.get('size'); // Should probably validate session variables before use
   var words = Session.get('words');
-  var wordsearch = generateWordsearch(size, words);
+  var allowBackwards = Session.get('allowBackwards');
+  var wordsearch = generateWordsearch(size, words, allowBackwards);
   Template.instance().wordsearch.set(wordsearch);
   //console.log(wordsearch);
 });
@@ -266,7 +269,8 @@ Template.newWordsearch.events({
   'click .js-regenerate-wordsearch': function(event, template) {
     var size = Session.get('size');
     var words = Session.get('words');
-    var wordsearch = generateWordsearch(size, words);
+    var allowBackwards = Session.get('allowBackwards');
+    var wordsearch = generateWordsearch(size, words, allowBackwards);
     template.wordsearch.set(wordsearch);
     //console.log(wordsearch);
   }

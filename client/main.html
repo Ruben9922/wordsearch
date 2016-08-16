@@ -68,7 +68,7 @@
 <template name="create">
     <form class="form-horizontal">
         <div class="form-group">
-            <label for="size" class="control-label col-sm-2">Size</label>
+            <label for="size" class="col-sm-2 control-label">Size</label>
             <div class="col-sm-10">
                 <input type="number" class="form-control" name="size" min="1" max="40">
                 {{#if size}}
@@ -77,12 +77,22 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="words" class="control-label col-sm-2">Words</label>
+            <label for="words" class="col-sm-2 control-label">Words</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" name="words">
                 {{#unless isArrayEmpty words}}
                     <span class="help-block">Your wordsearch will contain the following words: {{wordsString}}.</span>
                 {{/unless}}
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" class="js-allow-backwards" checked>
+                        Allow words to be placed backwards
+                    </label>
+                </div>
             </div>
         </div>
         <button type="submit" class="btn btn-primary">Create</button>
