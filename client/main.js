@@ -35,7 +35,7 @@ function generateWordsearch(size, words) {
     } while (!successful && ++attemptCount < maxAttemptCount);
     if (!successful) {
       return null;
-    }
+    } // Could also add parts of words as red herrings
   }
   fillWithRandomLetters(wordsearch);
 
@@ -182,7 +182,7 @@ Template.create.onRendered(function() {
       }
     },
     submitHandler: function(event) {
-      var size = $('[name=size]').val();
+      var size = Number($('[name=size]').val());
       var words = $('[name=words]').val().split(',');
       Session.set('size', size);
       Session.set('words', words);
@@ -239,7 +239,7 @@ Template.create.events({
 
 Template.newWordsearch.onCreated(function() {
   this.wordsearch = new ReactiveVar([]);
-  var size = Number(Session.get('size')); // Could set `size` session variable as a Number
+  var size = Session.get('size'); // Should probably validate session variables before use
   var words = Session.get('words');
   var wordsearch = generateWordsearch(size, words);
   Template.instance().wordsearch.set(wordsearch);
@@ -260,7 +260,7 @@ Template.newWordsearch.events({
     Session.set('showNewWordsearch', false);
   },
   'click #regenerateWordsearchButton': function(event, template) {
-    var size = Number(Session.get('size'));
+    var size = Session.get('size');
     var words = Session.get('words');
     var wordsearch = generateWordsearch(size, words);
     template.wordsearch.set(wordsearch);
