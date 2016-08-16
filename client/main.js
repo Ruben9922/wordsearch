@@ -29,10 +29,10 @@ function generateWordsearch(size, words) {
       word = reverseString(word); // Might be quicker to place directly into wordsearch in reverse rather than reverse beforehand
     }
     var successful;
-    var x = 0;
+    var attemptCount = 0;
     do {
       successful = placeWord(wordsearch, word, direction);
-    } while (!successful && ++x < maxAttemptCount);
+    } while (!successful && ++attemptCount < maxAttemptCount);
     if (!successful) {
       return null;
     }
