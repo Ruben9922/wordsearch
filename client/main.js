@@ -215,7 +215,7 @@ Template.create.helpers({
 });
 
 Template.create.events({
-  'input #size': function(event, template) {
+  'input [name=size]': function(event, template) {
     var sizeInput = $(event.target);
     if (sizeInput.valid()) {
       var size = Number(sizeInput.val());
@@ -224,7 +224,7 @@ Template.create.events({
       template.state.set('size', 0);
     }
   },
-  'input #words': function(event, template) {
+  'input [name=words]': function(event, template) {
     var wordsInput = $(event.target);
     if (wordsInput.valid()) {
       var words = wordsInput.val().split(',');
@@ -260,10 +260,10 @@ Template.newWordsearch.helpers({
 });
 
 Template.newWordsearch.events({
-  'click #createAnotherWordsearchButton': function() {
+  'click .js-change-options': function() {
     Session.set('showNewWordsearch', false);
   },
-  'click #regenerateWordsearchButton': function(event, template) {
+  'click .js-regenerate-wordsearch': function(event, template) {
     var size = Session.get('size');
     var words = Session.get('words');
     var wordsearch = generateWordsearch(size, words);
