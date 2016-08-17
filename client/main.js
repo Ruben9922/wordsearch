@@ -8,7 +8,7 @@ function reverseString(string) {
 
 // Generates a size x size wordsearch using given array of words
 // Returns 2-dimensional array
-function generateWordsearch(size, words, allowBackwards) {
+function generateWordsearch(size, words, allowBackwards, allowWordParts) {
   var wordsearch = new Array(size);
   for (var i = 0; i < wordsearch.length; i++) {
     wordsearch[i] = new Array(size);
@@ -21,28 +21,46 @@ function generateWordsearch(size, words, allowBackwards) {
   // Place each of the words given in the words array into the wordsearch array
   for (var i = 0; i < words.length; i++) {
     var word = words[i].toUpperCase(); // Need to check if word can fit
-    // Randomly choose direction of word and whether word should be backwards
-    var direction = Math.floor(Math.random() * 4);
-    var backwards = allowBackwards && Math.random() >= 0.5;
-
-    if (backwards) {
-      word = reverseString(word); // Might be quicker to place directly into wordsearch in reverse rather than reverse beforehand
-    }
-    var successful;
-    var attemptCount = 0;
-    do {
-      successful = placeWord(wordsearch, word, direction);
-    } while (!successful && ++attemptCount < maxAttemptCount);
-    if (!successful) {
+    if (placeWord(wordsearch, word, allowBackwards) === null) {
       return null;
-    } // Could also add parts of words as red herrings
+    }
   }
+
+  // If allowWordParts true, also place parts of some of the entered words as red herrings
+  // May result in whole words being placed more than once by coincidence, but unlikely and also could change later
+  if (allowWordParts) {
+    for (var i = 0; i < Math.floor(Math.random() * words.length); i++) {
+      var word = words[i].slice(0, Math.floor(Math.random() * words[i].length)).toUpperCase();
+      if (placeWord(wordsearch, word, allowBackwards) === null) {
+        return null;
+      }
+    }
+  }
+
   fillWithRandomLetters(wordsearch);
 
   return wordsearch;
 }
 
-function placeWord(wordsearch, word, direction) {
+function placeWord(wordsearch, word, allowBackwards) {
+  // Randomly choose direction of word and whether word should be backwards
+  var direction = Math.floor(Math.random() * 4);
+  var backwards = allowBackwards && Math.random() >= 0.5;
+
+  if (backwards) {
+    word = reverseString(word); // Might be quicker to place directly into wordsearch in reverse rather than reverse beforehand
+  }
+  var successful;
+  var attemptCount = 0;
+  do {
+    successful = placeString(wordsearch, word, direction);
+  } while (!successful && ++attemptCount < maxAttemptCount);
+  if (!successful) {
+    return null;
+  }
+}
+
+function placeString(wordsearch, word, direction) {
   // Height and width store how much space the word takes up to ensure whole of word is placed inside wordsearch
   var height = (direction === directions.HORIZONTAL ? 1 : word.length);
   var width = (direction === directions.VERTICAL ? 1 : word.length);
@@ -106,6 +124,8 @@ function fillWithRandomLetters(wordsearch) {
 Session.setDefault('showNewWordsearch', false);
 Session.setDefault('size', 0);
 Session.setDefault('words', []);
+Session.setDefault('allowBackwards', true);
+Session.setDefault('allowWordParts', false);
 
 // Declare "enum" for directions
 var directions = Object.freeze({
@@ -185,10 +205,12 @@ Template.create.onRendered(function() {
       var size = Number($('[name=size]').val());
       var words = $('[name=words]').val().split(',');
       var allowBackwards = $('.js-allow-backwards').prop('checked');
+      var allowWordParts = $('.js-allow-word-parts').prop('checked');
       Session.set('size', size);
       Session.set('words', words);
       Session.set('showNewWordsearch', true);
       Session.set('allowBackwards', allowBackwards);
+      Session.set('allowWordParts', allowWordParts);
     }
   })
 });
@@ -244,7 +266,8 @@ Template.newWordsearch.onCreated(function() {
   var size = Session.get('size'); // Should probably validate session variables before use
   var words = Session.get('words');
   var allowBackwards = Session.get('allowBackwards');
-  var wordsearch = generateWordsearch(size, words, allowBackwards);
+  var allowWordParts = Session.get('allowWordParts');
+  var wordsearch = generateWordsearch(size, words, allowBackwards, allowWordParts);
   this.wordsearch.set(wordsearch);
   //console.log(wordsearch);
 });
@@ -269,7 +292,8 @@ Template.newWordsearch.events({
     var size = Session.get('size');
     var words = Session.get('words');
     var allowBackwards = Session.get('allowBackwards');
-    var wordsearch = generateWordsearch(size, words, allowBackwards);
+    var allowWordParts = Session.get('allowWordParts');
+    var wordsearch = generateWordsearch(size, words, allowBackwards, allowWordParts);
     template.wordsearch.set(wordsearch);
     //console.log(wordsearch);
   }
