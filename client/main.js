@@ -29,7 +29,6 @@ function generateWordsearch(size, words, allowBackwards, allowWordParts) {
   // If allowWordParts true, also place parts of some of the entered words as red herrings
   // May result in whole words being placed more than once by coincidence, but unlikely and also could change later
   // Will change to allow multiple red herrings per word
-  // Need to update README.md
   if (allowWordParts) {
     for (var i = 0; i < Math.floor(Math.random() * words.length); i++) {
       var word = words[i].slice(0, Math.floor(Math.random() * words[i].length)).toUpperCase();
