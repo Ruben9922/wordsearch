@@ -28,6 +28,8 @@ function generateWordsearch(size, words, allowBackwards, allowWordParts) {
 
   // If allowWordParts true, also place parts of some of the entered words as red herrings
   // May result in whole words being placed more than once by coincidence, but unlikely and also could change later
+  // Will change to allow multiple red herrings per word
+  // Need to update README.md
   if (allowWordParts) {
     for (var i = 0; i < Math.floor(Math.random() * words.length); i++) {
       var word = words[i].slice(0, Math.floor(Math.random() * words[i].length)).toUpperCase();
@@ -54,7 +56,7 @@ function placeWord(wordsearch, word, allowBackwards) {
   var attemptCount = 0;
   do {
     successful = placeString(wordsearch, word, direction);
-  } while (!successful && ++attemptCount < maxAttemptCount);
+  } while (!successful && ++attemptCount < MAX_ATTEMPT_COUNT);
   if (!successful) {
     return null;
   }
@@ -134,7 +136,8 @@ var directions = Object.freeze({
   DIAGONAL_DOWN : 2,
   DIAGONAL_UP: 3
 });
-var maxAttemptCount = 30;
+var MAX_ATTEMPT_COUNT = 30;
+var MAX_WORD_COUNT = 50;
 
 // Set validator defaults and add additional validation methods
 $.validator.setDefaults({
@@ -193,12 +196,12 @@ Template.create.onRendered(function() {
       },
       words: {
         required: true,
-        regex: "^[a-zA-Z]+(?:\\s[a-zA-Z]+)*(?:,[a-zA-Z]+(?:\\s[a-zA-Z]+)*){0,50}$"
+        regex: "^[a-zA-Z]+(?:\\s[a-zA-Z]+)*(?:,[a-zA-Z]+(?:\\s[a-zA-Z]+)*){0," + (MAX_WORD_COUNT - 1) + "}$"
       }
     },
     messages: {
       words: {
-        regex: "You must enter up to 50 words/phrases, separated by commas.<br>The words/phrases must consist only of letters and spaces, and begin and end with a letter."
+        regex: "" // #words-error still appears causing extra spacing to appear
       }
     },
     submitHandler: function(event) {
@@ -221,6 +224,9 @@ Template.create.helpers({
   },
   'words': function() {
     return Template.instance().state.get('words');
+  },
+  'maxWordCount': function() {
+    return MAX_WORD_COUNT;
   },
   // Since Meteor currently doesn't support @last (or similar) in templates
   'wordsString': function() { // Could replace with a $last in the template
@@ -277,7 +283,7 @@ Template.newWordsearch.helpers({
     return Template.instance().wordsearch.get();
   },
   'maxAttemptCount': function() {
-    return maxAttemptCount;
+    return MAX_ATTEMPT_COUNT;
   },
   'words': function() {
     return Session.get('words');
