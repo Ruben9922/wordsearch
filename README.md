@@ -1,5 +1,5 @@
 # Wordsearch
-Web application that allows one to easily generate wordsearches, made using Meteor.
+Web application that allows one to easily generate wordsearches, made using [Meteor](https://www.meteor.com/).
 
 ## Features
 * Create wordsearches using the wordsearch size and words to place in the wordsearch
