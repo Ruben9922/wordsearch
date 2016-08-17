@@ -150,7 +150,6 @@ $.validator.addMethod(
 );
 
 // Add template helpers, events and callbacks
-// Simply returns whether given number is greater than 1
 Template.home.helpers({
   'showNewWordsearch': function() {
     return Session.get('showNewWordsearch');
@@ -246,7 +245,7 @@ Template.newWordsearch.onCreated(function() {
   var words = Session.get('words');
   var allowBackwards = Session.get('allowBackwards');
   var wordsearch = generateWordsearch(size, words, allowBackwards);
-  Template.instance().wordsearch.set(wordsearch);
+  this.wordsearch.set(wordsearch);
   //console.log(wordsearch);
 });
 
