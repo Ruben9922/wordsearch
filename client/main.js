@@ -13,7 +13,8 @@ function generateWordsearch(size, words, allowBackwards, allowWordParts) {
   for (var i = 0; i < wordsearch.length; i++) {
     wordsearch[i] = new Array(size);
     for (var j = 0; j < wordsearch[i].length; j++) {
-      wordsearch[i][j] = null;
+      wordsearch[i][j] = {};
+      wordsearch[i][j].value = null;
     }
   }
 
@@ -21,7 +22,7 @@ function generateWordsearch(size, words, allowBackwards, allowWordParts) {
   // Place each of the words given in the words array into the wordsearch array
   for (var i = 0; i < words.length; i++) {
     var word = words[i].toUpperCase(); // Need to check if word can fit
-    if (placeWord(wordsearch, word, allowBackwards) === null) {
+    if (placeWord(wordsearch, word, allowBackwards, i) === null) {
       return null;
     }
   }
@@ -32,7 +33,7 @@ function generateWordsearch(size, words, allowBackwards, allowWordParts) {
   if (allowWordParts) {
     for (var i = 0; i < Math.floor(Math.random() * words.length); i++) {
       var word = words[i].slice(0, Math.floor(Math.random() * words[i].length)).toUpperCase();
-      if (placeWord(wordsearch, word, allowBackwards) === null) {
+      if (placeWord(wordsearch, word, allowBackwards, null) === null) {
         return null;
       }
     }
@@ -43,7 +44,7 @@ function generateWordsearch(size, words, allowBackwards, allowWordParts) {
   return wordsearch;
 }
 
-function placeWord(wordsearch, word, allowBackwards) {
+function placeWord(wordsearch, word, allowBackwards, wordId) {
   // Randomly choose direction of word and whether word should be backwards
   var direction = Math.floor(Math.random() * 4);
   var backwards = allowBackwards && Math.random() >= 0.5;
@@ -54,56 +55,68 @@ function placeWord(wordsearch, word, allowBackwards) {
   var successful;
   var attemptCount = 0;
   do {
-    successful = placeString(wordsearch, word, direction);
+    successful = placeString(wordsearch, word, direction, wordId);
   } while (!successful && ++attemptCount < MAX_ATTEMPT_COUNT);
   if (!successful) {
     return null;
   }
 }
 
-function placeString(wordsearch, word, direction) {
+function placeString(wordsearch, word, direction, wordId) {
   // Height and width store how much space the word takes up to ensure whole of word is placed inside wordsearch
   var height = (direction === directions.HORIZONTAL ? 1 : word.length);
   var width = (direction === directions.VERTICAL ? 1 : word.length);
-  // Word origin stores where word 'starts'
+  // wordOrigin stores where word 'starts'
   // First letter is placed here then remaining letters are placed incrementally further away in chosen direction
   var wordOrigin = {
     row: Math.floor((Math.random() * (wordsearch.length + 1 - height)) + (direction === directions.DIAGONAL_UP ? height - 1 : 0)),
     column: Math.floor(Math.random() * (wordsearch[0].length + 1 - width))
   };
-  var letterPositions = new Array(word.length);
-  var oldLetters = new Array(word.length);
+  // oldCells is an array of objects storing information about the overwritten cells
+  var oldCells = new Array(word.length);
 
   // Place each letter into wordsearch according to chosen direction
   //console.log('dir ' + direction);
-  for (var j = 0; j < word.length; j++) {
-    // Letter position stores position of letter relative to word origin
+  for (var i = 0; i < word.length; i++) {
+    // letterPosition stores position of letter relative to wordOrigin
     var letterPosition = {
-      row: (direction === directions.VERTICAL || direction === directions.DIAGONAL_DOWN ? j : (direction === directions.DIAGONAL_UP ? -j : 0)),
-      column: (direction === directions.HORIZONTAL || direction === directions.DIAGONAL_DOWN || direction === directions.DIAGONAL_UP ? j : 0)
+      row: (direction === directions.VERTICAL || direction === directions.DIAGONAL_DOWN ? i : (direction === directions.DIAGONAL_UP ? -i : 0)),
+      column: (direction === directions.HORIZONTAL || direction === directions.DIAGONAL_DOWN || direction === directions.DIAGONAL_UP ? i : 0)
     };
 
     var row = wordOrigin.row + letterPosition.row;
     var column = wordOrigin.column + letterPosition.column;
-    var currentValue = wordsearch[row][column];
-    var letter = word.charAt(j);
+    var wordsearchCell = wordsearch[row][column];
+    var currentValue = wordsearchCell.value;
+    var letter = word.charAt(i);
+    oldCells[i] = {};
+    var oldCell = oldCells[i];
+
     //console.log('CU ' + currentValue);
     // If value at chosen position (currentValue) is null or same letter as the letter to be placed,
     // and if current letter is not the last letter and same as currentValue (to prevent words completely overlapping),
     // place word in wordsearch and add to letterPosition array after storing current value
     // Otherwise replace all letters from this word that have been placed in the wordsearch with their previous values
-    if ((currentValue === null || currentValue === letter) && !(j === word.length - 1 && currentValue === letter)) {
+    if ((currentValue === null || currentValue === letter) &&
+        !(i === word.length - 1 && currentValue === letter)) {
       //console.log('Placing letter ' + letter + ' at ' + row + ',' + column);
-      oldLetters[j] = currentValue;
-      //console.log(oldLetters[j]);
-      wordsearch[row][column] = letter;
-      letterPositions[j] = letterPosition;
+      oldCell.value = currentValue;
+      oldCell.wordId = wordsearchCell.wordId;
+      //console.log(oldCell.value);
+      wordsearchCell.value = letter;
+      wordsearchCell.wordId = wordId;
+      oldCell.letterPosition = letterPosition;
     } else {
-      // Replace first j letters in this word, which have already been placed in wordsearch, with previous values
+      // Replace first i letters in this word, which have already been placed in wordsearch, with previous values
       // Does this since checking cells before placing word would also have worst-case time of O(n^2) but may happen more often - might change this later
-      for (var k = 0; k < j; k++) {
-        //console.log('Erasing letter at ' + (wordOrigin.row + letterPositions[k].row) + ',' + (wordOrigin.column + letterPositions[k].column));
-        wordsearch[wordOrigin.row + letterPositions[k].row][wordOrigin.column + letterPositions[k].column] = oldLetters[k];
+      for (var j = 0; j < i; j++) {
+        var oldCellToReplace = oldCells[j];
+        var rowToRevert = wordOrigin.row + oldCellToReplace.letterPosition.row;
+        var columnToRevert = wordOrigin.column + oldCellToReplace.letterPosition.column;
+        //console.log('Erasing letter at ' + rowToRevert + ',' + columnToRevert);
+        var wordsearchCellToRevert = wordsearch[rowToRevert][columnToRevert];
+        wordsearchCellToRevert.value = oldCellToReplace.value;
+        wordsearchCellToRevert.wordId = oldCellToReplace.wordId;
       }
       return false;
     }
@@ -115,8 +128,10 @@ function fillWithRandomLetters(wordsearch) {
   var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   for (var i = 0; i < wordsearch.length; i++) {
     for (var j = 0; j < wordsearch[i].length; j++) {
-      if (wordsearch[i][j] === null) {
-        wordsearch[i][j] = letters[Math.floor(Math.random() * letters.length)];
+      var cell = wordsearch[i][j];
+      if (cell.value === null) {
+        cell.value = letters[Math.floor(Math.random() * letters.length)];
+        cell.wordId = null;
       }
     }
   }
@@ -268,6 +283,7 @@ Template.create.events({
 
 Template.newWordsearch.onCreated(function() {
   this.wordsearch = new ReactiveVar([]);
+  this.highlightAllWords = new ReactiveVar(false);
   var size = Session.get('size'); // Should probably validate session variables before use
   var words = Session.get('words');
   var allowBackwards = Session.get('allowBackwards');
@@ -286,7 +302,10 @@ Template.newWordsearch.helpers({
   },
   'words': function() {
     return Session.get('words');
-  }
+  },
+  'highlightAllWords': function() {
+    return Template.instance().highlightAllWords.get();
+  } // Could also highlight words individually
 });
 
 Template.newWordsearch.events({
@@ -301,5 +320,8 @@ Template.newWordsearch.events({
     var wordsearch = generateWordsearch(size, words, allowBackwards, allowWordParts);
     template.wordsearch.set(wordsearch);
     //console.log(wordsearch);
+  },
+  'change .js-highlight-all-words': function(event, template) {
+    template.highlightAllWords.set(event.target.checked);
   }
 })

@@ -11,3 +11,7 @@ Template.registerHelper('isArrayEmpty', function(array) {
 Template.registerHelper('last', function(list, element) {
   return _.last(list) === element;
 });
+
+Template.registerHelper('isNotNull', function(variable) {
+  return variable !== null;
+});
