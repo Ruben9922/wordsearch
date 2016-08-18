@@ -141,7 +141,7 @@ Session.setDefault('showNewWordsearch', false);
 Session.setDefault('size', 0);
 Session.setDefault('words', []);
 Session.setDefault('allowBackwards', true);
-Session.setDefault('allowWordParts', false);
+Session.setDefault('allowWordParts', true);
 
 // Declare "enum" for directions
 var directions = Object.freeze({
