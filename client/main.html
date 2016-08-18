@@ -97,7 +97,7 @@
                 </div>
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" class="js-allow-word-parts">
+                        <input type="checkbox" class="js-allow-word-parts" checked>
                         Allow placing parts of words to increase difficulty
                     </label>
                 </div>
@@ -127,7 +127,12 @@
             </tbody>
         </table>
     {{else}}
-        <p class="text-center text-danger"><b>Failed to generate wordsearch after at least {{maxAttemptCount}} attempts.</b><br>Try creating a larger wordsearch, perhaps with smaller and/or fewer words, or just press the <i>Regenerate wordsearch</i> button a few more times.</p>
+        <p class="text-center text-danger">
+            <b>Failed to generate wordsearch after at least {{maxAttemptCount}} attempts.</b><br>
+            Try just pressing the <i>Regenerate wordsearch</i> button a few more times.<br>
+            If that fails, try creating a larger wordsearch or using shorter and/or fewer words.<br>
+            Also try disabling the <i>Allow placing parts of words to increase difficulty</i> option.
+        </p>
     {{/if}}
     <br>
     <ul class="list-group center-block text-center">
