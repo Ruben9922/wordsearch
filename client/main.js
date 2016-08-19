@@ -137,12 +137,17 @@ function fillWithRandomLetters(wordsearch) {
   }
 }
 
+Session.setDefault('documentTitle', 'Wordsearch App');
 Session.setDefault('showNewWordsearch', false);
 Session.setDefault('size', 0);
 Session.setDefault('words', []);
 Session.setDefault('allowBackwards', true);
 Session.setDefault('allowWordParts', true);
 
+// Declare "constants"
+var MAX_ATTEMPT_COUNT = 30;
+var MAX_WORD_COUNT = 50;
+var TITLE_SUFFIX = ' | Wordsearch App';
 // Declare "enum" for directions
 var directions = Object.freeze({
   VERTICAL: 0,
@@ -150,8 +155,6 @@ var directions = Object.freeze({
   DIAGONAL_DOWN : 2,
   DIAGONAL_UP: 3
 });
-var MAX_ATTEMPT_COUNT = 30;
-var MAX_WORD_COUNT = 50;
 
 // Set validator defaults and add additional validation methods
 $.validator.setDefaults({
@@ -187,26 +190,34 @@ $.validator.addMethod(
 );
 
 // Add template helpers, events and callbacks
-Template.home.helpers({
+Template.home.onCreated(function() {
+  Session.set('documentTitle', 'Wordsearch App');
+});
+
+Template.create.onCreated(function() {
+  Session.set('documentTitle', 'Create Wordsearch' + TITLE_SUFFIX);
+});
+
+Template.create.helpers({
   'showNewWordsearch': function() {
     return Session.get('showNewWordsearch');
   }
 });
 
-Template.create.onCreated(function() {
+Template.createForm.onCreated(function() {
   this.state = new ReactiveDict();
   this.state.set('size', 0);
   this.state.set('words', []);
 });
 
-Template.create.onRendered(function() {
+Template.createForm.onRendered(function() {
   $('form').validate({
     rules: {
       size: {
         required: true,
         digits: true,
         min: 1,
-        max: 40
+        max: 50
       },
       words: {
         required: true,
@@ -232,7 +243,7 @@ Template.create.onRendered(function() {
   })
 });
 
-Template.create.helpers({
+Template.createForm.helpers({
   'size': function() {
     return Template.instance().state.get('size');
   },
@@ -257,7 +268,7 @@ Template.create.helpers({
   }
 });
 
-Template.create.events({
+Template.createForm.events({ // Could remember previous form data
   'input [name=size]': function(event, template) {
     var sizeInput = $(event.target);
     if (sizeInput.valid()) {
@@ -288,7 +299,7 @@ Template.newWordsearch.onCreated(function() {
   var words = Session.get('words');
   var allowBackwards = Session.get('allowBackwards');
   var allowWordParts = Session.get('allowWordParts');
-  var wordsearch = generateWordsearch(size, words, allowBackwards, allowWordParts);
+  var wordsearch = generateWordsearch(size, words, allowBackwards, allowWordParts); // Could move this code out of onCreated to prevent wordsearch regenerating whenever template is loaded
   this.wordsearch.set(wordsearch);
   //console.log(wordsearch);
 });
