@@ -1,10 +1,16 @@
 {
-  "name": "wordsearch",
+  "name": "wordsearch-generator",
+  "version": "0.1.0",
   "private": true,
-  "scripts": {
-    "start": "meteor run"
-  },
   "dependencies": {
-    "meteor-node-stubs": "~0.2.0"
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-scripts": "1.0.11"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
   }
 }
