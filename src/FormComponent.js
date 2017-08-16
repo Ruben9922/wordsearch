@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Button, Checkbox, Form, Header, Input, Segment} from 'semantic-ui-react'
+import {Button, Checkbox, Form, Header, Icon, Input, Popup, Segment} from 'semantic-ui-react'
 import MultipleInputs from "./MultipleInputs";
 
 class FormComponent extends Component {
@@ -45,8 +45,14 @@ class FormComponent extends Component {
             </Form.Field>
             <Form.Field>
               <label>Misc.</label>
-              <Checkbox label="Allow words to be placed backwards"/><br/>
-              <Checkbox label="Allow placing parts of words (to increase difficulty)"/>
+              <Checkbox label="Allow words to be placed backwards"/>
+              <br/>
+              <Checkbox label="Allow parts of words"/>
+              &nbsp;
+              <Popup
+                trigger={<Icon color="blue" name="help circle"/>}
+                content="Choose whether to add parts of words to make the game more difficult (e.g. &#34;awe&#34;, &#34;awesome&#34;, etc. as well as &#34;awesomeness&#34;)"
+              />
             </Form.Field>
             <Button type="submit">Create</Button>
           </Form>
