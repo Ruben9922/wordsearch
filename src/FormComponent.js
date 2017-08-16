@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Button, Checkbox, Form, Header, Input} from 'semantic-ui-react'
+import {Button, Checkbox, Form, Header, Input, Segment} from 'semantic-ui-react'
 import MultipleInputs from "./MultipleInputs";
 
 class FormComponent extends Component {
@@ -28,7 +28,8 @@ class FormComponent extends Component {
       <div>
         <Header as="h2">Create Wordsearch</Header>
         <div>
-          <Header as="h3">Choose Options</Header>
+          <Header as="h3" attached="top">Choose Options</Header>
+          <Segment attached>
           <Form>
             <Form.Field inline>
               <label>Size</label>
@@ -49,6 +50,7 @@ class FormComponent extends Component {
             </Form.Field>
             <Button type="submit">Create</Button>
           </Form>
+          </Segment>
         </div>
       </div>
     );
