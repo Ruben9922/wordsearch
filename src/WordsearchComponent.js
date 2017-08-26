@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {List} from 'semantic-ui-react';
 import './WordsearchComponent.css';
 
 class WordsearchComponent extends Component {
@@ -43,6 +44,16 @@ class WordsearchComponent extends Component {
             ))}
           </tbody>
         </table>
+
+        <List selection>
+          {this.props.words.map((word, index) => (
+            <List.Item key={index}>
+              <List.Content>
+                {word}
+              </List.Content>
+            </List.Item>
+          ))}
+        </List>
       </div>
     );
   }
