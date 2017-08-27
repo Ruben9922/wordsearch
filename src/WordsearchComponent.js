@@ -58,12 +58,13 @@ class WordsearchComponent extends Component {
 
       // Currently, if word cannot be placed, chooses new origin and direction and tries to place again; could change to
       // restrict choice of origin (so don't need to choose new origin) but possibly very complicated and inefficient
+      let direction;
       let originX;
       let originY;
       let ok;
       const attempts = 10000;
       for (let i = 0; i < attempts && !ok; i++) {
-        let direction = Direction.enumValues[Math.floor(Math.random() * Direction.enumValues.length)];
+        direction = Direction.enumValues[Math.floor(Math.random() * Direction.enumValues.length)];
 
         // Both min and max origin values are inclusive
         let minOriginX = 0;
