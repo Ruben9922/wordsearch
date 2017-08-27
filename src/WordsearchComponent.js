@@ -24,7 +24,7 @@ class WordsearchComponent extends Component {
     for (let i = 0; i < wordsearch.length; i++) {
       wordsearch[i] = new Array(size);
       for (let j = 0; j < wordsearch[i].length; j++) {
-        wordsearch[i][j] = "";
+        wordsearch[i][j] = "-";
       }
     }
 
@@ -45,15 +45,34 @@ class WordsearchComponent extends Component {
       let minOriginY = (direction === Direction.DIAGONAL_UP) ? word.length - 1 : 0;
       let maxOriginY = (direction === Direction.DIAGONAL_UP) ? size - 1 : size - word.length;
 
-      let originX = Math.floor(Math.random() * (maxOriginX + 1 - minOriginX)) + minOriginX;
-      let originY = Math.floor(Math.random() * (maxOriginY + 1 - minOriginY)) + minOriginY;
+      let originX;
+      let originY;
+      let ok;
+      do {
+        originX = Math.floor(Math.random() * (maxOriginX + 1 - minOriginX)) + minOriginX;
+        originY = Math.floor(Math.random() * (maxOriginY + 1 - minOriginY)) + minOriginY;
+
+        // Check that, using the chosen origin, the word can be placed without overlapping other words
+        // Overlapping is allowed if any points of overlap involve the same letter
+        ok = true;
+        for (let i = 0; i < word.length; i++) {
+          let letter = word.charAt(i);
+
+          let x = (direction === Direction.VERTICAL) ? originX : originX + i;
+          let y = (direction === Direction.HORIZONTAL) ? originY : ((direction === Direction.DIAGONAL_UP) ? originY - i : originY + i);
+          let currentLetter = wordsearch[y][x];
+
+          if (currentLetter !== letter && currentLetter !== "-") {
+            ok = false;
+          }
+        }
+      } while (!ok);
 
       for (let i = 0; i < word.length; i++) {
         let letter = word.charAt(i);
 
         let x = (direction === Direction.VERTICAL) ? originX : originX + i;
-        let y = (direction === Direction.HORIZONTAL) ? originY :
-          ((direction === Direction.DIAGONAL_UP) ? originY - i : originY + i);
+        let y = (direction === Direction.HORIZONTAL) ? originY : ((direction === Direction.DIAGONAL_UP) ? originY - i : originY + i);
 
         wordsearch[y][x] = letter;
       }
