@@ -21,11 +21,12 @@ class WordsearchComponent extends Component {
     const size = this.props.size;
     let wordsearch = new Array(size);
 
+    let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     for (let i = 0; i < wordsearch.length; i++) {
       wordsearch[i] = new Array(size);
       for (let j = 0; j < wordsearch[i].length; j++) {
         wordsearch[i][j] = {
-          letter: "-",
+          letter: letters[Math.floor(Math.random() * letters.length)],
           wordId: null
         };
       }
@@ -95,7 +96,7 @@ class WordsearchComponent extends Component {
           } else {
             overlappedWordId = null; // Reset overlapped substring
 
-            if (cell.letter !== "-") {
+            if (cell.wordId !== null) {
               ok = false;
               break;
             }
