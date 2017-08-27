@@ -24,7 +24,10 @@ class WordsearchComponent extends Component {
     for (let i = 0; i < wordsearch.length; i++) {
       wordsearch[i] = new Array(size);
       for (let j = 0; j < wordsearch[i].length; j++) {
-        wordsearch[i][j] = "-";
+        wordsearch[i][j] = {
+          letter: "-",
+          wordId: null
+        };
       }
     }
 
@@ -39,7 +42,7 @@ class WordsearchComponent extends Component {
   placeWords(wordsearch) {
     const size = this.props.size;
 
-    for (let word of this.props.words) {
+    for (let [index, word] of this.props.words.entries()) {
       let direction = Direction.enumValues[Math.floor(Math.random() * Direction.enumValues.length)];
 
       // Both min and max origin values are inclusive
@@ -61,16 +64,27 @@ class WordsearchComponent extends Component {
         // Check that, using the chosen origin, the word can be placed without overlapping other words
         // Overlapping is allowed if any points of overlap involve the same letter
         ok = true;
+        let overlappedWordId = null;
         for (let j = 0; j < word.length; j++) {
           let letter = word.charAt(j);
 
           let x = (direction === Direction.VERTICAL) ? originX : originX + j;
           let y = (direction === Direction.HORIZONTAL) ? originY : ((direction === Direction.DIAGONAL_UP) ? originY - j : originY + j);
-          let currentLetter = wordsearch[y][x];
+          let cell = wordsearch[y][x];
 
-          if (currentLetter !== letter && currentLetter !== "-") {
-            ok = false;
-            break;
+          if (cell.letter === letter) {
+            if (overlappedWordId === null || overlappedWordId !== cell.wordId) {
+              overlappedWordId = cell.wordId;
+            } else {
+              ok = false;
+            }
+          } else {
+            overlappedWordId = null; // Reset overlapped substring
+
+            if (cell.letter !== "-") {
+              ok = false;
+              break;
+            }
           }
         }
       }
@@ -86,7 +100,10 @@ class WordsearchComponent extends Component {
         let x = (direction === Direction.VERTICAL) ? originX : originX + i;
         let y = (direction === Direction.HORIZONTAL) ? originY : ((direction === Direction.DIAGONAL_UP) ? originY - i : originY + i);
 
-        wordsearch[y][x] = letter;
+        wordsearch[y][x] = {
+          letter: letter,
+          wordId: index
+        };
       }
     }
 
@@ -113,9 +130,9 @@ class WordsearchComponent extends Component {
               <tbody>
               {this.state.wordsearch.map((row, index1) => (
                 <tr key={index1}>
-                  {row.map((letter, index2) => (
+                  {row.map((cell, index2) => (
                     <td key={index2}>
-                      {letter}
+                      {cell.letter}
                     </td>
                   ))}
                 </tr>
