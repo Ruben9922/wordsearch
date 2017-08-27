@@ -11,7 +11,7 @@ class WordsearchComponent extends Component {
 
     this.state = {
       wordsearch: this.generateWordsearch()
-    }
+    };
 
     this.generateWordsearch = this.generateWordsearch.bind(this);
     this.placeWords = this.placeWords.bind(this);
