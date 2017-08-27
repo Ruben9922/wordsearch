@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import './App.css';
-import {Container, Header} from 'semantic-ui-react';
+import React, {Component} from "react";
+import "./App.css";
+import {Container, Header} from "semantic-ui-react";
 import FormComponent from "./FormComponent";
 import WordsearchComponent from "./WordsearchComponent";
 

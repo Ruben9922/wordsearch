@@ -1,7 +1,8 @@
-import React, {Component} from 'react';
-import {List} from 'semantic-ui-react';
-import './WordsearchComponent.css';
-import {Enum} from 'enumify';
+import React, { Component } from "react";
+import { List } from "semantic-ui-react";
+import "./WordsearchComponent.css";
+import { Enum } from "enumify";
+import PropTypes from "prop-types";
 
 class WordsearchComponent extends Component {
   constructor(props) {
@@ -24,7 +25,7 @@ class WordsearchComponent extends Component {
     for (let i = 0; i < wordsearch.length; i++) {
       wordsearch[i] = new Array(size);
       for (let j = 0; j < wordsearch[i].length; j++) {
-        wordsearch[i][j] = "";
+        wordsearch[i][j] = "-";
       }
     }
 
@@ -90,6 +91,11 @@ class WordsearchComponent extends Component {
     );
   }
 }
+
+WordsearchComponent.propTypes = {
+  size: PropTypes.number,
+  words: PropTypes.arrayOf(PropTypes.number)
+};
 
 class Direction extends Enum {
 }
