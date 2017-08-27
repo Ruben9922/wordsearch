@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {List} from 'semantic-ui-react';
+import {List, Message} from 'semantic-ui-react';
 import './WordsearchComponent.css';
 import {Enum} from 'enumify';
 
@@ -28,7 +28,10 @@ class WordsearchComponent extends Component {
       }
     }
 
-    this.placeWords(wordsearch);
+    let successful = this.placeWords(wordsearch);
+    if (!successful) {
+      return null;
+    }
 
     return wordsearch;
   }
@@ -45,28 +48,37 @@ class WordsearchComponent extends Component {
       let minOriginY = (direction === Direction.DIAGONAL_UP) ? word.length - 1 : 0;
       let maxOriginY = (direction === Direction.DIAGONAL_UP) ? size - 1 : size - word.length;
 
+      // Currently, if word cannot be placed, chooses new origin and tries to place again; could change to restrict
+      // choice of origin (so don't need to choose new origin) but possibly very complicated and inefficient
       let originX;
       let originY;
       let ok;
-      do {
+      const attempts = 10000;
+      for (let i = 0; i < attempts && !ok; i++) {
         originX = Math.floor(Math.random() * (maxOriginX + 1 - minOriginX)) + minOriginX;
         originY = Math.floor(Math.random() * (maxOriginY + 1 - minOriginY)) + minOriginY;
 
         // Check that, using the chosen origin, the word can be placed without overlapping other words
         // Overlapping is allowed if any points of overlap involve the same letter
         ok = true;
-        for (let i = 0; i < word.length; i++) {
-          let letter = word.charAt(i);
+        for (let j = 0; j < word.length; j++) {
+          let letter = word.charAt(j);
 
-          let x = (direction === Direction.VERTICAL) ? originX : originX + i;
-          let y = (direction === Direction.HORIZONTAL) ? originY : ((direction === Direction.DIAGONAL_UP) ? originY - i : originY + i);
+          let x = (direction === Direction.VERTICAL) ? originX : originX + j;
+          let y = (direction === Direction.HORIZONTAL) ? originY : ((direction === Direction.DIAGONAL_UP) ? originY - j : originY + j);
           let currentLetter = wordsearch[y][x];
 
           if (currentLetter !== letter && currentLetter !== "-") {
             ok = false;
+            break;
           }
         }
-      } while (!ok);
+      }
+
+      // If such origin not found (max no. of attempts was reached) then return
+      if (!ok) {
+        return false;
+      }
 
       for (let i = 0; i < word.length; i++) {
         let letter = word.charAt(i);
@@ -77,34 +89,51 @@ class WordsearchComponent extends Component {
         wordsearch[y][x] = letter;
       }
     }
+
+    return true;
   }
 
   render() {
     return (
       <div>
-        <table className="wordsearch">
-          <tbody>
-            {this.state.wordsearch.map((row, index1) => (
-              <tr key={index1}>
-                {row.map((letter, index2) => (
-                  <td key={index2}>
-                    {letter}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {this.state.wordsearch === null ? (
+          <Message error>
+            <Message.Header>Failed to generate wordsearch</Message.Header>
+            <p>Failed to generate wordsearch using the specified options.</p>
+            <p>Try simply regenerating the wordsearch a few times. If that fails, try the following:</p>
+            <List as="ul">
+              <List.Item as="li">Increasing the wordsearch size</List.Item>
+              <List.Item as="li">Using fewer and/or shorter words</List.Item>
+              <List.Item as="li">Disabling the <i>Allow parts of words</i> option</List.Item>
+            </List>
+          </Message>
+        ) : (
+          <div>
+            <table className="wordsearch">
+              <tbody>
+              {this.state.wordsearch.map((row, index1) => (
+                <tr key={index1}>
+                  {row.map((letter, index2) => (
+                    <td key={index2}>
+                      {letter}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+              </tbody>
+            </table>
 
-        <List selection>
-          {this.props.words.map((word, index) => (
-            <List.Item key={index}>
-              <List.Content>
-                {word}
-              </List.Content>
-            </List.Item>
-          ))}
-        </List>
+            <List selection>
+              {this.props.words.map((word, index) => (
+                <List.Item key={index}>
+                  <List.Content>
+                    {word}
+                  </List.Content>
+                </List.Item>
+              ))}
+            </List>
+          </div>
+        )}
       </div>
     );
   }
