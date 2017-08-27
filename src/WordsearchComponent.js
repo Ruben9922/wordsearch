@@ -39,10 +39,23 @@ class WordsearchComponent extends Component {
     return wordsearch;
   }
 
+  static reverseString(string) {
+    let result = "";
+    for (let i = string.length - 1; i >= 0; i--) {
+      result += string.charAt(i);
+    }
+    return result;
+  }
+
   placeWords(wordsearch) {
     const size = this.props.size;
 
     for (let [index, word] of this.props.words.entries()) {
+      let backwards = this.props.allowBackwards && Math.random() >= 0.5;
+      if (backwards) {
+        word = WordsearchComponent.reverseString(word);
+      }
+
       let direction = Direction.enumValues[Math.floor(Math.random() * Direction.enumValues.length)];
 
       // Both min and max origin values are inclusive

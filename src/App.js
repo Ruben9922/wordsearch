@@ -10,7 +10,7 @@ class App extends Component {
       <Container>
         <Header as="h1">Wordsearch Generator</Header>
         {/*<FormComponent/>*/}
-        <WordsearchComponent words={["hello", "there", "from", "Ruben"]} size={12}/>
+        <WordsearchComponent words={["hello", "there", "from", "Ruben"]} size={12} allowBackwards={true}/>
       </Container>
     );
   }
