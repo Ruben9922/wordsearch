@@ -1,5 +1,5 @@
-import React, {Component} from "react";
-import {Button, Form, Grid} from "semantic-ui-react";
+import React, {Component} from 'react';
+import {Button, Form, Grid} from 'semantic-ui-react'
 
 class MultipleInputs extends Component {
   constructor(props) {
