@@ -56,21 +56,21 @@ class WordsearchComponent extends Component {
         word = WordsearchComponent.reverseString(word);
       }
 
-      let direction = Direction.enumValues[Math.floor(Math.random() * Direction.enumValues.length)];
-
-      // Both min and max origin values are inclusive
-      let minOriginX = 0;
-      let maxOriginX = (direction === Direction.VERTICAL) ? size - 1 : size - word.length;
-      let minOriginY = (direction === Direction.DIAGONAL_UP) ? word.length - 1 : 0;
-      let maxOriginY = (direction === Direction.DIAGONAL_UP) ? size - 1 : size - word.length;
-
-      // Currently, if word cannot be placed, chooses new origin and tries to place again; could change to restrict
-      // choice of origin (so don't need to choose new origin) but possibly very complicated and inefficient
+      // Currently, if word cannot be placed, chooses new origin and direction and tries to place again; could change to
+      // restrict choice of origin (so don't need to choose new origin) but possibly very complicated and inefficient
       let originX;
       let originY;
       let ok;
       const attempts = 10000;
       for (let i = 0; i < attempts && !ok; i++) {
+        let direction = Direction.enumValues[Math.floor(Math.random() * Direction.enumValues.length)];
+
+        // Both min and max origin values are inclusive
+        let minOriginX = 0;
+        let maxOriginX = (direction === Direction.VERTICAL) ? size - 1 : size - word.length;
+        let minOriginY = (direction === Direction.DIAGONAL_UP) ? word.length - 1 : 0;
+        let maxOriginY = (direction === Direction.DIAGONAL_UP) ? size - 1 : size - word.length;
+
         originX = Math.floor(Math.random() * (maxOriginX + 1 - minOriginX)) + minOriginX;
         originY = Math.floor(Math.random() * (maxOriginY + 1 - minOriginY)) + minOriginY;
 
