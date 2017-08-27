@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {List, Message} from 'semantic-ui-react';
+import {Checkbox, Label, List, Message} from 'semantic-ui-react';
 import './WordsearchComponent.css';
 import {Enum} from 'enumify';
 
@@ -10,11 +10,22 @@ class WordsearchComponent extends Component {
     Direction.initEnum(["HORIZONTAL", "VERTICAL", "DIAGONAL_UP", "DIAGONAL_DOWN"]);
 
     this.state = {
-      wordsearch: this.generateWordsearch()
+      wordsearch: this.generateWordsearch(),
+      highlightAll: false
     };
 
+    this.handleChange = this.handleChange.bind(this);
     this.generateWordsearch = this.generateWordsearch.bind(this);
     this.placeWords = this.placeWords.bind(this);
+  }
+
+  handleChange(event, data) {
+    const value = data.type === "checkbox" ? data.checked : data.value;
+    const name = data.name;
+
+    this.setState({
+      [name]: value
+    })
   }
 
   generateWordsearch() {
@@ -147,7 +158,11 @@ class WordsearchComponent extends Component {
                 <tr key={index1}>
                   {row.map((cell, index2) => (
                     <td key={index2}>
-                      {cell.letter}
+                      {!this.state.highlightAll || cell.wordId === null ? ( // TODO: Fix appearance of this
+                        cell.letter
+                      ) : (
+                        <Label circular color="blue">{cell.letter}</Label>
+                      )}
                     </td>
                   ))}
                 </tr>
@@ -164,6 +179,8 @@ class WordsearchComponent extends Component {
                 </List.Item>
               ))}
             </List>
+            <Checkbox type="checkbox" label="Show words" name="highlightAll" checked={this.state.highlightAll}
+                      onChange={this.handleChange}/>
           </div>
         )}
       </div>
