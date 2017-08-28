@@ -175,7 +175,7 @@ class WordsearchComponent extends Component {
                 </List.Item>
               ))}
             </List>
-            <Checkbox type="checkbox" label="Show words" name="highlightAll" checked={this.state.highlightAll}
+            <Checkbox type="checkbox" label="Show all words" name="highlightAll" checked={this.state.highlightAll}
                       onChange={this.handleChange}/>
           </div>
         )}
