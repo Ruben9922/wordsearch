@@ -157,12 +157,8 @@ class WordsearchComponent extends Component {
               {this.state.wordsearch.map((row, index1) => (
                 <tr key={index1}>
                   {row.map((cell, index2) => (
-                    <td key={index2}>
-                      {!this.state.highlightAll || cell.wordId === null ? ( // TODO: Fix appearance of this
-                        cell.letter
-                      ) : (
-                        <Label circular color="blue">{cell.letter}</Label>
-                      )}
+                    <td key={index2} className={(this.state.highlightAll && cell.wordId !== null) && "highlighted"}>
+                      {cell.letter}
                     </td>
                   ))}
                 </tr>
