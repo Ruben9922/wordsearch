@@ -42,6 +42,11 @@ class FormComponent extends Component {
                 <Checkbox type="checkbox" label="Allow words to be placed backwards" name="allowBackwards"
                           checked={this.props.allowBackwards}
                           onChange={(e, d) => this.props.onAllowBackwardsChange(d.checked)}/>
+                &nbsp;
+                <Popup
+                  trigger={<Icon color="blue" name="help circle"/>}
+                  content="Choose whether words can be placed right-to-left as well as left-to-right"
+                />
                 <br/>
                 <Checkbox type="checkbox" label="Allow parts of words" name="allowParts" checked={this.props.allowParts}
                           onChange={(e, d) => this.props.onAllowPartsChange(d.checked)}/>
