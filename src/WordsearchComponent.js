@@ -25,7 +25,7 @@ class WordsearchComponent extends Component {
 
     this.setState({
       [name]: value
-    })
+    });
   }
 
   componentWillReceiveProps(nextProps) {
