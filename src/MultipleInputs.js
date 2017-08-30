@@ -34,9 +34,9 @@ class MultipleInputs extends Component {
     ));
     return (
       <Grid columns={2} divided>
-        <Grid.Column>
+        <Transition.Group as={Grid.Column} animation="fade down" duration={200}>
           {inputElements}
-        </Grid.Column>
+        </Transition.Group>
         <Grid.Column>
           <Button icon="add" onClick={this.add}/>
           <Button icon="remove" disabled={inputs.length <= 1} onClick={this.remove}/>
