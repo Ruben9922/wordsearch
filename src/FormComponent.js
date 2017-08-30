@@ -14,6 +14,7 @@ class FormComponent extends Component {
     this.props.onSubmit();
   }
 
+  // TODO: Validate - e.g. check no words are longer than size
   render() {
     return (
       <div>

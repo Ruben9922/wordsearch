@@ -3,6 +3,7 @@ import {Checkbox, Label, List, Message} from 'semantic-ui-react';
 import './WordsearchComponent.css';
 import {Enum} from 'enumify';
 
+// TODO: Implement "Allow parts of words" checkbox
 class WordsearchComponent extends Component {
   constructor(props) {
     super(props);
@@ -10,13 +11,11 @@ class WordsearchComponent extends Component {
     Direction.initEnum(["HORIZONTAL", "VERTICAL", "DIAGONAL_UP", "DIAGONAL_DOWN"]);
 
     this.state = {
-      wordsearch: this.generateWordsearch(),
+      wordsearch: WordsearchComponent.generateWordsearch(parseInt(this.props.size, 10), this.props.words, this.props.allowBackwards),
       highlightAll: false
     };
 
     this.handleChange = this.handleChange.bind(this);
-    this.generateWordsearch = this.generateWordsearch.bind(this);
-    this.placeWords = this.placeWords.bind(this);
   }
 
   handleChange(event, data) {
@@ -28,14 +27,8 @@ class WordsearchComponent extends Component {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.generateWordsearch();
-  }
-
-  generateWordsearch() {
-    const size = this.props.size;
+  static generateWordsearch(size, words, allowBackwards) {
     let wordsearch = new Array(size);
-
     let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     for (let i = 0; i < wordsearch.length; i++) {
       wordsearch[i] = new Array(size);
@@ -47,7 +40,7 @@ class WordsearchComponent extends Component {
       }
     }
 
-    let successful = this.placeWords(wordsearch);
+    let successful = this.placeWords(wordsearch, size, words, allowBackwards);
     if (!successful) {
       return null;
     }
@@ -55,19 +48,9 @@ class WordsearchComponent extends Component {
     return wordsearch;
   }
 
-  static reverseString(string) {
-    let result = "";
-    for (let i = string.length - 1; i >= 0; i--) {
-      result += string.charAt(i);
-    }
-    return result;
-  }
-
-  placeWords(wordsearch) {
-    const size = this.props.size;
-
-    for (let [index, word] of this.props.words.entries()) {
-      let backwards = this.props.allowBackwards && Math.random() >= 0.5;
+  static placeWords(wordsearch, size, words, allowBackwards) {
+    for (let [index, word] of words.entries()) {
+      let backwards = allowBackwards && Math.random() >= 0.5;
       if (backwards) {
         word = WordsearchComponent.reverseString(word);
       }
@@ -138,6 +121,20 @@ class WordsearchComponent extends Component {
     }
 
     return true;
+  }
+
+  static reverseString(string) {
+    let result = "";
+    for (let i = string.length - 1; i >= 0; i--) {
+      result += string.charAt(i);
+    }
+    return result;
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      wordsearch: WordsearchComponent.generateWordsearch(parseInt(nextProps.size, 10), nextProps.words, nextProps.allowBackwards)
+    });
   }
 
   render() {
