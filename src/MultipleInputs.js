@@ -26,9 +26,7 @@ class MultipleInputs extends Component {
 
   remove() {
     let inputs = this.props.value;
-    let inputsCopy = inputs.slice();
-    inputsCopy.splice(-1, 1);
-    this.props.onChange(inputsCopy);
+    this.props.onChange(inputs.slice(-1));
   }
   render() {
     let inputs = this.props.value;
