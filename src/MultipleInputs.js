@@ -12,7 +12,6 @@ class MultipleInputs extends Component {
 
   handleChange(index, event) {
     let inputs = this.props.value;
-
     let inputsCopy = inputs.slice();
     inputsCopy.splice(index, 1, event.target.value);
     this.props.onChange(inputsCopy);
@@ -20,7 +19,6 @@ class MultipleInputs extends Component {
 
   add() {
     let inputs = this.props.value;
-
     this.props.onChange(inputs.concat([""]));
   }
 
