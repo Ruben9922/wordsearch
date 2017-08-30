@@ -28,6 +28,10 @@ class WordsearchComponent extends Component {
     })
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.generateWordsearch();
+  }
+
   generateWordsearch() {
     const size = this.props.size;
     let wordsearch = new Array(size);
