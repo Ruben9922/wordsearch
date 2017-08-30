@@ -27,6 +27,7 @@ class MultipleInputs extends Component {
     this.props.onChange(inputs.slice(0, -1));
   }
 
+  // TODO: Fix input values not changing properly when using transition group
   render() {
     let inputs = this.props.value;
     const inputElements = inputs.map((input, index) => (
