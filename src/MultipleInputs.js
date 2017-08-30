@@ -26,14 +26,10 @@ class MultipleInputs extends Component {
 
   remove() {
     let inputs = this.props.value;
-
-    if (inputs.length > 1) {
-      let inputsCopy = inputs.slice();
-      inputsCopy.splice(-1, 1);
-      this.props.onChange(inputsCopy);
-    }
+    let inputsCopy = inputs.slice();
+    inputsCopy.splice(-1, 1);
+    this.props.onChange(inputsCopy);
   }
-
   render() {
     let inputs = this.props.value;
 
@@ -47,7 +43,7 @@ class MultipleInputs extends Component {
         </Grid.Column>
         <Grid.Column>
           <Button icon="add" onClick={this.add}/>
-          <Button icon="remove" onClick={this.remove}/>
+          <Button icon="remove" disabled={inputs.length <= 1} onClick={this.remove}/>
         </Grid.Column>
       </Grid>
     );
