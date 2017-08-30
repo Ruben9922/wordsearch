@@ -30,7 +30,8 @@ class MultipleInputs extends Component {
   render() {
     let inputs = this.props.value;
     const inputElements = inputs.map((input, index) => (
-      <Form.Input key={index} value={input} onChange={(event) => this.handleChange(index, event)}/>
+      <Form.Input key={index} value={input} placeholder={"Word #" + (index + 1)}
+                  onChange={(event) => this.handleChange(index, event)}/>
     ));
     return (
       <Grid columns={2} divided>
