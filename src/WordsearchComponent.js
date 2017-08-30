@@ -4,6 +4,7 @@ import './WordsearchComponent.css';
 import {Enum} from 'enumify';
 
 // TODO: Implement "Allow parts of words" checkbox
+// TODO: Only regenerate and show when button clicked
 class WordsearchComponent extends Component {
   constructor(props) {
     super(props);
