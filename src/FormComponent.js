@@ -46,6 +46,7 @@ class FormComponent extends Component {
                 <Popup
                   trigger={<Icon color="blue" name="help circle"/>}
                   content="Choose whether words can be placed right-to-left as well as left-to-right"
+                  position="right center"
                 />
                 <br/>
                 <Checkbox type="checkbox" label="Allow parts of words" name="allowParts" checked={this.props.allowParts}
@@ -54,6 +55,7 @@ class FormComponent extends Component {
                 <Popup
                   trigger={<Icon color="blue" name="help circle"/>}
                   content="Choose whether to add parts of words to make the game more difficult (e.g. &#34;awe&#34;, &#34;awesome&#34;, etc. as well as &#34;awesomeness&#34;)"
+                  position="right center"
                 />
               </Form.Field>
               <Button type="submit">Create</Button>
