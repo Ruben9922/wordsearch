@@ -12,7 +12,7 @@ class WordsearchComponent extends Component {
     Direction.initEnum(["HORIZONTAL", "VERTICAL", "DIAGONAL_UP", "DIAGONAL_DOWN"]);
 
     this.state = {
-      wordsearch: WordsearchComponent.generateWordsearch(parseInt(this.props.size, 10), this.props.words, this.props.allowBackwards),
+      wordsearch: WordsearchComponent.generateWordsearch(parseInt(this.props.size, 10), this.props.words, this.props.allowBackwards, this.props.allowParts),
       highlightAll: false
     };
 
@@ -28,7 +28,7 @@ class WordsearchComponent extends Component {
     });
   }
 
-  static generateWordsearch(size, words, allowBackwards) {
+  static generateWordsearch(size, words, allowBackwards, allowParts) {
     let wordsearch = new Array(size);
     let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     for (let i = 0; i < wordsearch.length; i++) {
@@ -49,76 +49,84 @@ class WordsearchComponent extends Component {
     return wordsearch;
   }
 
+  // TODO: Remove size parameter
   static placeWords(wordsearch, size, words, allowBackwards) {
     for (let [index, word] of words.entries()) {
-      let backwards = allowBackwards && Math.random() >= 0.5;
-      if (backwards) {
-        word = WordsearchComponent.reverseString(word);
+      if (WordsearchComponent.placeWord(wordsearch, word, index, size, allowBackwards)) {
+        return false;
       }
+    }
+    return true;
+  }
 
-      // Currently, if word cannot be placed, chooses new origin and direction and tries to place again; could change to
-      // restrict choice of origin (so don't need to choose new origin) but possibly very complicated and inefficient
-      let direction;
-      let originX;
-      let originY;
-      let ok;
-      const attempts = 10000;
-      for (let i = 0; i < attempts && !ok; i++) {
-        direction = Direction.enumValues[Math.floor(Math.random() * Direction.enumValues.length)];
+  static placeWord(wordsearch, word, wordId, size, allowBackwards) {
+    let backwards = allowBackwards && Math.random() >= 0.5;
+    if (backwards) {
+      word = WordsearchComponent.reverseString(word);
+    }
 
-        // Both min and max origin values are inclusive
-        let minOriginX = 0;
-        let maxOriginX = (direction === Direction.VERTICAL) ? size - 1 : size - word.length;
-        let minOriginY = (direction === Direction.DIAGONAL_UP) ? word.length - 1 : 0;
-        let maxOriginY = (direction === Direction.DIAGONAL_UP) ? size - 1 : size - word.length;
+    // Currently, if word cannot be placed, chooses new origin and direction and tries to place again; could change to
+    // restrict choice of origin (so don't need to choose new origin) but possibly very complicated and inefficient
+    let direction;
+    let originX;
+    let originY;
+    let ok;
+    const attempts = 10000;
+    for (let i = 0; i < attempts && !ok; i++) {
+      direction = Direction.enumValues[Math.floor(Math.random() * Direction.enumValues.length)];
 
-        originX = Math.floor(Math.random() * (maxOriginX + 1 - minOriginX)) + minOriginX;
-        originY = Math.floor(Math.random() * (maxOriginY + 1 - minOriginY)) + minOriginY;
+      // Both min and max origin values are inclusive
+      let minOriginX = 0;
+      let maxOriginX = (direction === Direction.VERTICAL) ? size - 1 : size - word.length;
+      let minOriginY = (direction === Direction.DIAGONAL_UP) ? word.length - 1 : 0;
+      let maxOriginY = (direction === Direction.DIAGONAL_UP) ? size - 1 : size - word.length;
 
-        // Check that, using the chosen origin, the word can be placed without overlapping other words
-        // Overlapping is allowed if any points of overlap involve the same letter
-        ok = true;
-        let overlappedWordId = null;
-        for (let j = 0; j < word.length; j++) {
-          let letter = word.charAt(j);
+      originX = Math.floor(Math.random() * (maxOriginX + 1 - minOriginX)) + minOriginX;
+      originY = Math.floor(Math.random() * (maxOriginY + 1 - minOriginY)) + minOriginY;
 
-          let x = (direction === Direction.VERTICAL) ? originX : originX + j;
-          let y = (direction === Direction.HORIZONTAL) ? originY : ((direction === Direction.DIAGONAL_UP) ? originY - j : originY + j);
-          let cell = wordsearch[y][x];
+      // Check that, using the chosen origin, the word can be placed without overlapping other words
+      // Overlapping is allowed if any points of overlap involve the same letter
+      ok = true;
+      let overlappedWordId = null;
+      for (let j = 0; j < word.length; j++) {
+        let letter = word.charAt(j);
 
-          if (cell.letter === letter) {
-            if (overlappedWordId === null || overlappedWordId !== cell.wordId) {
-              overlappedWordId = cell.wordId;
-            } else {
-              ok = false;
-            }
+        let x = (direction === Direction.VERTICAL) ? originX : originX + j;
+        let y = (direction === Direction.HORIZONTAL) ? originY : ((direction === Direction.DIAGONAL_UP) ? originY - j : originY + j);
+        let cell = wordsearch[y][x];
+
+        if (cell.letter === letter) {
+          if (overlappedWordId === null || overlappedWordId !== cell.wordId) {
+            overlappedWordId = cell.wordId;
           } else {
-            overlappedWordId = null; // Reset overlapped substring
+            ok = false;
+          }
+        } else {
+          overlappedWordId = null; // Reset overlapped substring
 
-            if (cell.wordId !== null) {
-              ok = false;
-              break;
-            }
+          if (cell.wordId !== null) {
+            ok = false;
+            break;
           }
         }
       }
+    }
 
-      // If such origin not found (max no. of attempts was reached) then return
-      if (!ok) {
-        return false;
-      }
+    // If such origin not found (max no. of attempts was reached) then return
+    if (!ok) {
+      return false;
+    }
 
-      for (let i = 0; i < word.length; i++) {
-        let letter = word.charAt(i);
+    for (let i = 0; i < word.length; i++) {
+      let letter = word.charAt(i);
 
-        let x = (direction === Direction.VERTICAL) ? originX : originX + i;
-        let y = (direction === Direction.HORIZONTAL) ? originY : ((direction === Direction.DIAGONAL_UP) ? originY - i : originY + i);
+      let x = (direction === Direction.VERTICAL) ? originX : originX + i;
+      let y = (direction === Direction.HORIZONTAL) ? originY : ((direction === Direction.DIAGONAL_UP) ? originY - i : originY + i);
 
-        wordsearch[y][x] = {
-          letter: letter,
-          wordId: index
-        };
-      }
+      wordsearch[y][x] = {
+        letter: letter,
+        wordId: wordId
+      };
     }
 
     return true;
@@ -134,7 +142,7 @@ class WordsearchComponent extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      wordsearch: WordsearchComponent.generateWordsearch(parseInt(nextProps.size, 10), nextProps.words, nextProps.allowBackwards)
+      wordsearch: WordsearchComponent.generateWordsearch(parseInt(nextProps.size, 10), nextProps.words, nextProps.allowBackwards, nextProps.allowParts)
     });
   }
 
