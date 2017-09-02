@@ -52,7 +52,7 @@ class WordsearchComponent extends Component {
   // TODO: Remove size parameter
   static placeWords(wordsearch, size, words, allowBackwards) {
     for (let [index, word] of words.entries()) {
-      if (WordsearchComponent.placeWord(wordsearch, word, index, size, allowBackwards)) {
+      if (!WordsearchComponent.placeWord(wordsearch, word, index, size, allowBackwards)) {
         return false;
       }
     }
