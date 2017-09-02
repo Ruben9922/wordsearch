@@ -3,7 +3,6 @@ import {Checkbox, Label, List, Message} from 'semantic-ui-react';
 import './WordsearchComponent.css';
 import {Enum} from 'enumify';
 
-// TODO: Implement "Allow parts of words" checkbox
 // TODO: Only regenerate and show when button clicked
 class WordsearchComponent extends Component {
   constructor(props) {
@@ -46,7 +45,37 @@ class WordsearchComponent extends Component {
       return null;
     }
 
+    if (allowParts) {
+      successful = this.placeParts(wordsearch, size, words, allowBackwards);
+      if (!successful) {
+        return null;
+      }
+    }
+
     return wordsearch;
+  }
+
+  static placeParts(wordsearch, size, words, allowBackwards) {
+    // Arbitrary number that is multiplied by words.length to obtain number of parts to put into wordsearch
+    const factor = 1.0;
+
+    let partCount = Math.floor(Math.random() * words.length * factor);
+    let parts = new Array(partCount);
+    for (let i = 0; i < partCount; i++) {
+      // Randomly choose word
+      let wordIndex = Math.floor(Math.random() * words.length);
+      let word = words[wordIndex];
+
+      // Randomly choose start and end indices of substring, ensuring the substring length is at least 1
+      // Start index is just index between 0th and second last index
+      // End index is any index strictly greater than start index
+      let startIndex = Math.floor(Math.random() * (word.length - 1));
+      let endIndex = Math.floor(Math.random() * (word.length - startIndex + 1)) + startIndex + 1;
+
+      parts[i] = word.slice(startIndex, endIndex);
+    }
+
+    return this.placeWords(wordsearch, size, parts, allowBackwards);
   }
 
   // TODO: Remove size parameter
