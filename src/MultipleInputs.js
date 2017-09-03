@@ -32,6 +32,7 @@ class MultipleInputs extends Component {
   }
 
   // TODO: Fix input values not changing properly when using transition group
+  // TODO: Add remove button for each input
   render() {
     let inputs = this.props.value;
     const inputElements = inputs.map((input, index) => (
