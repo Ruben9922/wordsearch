@@ -20,11 +20,11 @@ class App extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
-  handleChange(name, value) {
+  handleChange(name, value, callback) {
     this.setState({
       valid: false,
       [name]: value
-    });
+    }, callback);
   }
 
   handleSubmit() {
