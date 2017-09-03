@@ -6,7 +6,12 @@ class FormComponent extends Component {
   constructor(props) {
     super(props);
 
+    this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(event, data) {
+    this.props.onChange(data.name, data.value);
   }
 
   handleSubmit(event) {
@@ -25,23 +30,20 @@ class FormComponent extends Component {
             <Form onSubmit={this.handleSubmit}>
               <Form.Field inline>
                 <label>Size</label>
-                <Input type="number" name="size" min={1} max={50} value={this.props.size}
-                       onChange={(e, d) => this.props.onSizeChange(d.value)}/>
+                <Input type="number" name="size" min={1} max={50} value={this.props.size} onChange={this.handleChange}/>
                 &nbsp;
                 <span className="symbol">&times;</span>
                 &nbsp;
-                <Input type="number" name="size" min={1} max={50} value={this.props.size}
-                       onChange={(e, d) => this.props.onSizeChange(d.value)}/>
+                <Input type="number" name="size" min={1} max={50} value={this.props.size} onChange={this.handleChange}/>
               </Form.Field>
               <Form.Field>
                 <label>Words</label>
-                <MultipleInputs value={this.props.words} onChange={this.props.onWordsChange}/>
+                <MultipleInputs name="words" value={this.props.words} onChange={this.handleChange}/>
               </Form.Field>
               <Form.Field>
                 <label>Misc.</label>
                 <Checkbox type="checkbox" label="Allow words to be placed backwards" name="allowBackwards"
-                          checked={this.props.allowBackwards}
-                          onChange={(e, d) => this.props.onAllowBackwardsChange(d.checked)}/>
+                          checked={this.props.allowBackwards} onChange={this.handleChange}/>
                 &nbsp;
                 <Popup
                   trigger={<Icon color="blue" name="help circle"/>}
@@ -50,7 +52,7 @@ class FormComponent extends Component {
                 />
                 <br/>
                 <Checkbox type="checkbox" label="Allow parts of words" name="allowParts" checked={this.props.allowParts}
-                          onChange={(e, d) => this.props.onAllowPartsChange(d.checked)}/>
+                          onChange={this.handleChange}/>
                 &nbsp;
                 <Popup
                   trigger={<Icon color="blue" name="help circle"/>}

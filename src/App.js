@@ -38,10 +38,7 @@ class App extends Component {
       <Container>
         <Header as="h1">Wordsearch Generator</Header>
         <FormComponent size={this.state.size} words={this.state.words} allowBackwards={this.state.allowBackwards}
-                       allowParts={this.state.allowParts} onSizeChange={v => this.handleChange("size", v)}
-                       onWordsChange={v => this.handleChange("words", v)}
-                       onAllowBackwardsChange={v => this.handleChange("allowBackwards", v)}
-                       onAllowPartsChange={v => this.handleChange("allowParts", v)} onSubmit={this.handleSubmit}/>
+                       allowParts={this.state.allowParts} onChange={this.handleChange} onSubmit={this.handleSubmit}/>
         {this.state.valid ? (
           <WordsearchComponent size={this.state.size} words={this.state.words}
                                allowBackwards={this.state.allowBackwards} allowParts={this.state.allowParts}
