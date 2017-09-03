@@ -17,12 +17,16 @@ class MultipleInputs extends Component {
     this.props.onChange(inputsCopy);
   }
 
-  add() {
+  add(event) {
+    event.preventDefault();
+
     let inputs = this.props.value;
     this.props.onChange(inputs.concat([""]));
   }
 
-  remove() {
+  remove(event) {
+    event.preventDefault();
+
     let inputs = this.props.value;
     this.props.onChange(inputs.slice(0, -1));
   }
