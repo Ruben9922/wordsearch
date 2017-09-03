@@ -17,6 +17,14 @@ class App extends Component {
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(name, value) {
+    this.setState({
+      valid: false,
+      [name]: value
+    });
   }
 
   handleSubmit() {
@@ -30,10 +38,10 @@ class App extends Component {
       <Container>
         <Header as="h1">Wordsearch Generator</Header>
         <FormComponent size={this.state.size} words={this.state.words} allowBackwards={this.state.allowBackwards}
-                       allowParts={this.state.allowParts} onSizeChange={v => this.setState({size: v})}
-                       onWordsChange={v => this.setState({words: v})}
-                       onAllowBackwardsChange={v => this.setState({allowBackwards: v})}
-                       onAllowPartsChange={v => this.setState({allowParts: v})} onSubmit={this.handleSubmit}/>
+                       allowParts={this.state.allowParts} onSizeChange={v => this.handleChange("size", v)}
+                       onWordsChange={v => this.handleChange("words", v)}
+                       onAllowBackwardsChange={v => this.handleChange("allowBackwards", v)}
+                       onAllowPartsChange={v => this.handleChange("allowParts", v)} onSubmit={this.handleSubmit}/>
         {this.state.valid ? (
           <WordsearchComponent size={this.state.size} words={this.state.words}
                                allowBackwards={this.state.allowBackwards} allowParts={this.state.allowParts}
