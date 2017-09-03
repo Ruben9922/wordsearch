@@ -8,8 +8,6 @@ class WordsearchComponent extends Component {
   constructor(props) {
     super(props);
 
-    Direction.initEnum(["HORIZONTAL", "VERTICAL", "DIAGONAL_UP", "DIAGONAL_DOWN"]);
-
     this.state = {
       wordsearch: null,
       highlightAll: false
@@ -226,5 +224,7 @@ class WordsearchComponent extends Component {
 
 class Direction extends Enum {
 }
+
+Direction.initEnum(["HORIZONTAL", "VERTICAL", "DIAGONAL_UP", "DIAGONAL_DOWN"]);
 
 export default WordsearchComponent;
