@@ -22,7 +22,7 @@ class App extends Component {
   handleSubmit() {
     this.setState({
       valid: true
-    });
+    }, () => this.wordsearchComponent.update());
   }
 
   render() {
@@ -36,7 +36,8 @@ class App extends Component {
                        onAllowPartsChange={v => this.setState({allowParts: v})} onSubmit={this.handleSubmit}/>
         {this.state.valid ? (
           <WordsearchComponent size={this.state.size} words={this.state.words}
-                               allowBackwards={this.state.allowBackwards} allowParts={this.state.allowParts}/>
+                               allowBackwards={this.state.allowBackwards} allowParts={this.state.allowParts}
+                               ref={input => this.wordsearchComponent = input}/>
         ) : (
           <p>Wordsearch will appear here.</p>
         )}

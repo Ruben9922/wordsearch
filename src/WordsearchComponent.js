@@ -11,11 +11,12 @@ class WordsearchComponent extends Component {
     Direction.initEnum(["HORIZONTAL", "VERTICAL", "DIAGONAL_UP", "DIAGONAL_DOWN"]);
 
     this.state = {
-      wordsearch: WordsearchComponent.generateWordsearch(parseInt(this.props.size, 10), this.props.words, this.props.allowBackwards, this.props.allowParts),
+      wordsearch: null,
       highlightAll: false
     };
 
     this.handleChange = this.handleChange.bind(this);
+    this.update = this.update.bind(this);
   }
 
   handleChange(event, data) {
@@ -169,9 +170,9 @@ class WordsearchComponent extends Component {
     return result;
   }
 
-  componentWillReceiveProps(nextProps) {
+  update() {
     this.setState({
-      wordsearch: WordsearchComponent.generateWordsearch(parseInt(nextProps.size, 10), nextProps.words, nextProps.allowBackwards, nextProps.allowParts)
+      wordsearch: WordsearchComponent.generateWordsearch(parseInt(this.props.size, 10), this.props.words, this.props.allowBackwards, this.props.allowParts)
     });
   }
 
