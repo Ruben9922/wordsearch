@@ -9,12 +9,13 @@ class FormComponent extends Component {
     this.state = {
       valid: {
         size: true,
-        words: true
+        words: false
       },
       errorMessages: {
         size: "",
         words: ""
-      }
+      },
+      dirty: false
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -27,6 +28,10 @@ class FormComponent extends Component {
     const name = data.name;
     const value = data.value;
     this.props.onChange(name, value, () => this.validate(name, value));
+
+    this.setState({
+      dirty: true
+    });
   }
 
   handleSubmit(event) {
@@ -102,7 +107,7 @@ class FormComponent extends Component {
         <Header as="h2">Create Wordsearch</Header>
         <div>
           <Header as="h3" attached="top">Choose Options</Header>
-          {!this.isFormValid() && (<Message icon error attached>
+          {this.state.dirty && !this.isFormValid() && (<Message icon error attached>
             <Icon name="exclamation circle"/>
             <Message.Content>
               <Message.Header>Error</Message.Header>
@@ -147,7 +152,7 @@ class FormComponent extends Component {
                   position="right center"
                 />
               </Form.Field>
-              <Button type="submit">Create</Button>
+              <Button type="submit" disabled={!this.isFormValid()}>Create</Button>
             </Form>
           </Segment>
         </div>
