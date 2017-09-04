@@ -104,15 +104,13 @@ class FormComponent extends Component {
           <Header as="h3" attached="top">Choose Options</Header>
           <Segment attached>
             <Form onSubmit={this.handleSubmit} error={!this.isFormValid()}>
-              <Form.Field inline>
+              <Form.Field inline error={!this.state.valid.size}>
                 <label>Size</label>
-                <Input type="number" name="size" min={1} max={50} value={this.props.size} onChange={this.handleChange}
-                       error={!this.state.valid.size}/>
+                <Input type="number" name="size" min={1} max={50} value={this.props.size} onChange={this.handleChange}/>
                 &nbsp;
                 <span className="symbol">&times;</span>
                 &nbsp;
-                <Input type="number" name="size" min={1} max={50} value={this.props.size} onChange={this.handleChange}
-                       error={!this.state.valid.size}/>
+                <Input type="number" name="size" min={1} max={50} value={this.props.size} onChange={this.handleChange}/>
               </Form.Field>
               <Form.Field>
                 <label>Words</label>
