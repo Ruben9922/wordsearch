@@ -152,7 +152,7 @@ class FormComponent extends Component {
                   position="right center"
                 />
               </Form.Field>
-              <Button type="submit" disabled={!this.isFormValid()}>Create</Button>
+              <Button type="submit" primary disabled={!this.isFormValid()}>Create</Button>
             </Form>
           </Segment>
         </div>
