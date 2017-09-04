@@ -60,6 +60,11 @@ class FormComponent extends Component {
             errorMessage = "Words must only consist of letters, optionally separated by spaces (e.g. \"dog\", \"dog food\", \"Rottweiler\")";
             break;
           }
+          if (word.length > this.props.size) {
+            valid = false;
+            errorMessage = "Length of each word cannot exceed size";
+            break;
+          }
         }
         break;
       default:
