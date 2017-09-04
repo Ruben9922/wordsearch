@@ -10,7 +10,7 @@ class App extends Component {
 
     this.state = {
       size: 15,
-      words: ["hi"],
+      words: [""],
       allowBackwards: true,
       allowParts: true,
       valid: false
