@@ -102,8 +102,19 @@ class FormComponent extends Component {
         <Header as="h2">Create Wordsearch</Header>
         <div>
           <Header as="h3" attached="top">Choose Options</Header>
-          <Segment attached>
-            <Form onSubmit={this.handleSubmit} error={!this.isFormValid()}>
+          {!this.isFormValid() && (<Message icon error attached>
+            <Icon name="exclamation circle"/>
+            <Message.Content>
+              <Message.Header>Error</Message.Header>
+              <Message.List>
+                {nonEmptyErrorMessages.map((errorMessage, index) => (
+                  <Message.Item key={index}>{errorMessage}</Message.Item>
+                ))}
+              </Message.List>
+            </Message.Content>
+          </Message>)}
+          <Segment attached="bottom">
+            <Form onSubmit={this.handleSubmit}>
               <Form.Field inline error={!this.state.valid.size}>
                 <label>Size</label>
                 <Input type="number" name="size" min={1} max={50} value={this.props.size} onChange={this.handleChange}/>
@@ -136,17 +147,6 @@ class FormComponent extends Component {
                   position="right center"
                 />
               </Form.Field>
-              <Message icon error>
-                <Icon name="exclamation circle"/>
-                <Message.Content>
-                  <Message.Header>Error</Message.Header>
-                  <Message.List>
-                    {nonEmptyErrorMessages.map((errorMessage, index) => (
-                      <Message.Item key={index}>{errorMessage}</Message.Item>
-                    ))}
-                  </Message.List>
-                </Message.Content>
-              </Message>
               <Button type="submit">Create</Button>
             </Form>
           </Segment>
