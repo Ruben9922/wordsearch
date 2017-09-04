@@ -136,13 +136,16 @@ class FormComponent extends Component {
                   position="right center"
                 />
               </Form.Field>
-              <Message error>
-                <Message.Header>Error</Message.Header>
-                <Message.List>
-                  {nonEmptyErrorMessages.map((errorMessage, index) => (
-                    <Message.Item key={index}>{errorMessage}</Message.Item>
-                  ))}
-                </Message.List>
+              <Message icon error>
+                <Icon name="exclamation circle"/>
+                <Message.Content>
+                  <Message.Header>Error</Message.Header>
+                  <Message.List>
+                    {nonEmptyErrorMessages.map((errorMessage, index) => (
+                      <Message.Item key={index}>{errorMessage}</Message.Item>
+                    ))}
+                  </Message.List>
+                </Message.Content>
               </Message>
               <Button type="submit">Create</Button>
             </Form>
