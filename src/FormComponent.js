@@ -42,13 +42,24 @@ class FormComponent extends Component {
   validate(name, value) {
     let valid;
     let errorMessage;
-    switch (name) {
+    switch (name) { // TODO: Could neaten this up a bit
       case "size":
         let number = Number(value);
         const min = 1;
         const max = 50;
         valid = Number.isInteger(number) && number >= min && number <= max;
         errorMessage = valid ? "" : `Size must be an integer between ${min} and ${max} (inclusive)`;
+
+        if (valid) {
+          for (let word of this.props.words) {
+            if (word.length > number) {
+              valid = false;
+              errorMessage = valid ? "" : "Length of each word cannot exceed size";
+              break;
+            }
+          }
+        }
+
         break;
       case "words":
         valid = true;
