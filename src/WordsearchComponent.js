@@ -227,7 +227,7 @@ class WordsearchComponent extends Component {
             </Segment>
 
             <Segment>
-              <Header sub dividing>Words</Header>
+              <Header sub dividing>Highlight Words</Header>
               <Checkbox label="Highlight all/none"
                         checked={this.state.highlight.every((element, index, array) => element)}
                         indeterminate={!this.state.highlight.every((element, index, array) => element) && !this.state.highlight.every((element, index, array) => !element)}
