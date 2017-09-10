@@ -10,19 +10,16 @@ class WordsearchComponent extends Component {
 
     this.state = {
       wordsearch: null,
-      highlightAll: false
+      highlight: new Array(this.props.words.size).fill(false)
     };
 
-    this.handleChange = this.handleChange.bind(this);
     this.update = this.update.bind(this);
+    this.handleHighlightAllNoneChange = this.handleHighlightAllNoneChange.bind(this);
   }
 
-  handleChange(event, data) {
-    const value = data.type === "checkbox" ? data.checked : data.value;
-    const name = data.name;
-
+  handleHighlightAllNoneChange(event, data) {
     this.setState({
-      [name]: value
+      highlight: new Array(this.props.words.size).fill(data.checked)
     });
   }
 
@@ -206,7 +203,7 @@ class WordsearchComponent extends Component {
                 {this.state.wordsearch.map((row, index1) => (
                   <tr key={index1}>
                     {row.map((cell, index2) => (
-                      <td key={index2} className={(this.state.highlightAll && cell.wordId !== null) && "highlighted"}>
+                      <td key={index2} className={(this.state.highlight[cell.wordId]) && "highlighted"}>
                         {cell.letter}
                       </td>
                     ))}
@@ -217,10 +214,13 @@ class WordsearchComponent extends Component {
             </Segment>
 
             <Segment>
-              <Header sub>Words</Header>
+              <Header sub dividing>Words</Header>
+              <Checkbox label="Highlight all/none"
+                        checked={this.state.highlight.every((element, index, array) => element)}
+                        onChange={this.handleHighlightAllNoneChange}/>
               <List selection verticalAlign="middle">
                 {this.props.words.map((word, index) => (
-                  <List.Item key={index}>
+                  <List.Item key={index} active={this.state.highlight[index]}>
                     <List.Content>
                       {word}
                     </List.Content>
@@ -228,8 +228,6 @@ class WordsearchComponent extends Component {
                 ))}
               </List>
             </Segment>
-            <Checkbox type="checkbox" label="Show all words" name="highlightAll" checked={this.state.highlightAll}
-                      onChange={this.handleChange}/>
           </div>
         </Grid>
       ))

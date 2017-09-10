@@ -8,3 +8,7 @@
     background-color: #0E6EB8;
     color: white;
 }
+
+.ui.dividing.sub.header {
+    margin: 12px;
+}
