@@ -3,7 +3,6 @@ import {Checkbox, Container, Grid, Header, List, Message, Segment} from 'semanti
 import './WordsearchComponent.css';
 import {Enum} from 'enumify';
 
-// TODO: Only regenerate and show when button clicked
 class WordsearchComponent extends Component {
   constructor(props) {
     super(props);
