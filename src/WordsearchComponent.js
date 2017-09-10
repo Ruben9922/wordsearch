@@ -15,11 +15,24 @@ class WordsearchComponent extends Component {
 
     this.update = this.update.bind(this);
     this.handleHighlightAllNoneChange = this.handleHighlightAllNoneChange.bind(this);
+    this.handleHighlight = this.handleHighlight.bind(this);
   }
 
   handleHighlightAllNoneChange(event, data) {
     this.setState({
       highlight: new Array(this.props.words.size).fill(data.checked)
+    });
+  }
+
+  handleHighlight(event, data, index) {
+    this.setState(prevState => {
+      let previousValue = prevState.highlight[index];
+      let highlightCopy = prevState.highlight.slice();
+      highlightCopy.splice(index, 1, !previousValue);
+
+      return {
+        highlight: highlightCopy
+      };
     });
   }
 
@@ -217,10 +230,12 @@ class WordsearchComponent extends Component {
               <Header sub dividing>Words</Header>
               <Checkbox label="Highlight all/none"
                         checked={this.state.highlight.every((element, index, array) => element)}
+                        indeterminate={!this.state.highlight.every((element, index, array) => element) && !this.state.highlight.every((element, index, array) => !element)}
                         onChange={this.handleHighlightAllNoneChange}/>
               <List selection verticalAlign="middle">
                 {this.props.words.map((word, index) => (
-                  <List.Item key={index} active={this.state.highlight[index]}>
+                  <List.Item key={index} active={this.state.highlight[index]}
+                             onClick={(event, data) => this.handleHighlight(event, data, index)}>
                     <List.Content>
                       {word}
                     </List.Content>
