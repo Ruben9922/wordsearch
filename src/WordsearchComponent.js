@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Checkbox, Label, List, Message} from 'semantic-ui-react';
+import {Checkbox, Container, Grid, Header, List, Message, Segment} from 'semantic-ui-react';
 import './WordsearchComponent.css';
 import {Enum} from 'enumify';
 
@@ -176,8 +176,16 @@ class WordsearchComponent extends Component {
 
   render() {
     return (
-      <div>
-        {this.state.wordsearch === null ? (
+      !this.props.submitted ? (
+        <Container>
+          <Message
+            info
+            header="Wordsearch will appear here"
+            content="Choose options and click Create."
+          />
+        </Container>
+      ) : (this.state.wordsearch === null ? (
+        <Container>
           <Message error>
             <Message.Header>Failed to generate wordsearch</Message.Header>
             <p>Failed to generate wordsearch using the specified options.</p>
@@ -188,36 +196,43 @@ class WordsearchComponent extends Component {
               <List.Item as="li">Disabling the <i>Allow parts of words</i> option</List.Item>
             </List>
           </Message>
-        ) : (
+        </Container>
+      ) : (
+        <Grid container centered>
           <div>
-            <table className="wordsearch">
-              <tbody>
-              {this.state.wordsearch.map((row, index1) => (
-                <tr key={index1}>
-                  {row.map((cell, index2) => (
-                    <td key={index2} className={(this.state.highlightAll && cell.wordId !== null) && "highlighted"}>
-                      {cell.letter}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-              </tbody>
-            </table>
+            <Segment compact>
+              <table className="wordsearch">
+                <tbody>
+                {this.state.wordsearch.map((row, index1) => (
+                  <tr key={index1}>
+                    {row.map((cell, index2) => (
+                      <td key={index2} className={(this.state.highlightAll && cell.wordId !== null) && "highlighted"}>
+                        {cell.letter}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+                </tbody>
+              </table>
+            </Segment>
 
-            <List selection>
-              {this.props.words.map((word, index) => (
-                <List.Item key={index}>
-                  <List.Content>
-                    {word}
-                  </List.Content>
-                </List.Item>
-              ))}
-            </List>
+            <Segment>
+              <Header sub>Words</Header>
+              <List selection verticalAlign="middle">
+                {this.props.words.map((word, index) => (
+                  <List.Item key={index}>
+                    <List.Content>
+                      {word}
+                    </List.Content>
+                  </List.Item>
+                ))}
+              </List>
+            </Segment>
             <Checkbox type="checkbox" label="Show all words" name="highlightAll" checked={this.state.highlightAll}
                       onChange={this.handleChange}/>
           </div>
-        )}
-      </div>
+        </Grid>
+      ))
     );
   }
 }

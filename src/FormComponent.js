@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Button, Checkbox, Form, Header, Icon, Input, Popup, Segment, Message} from 'semantic-ui-react';
+import {Button, Checkbox, Form, Grid, Header, Icon, Input, Message, Popup, Segment} from 'semantic-ui-react';
 import MultipleInputs from "./MultipleInputs";
 
 class FormComponent extends Component {
@@ -114,22 +114,10 @@ class FormComponent extends Component {
         return errorMessage;
       });
     return (
-      <div>
-        <Header as="h2">Create Wordsearch</Header>
-        <div>
-          <Header as="h3" attached="top">Choose Options</Header>
-          {this.state.dirty && !this.isFormValid() && (<Message icon error attached>
-            <Icon name="exclamation circle"/>
-            <Message.Content>
-              <Message.Header>Error</Message.Header>
-              <Message.List>
-                {nonEmptyErrorMessages.map((errorMessage, index) => (
-                  <Message.Item key={index}>{errorMessage}</Message.Item>
-                ))}
-              </Message.List>
-            </Message.Content>
-          </Message>)}
-          <Segment attached="bottom">
+      <Grid stackable centered padded columns={2}>
+        <Grid.Column>
+          <Header as="h3" attached="top" inverted>Options</Header>
+          <Segment attached={this.state.dirty && !this.isFormValid() ? true : "bottom"}>
             <Form onSubmit={this.handleSubmit}>
               <Form.Field inline error={!this.state.valid.size}>
                 <label>Size</label>
@@ -166,8 +154,21 @@ class FormComponent extends Component {
               <Button type="submit" primary disabled={!this.isFormValid()}>Create</Button>
             </Form>
           </Segment>
-        </div>
-      </div>
+          {this.state.dirty && !this.isFormValid() && (
+            <Message icon error attached="bottom">
+              <Icon name="exclamation circle"/>
+              <Message.Content>
+                <Message.Header>Invalid options</Message.Header>
+                <Message.List>
+                  {nonEmptyErrorMessages.map((errorMessage, index) => (
+                    <Message.Item key={index}>{errorMessage}</Message.Item>
+                  ))}
+                </Message.List>
+              </Message.Content>
+            </Message>
+          )}
+        </Grid.Column>
+      </Grid>
     );
   }
 }

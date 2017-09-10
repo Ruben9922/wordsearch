@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './App.css';
-import {Container, Header} from 'semantic-ui-react';
+import {Container, Divider, Header, Icon, Menu} from 'semantic-ui-react';
 import FormComponent from "./FormComponent";
 import WordsearchComponent from "./WordsearchComponent";
 
@@ -13,7 +13,7 @@ class App extends Component {
       words: [""],
       allowBackwards: true,
       allowParts: true,
-      valid: false
+      submitted: false
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -22,31 +22,48 @@ class App extends Component {
 
   handleChange(name, value, callback) {
     this.setState({
-      valid: false,
+      submitted: false,
       [name]: value
     }, callback);
   }
 
   handleSubmit() {
     this.setState({
-      valid: true
+      submitted: true
     }, () => this.wordsearchComponent.update());
   }
 
   render() {
     return (
-      <Container>
-        <Header as="h1">Wordsearch Generator</Header>
-        <FormComponent size={this.state.size} words={this.state.words} allowBackwards={this.state.allowBackwards}
-                       allowParts={this.state.allowParts} onChange={this.handleChange} onSubmit={this.handleSubmit}/>
-        {this.state.valid ? (
+      <div>
+        <Menu fixed="top" inverted>
+          <Container>
+            <Menu.Item header link href=".">Wordsearch Generator</Menu.Item>
+            <Menu.Menu position="right">
+              <Menu.Item link href="//rubendougall.co.uk/">
+                <Icon name="arrow left"/>
+                Back to Main Website
+              </Menu.Item>
+              <Menu.Item link href="https://github.com/Ruben9922/wordsearch">
+                <Icon name="github"/>
+                GitHub
+              </Menu.Item>
+            </Menu.Menu>
+          </Container>
+        </Menu>
+        <div style={{marginTop: "4em"}}>
+          <Header as="h1" textAlign="center">Wordsearch Generator</Header>
+          <FormComponent size={this.state.size} words={this.state.words} allowBackwards={this.state.allowBackwards}
+                         allowParts={this.state.allowParts} onChange={this.handleChange}
+                         onSubmit={this.handleSubmit}/>
+          <Container>
+            <Divider section/>
+          </Container>
           <WordsearchComponent size={this.state.size} words={this.state.words}
                                allowBackwards={this.state.allowBackwards} allowParts={this.state.allowParts}
-                               ref={input => this.wordsearchComponent = input}/>
-        ) : (
-          <p>Wordsearch will appear here.</p>
-        )}
-      </Container>
+                               submitted={this.state.submitted} ref={input => this.wordsearchComponent = input}/>
+        </div>
+      </div>
     );
   }
 }
