@@ -10,7 +10,7 @@ class WordsearchComponent extends Component {
 
     this.state = {
       wordsearch: null,
-      highlight: new Array(this.props.words.size).fill(false)
+      highlight: new Array(this.props.words.length).fill(false)
     };
 
     this.update = this.update.bind(this);
@@ -20,7 +20,7 @@ class WordsearchComponent extends Component {
 
   handleHighlightAllNoneChange(event, data) {
     this.setState({
-      highlight: new Array(this.props.words.size).fill(data.checked)
+      highlight: new Array(this.props.words.length).fill(data.checked)
     });
   }
 
