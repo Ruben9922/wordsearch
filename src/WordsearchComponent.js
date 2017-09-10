@@ -180,7 +180,7 @@ class WordsearchComponent extends Component {
 
   update() {
     this.setState({
-      wordsearch: WordsearchComponent.generateWordsearch(parseInt(this.props.size, 10), this.props.words, this.props.allowBackwards, this.props.allowParts)
+      wordsearch: WordsearchComponent.generateWordsearch(this.props.size, this.props.words, this.props.allowBackwards, this.props.allowParts)
     });
   }
 

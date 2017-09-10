@@ -58,7 +58,7 @@ class App extends Component {
           <Container>
             <Divider section/>
           </Container>
-          <WordsearchComponent size={this.state.size} words={this.state.words}
+          <WordsearchComponent size={parseInt(this.state.size, 10)} words={this.state.words}
                                allowBackwards={this.state.allowBackwards} allowParts={this.state.allowParts}
                                submitted={this.state.submitted} ref={input => this.wordsearchComponent = input}/>
         </div>
