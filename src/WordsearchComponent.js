@@ -179,8 +179,9 @@ class WordsearchComponent extends Component {
   }
 
   update() {
+    let strippedWords = this.props.words.map(word => word.toUpperCase().replace(/[^A-Z]+/g, ""));
     this.setState({
-      wordsearch: WordsearchComponent.generateWordsearch(this.props.size, this.props.words, this.props.allowBackwards, this.props.allowParts)
+      wordsearch: WordsearchComponent.generateWordsearch(this.props.size, strippedWords, this.props.allowBackwards, this.props.allowParts)
     });
   }
 
