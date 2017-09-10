@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Button, Checkbox, Form, Grid, Header, Icon, Input, Message, Popup, Segment} from 'semantic-ui-react';
+import './FormComponent.css';
 import MultipleInputs from "./MultipleInputs";
 
 class FormComponent extends Component {

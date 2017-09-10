@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import './App.css';
 import {Container, Divider, Header, Icon, Menu} from 'semantic-ui-react';
 import FormComponent from "./FormComponent";
 import WordsearchComponent from "./WordsearchComponent";
