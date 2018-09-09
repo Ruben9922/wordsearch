@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {Button, Checkbox, Form, Grid, Header, Icon, Input, Message, Popup, Segment} from 'semantic-ui-react';
-import './FormComponent.css';
 import MultipleInputs from "./MultipleInputs";
 
 class FormComponent extends Component {
@@ -124,7 +123,7 @@ class FormComponent extends Component {
                 <label>Size</label>
                 <Input type="number" name="size" min={1} max={50} value={this.props.size} onChange={this.handleChange}/>
                 &nbsp;
-                <span className="symbol">&times;</span>
+                <span>&times;</span>
                 &nbsp;
                 <Input type="number" name="size" min={1} max={50} value={this.props.size} onChange={this.handleChange}/>
               </Form.Field>
