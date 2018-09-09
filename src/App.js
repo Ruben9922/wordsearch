@@ -19,17 +19,22 @@ class App extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
-  handleChange(name, value, callback) {
+  handleChange(name, value) {
     this.setState({
       submitted: false,
       [name]: value
-    }, callback);
+    });
   }
 
-  handleSubmit() {
+  handleSubmit(callback) {
     this.setState({
       submitted: true
-    }, () => this.wordsearchComponent.update());
+    }, () => {
+      this.wordsearchComponent.update();
+
+      let {size, words} = this.state;
+      callback(size, words)();
+    });
   }
 
   render() {
@@ -54,7 +59,7 @@ class App extends Component {
           <Header as="h1" textAlign="center">Wordsearch Generator</Header>
           <FormComponent size={this.state.size} words={this.state.words} allowBackwards={this.state.allowBackwards}
                          allowParts={this.state.allowParts} onChange={this.handleChange}
-                         onSubmit={this.handleSubmit}/>
+                         onSubmit={this.handleSubmit} submitted={this.state.submitted}/>
           <Container>
             <Divider section/>
           </Container>

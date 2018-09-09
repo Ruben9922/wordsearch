@@ -27,7 +27,7 @@ class FormComponent extends Component {
   handleChange(event, data) {
     const name = data.name;
     const value = data.value;
-    this.props.onChange(name, value, () => this.validate(name, value));
+    this.props.onChange(name, value);
 
     this.setState({
       dirty: true
@@ -36,7 +36,10 @@ class FormComponent extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    this.props.onSubmit();
+    this.props.onSubmit((size, words) => () => {
+      this.validate("size", size);
+      this.validate("words", words);
+    });
   }
 
   validate(name, value) {
@@ -146,10 +149,10 @@ class FormComponent extends Component {
                   position="right center"
                 />
               </Form.Field>
-              <Button type="submit" primary disabled={!this.isFormValid()}>Create</Button>
+              <Button type="submit" primary>Create</Button>
             </Form>
           </Segment>
-          {this.state.dirty && !this.isFormValid() && (
+          {this.props.submitted && this.state.dirty && !this.isFormValid() && (
             <Message icon error attached="bottom">
               <Icon name="exclamation circle"/>
               <Message.Content>
