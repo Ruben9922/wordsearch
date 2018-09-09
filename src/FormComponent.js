@@ -93,12 +93,7 @@ class FormComponent extends Component {
   }
 
   isFormValid() {
-    for (let valid of Object.values(this.state.valid)) {
-      if (!valid) {
-        return false;
-      }
-    }
-    return true;
+    return Object.values(this.state.valid).every(item => item === true);
   }
 
   // TODO: Validate - e.g. check no words are longer than size
