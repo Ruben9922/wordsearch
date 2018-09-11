@@ -84,13 +84,14 @@ class WordsearchComponent extends Component {
       parts[i] = word.slice(startIndex, endIndex);
     }
 
-    return this.placeWords(wordsearch, size, parts, allowBackwards);
+    return this.placeWords(wordsearch, size, parts, allowBackwards, false);
   }
 
   // TODO: Remove size parameter
-  static placeWords(wordsearch, size, words, allowBackwards) {
+  static placeWords(wordsearch, size, words, allowBackwards, assignId = true) {
     for (let [index, word] of words.entries()) {
-      if (!WordsearchComponent.placeWord(wordsearch, word, index, size, allowBackwards)) {
+      let id = assignId ? index : null;
+      if (!WordsearchComponent.placeWord(wordsearch, word, id, size, allowBackwards)) {
         return false;
       }
     }
@@ -218,7 +219,7 @@ class WordsearchComponent extends Component {
                   <tr key={index1}>
                     {row.map((cell, index2) => (
                       <td key={index2} className={(this.state.highlight[cell.wordId]) && "highlighted"}>
-                        {cell.letter}
+                        {cell.wordId !== null ? cell.wordId + "," + cell.letter : ""}
                       </td>
                     ))}
                   </tr>
