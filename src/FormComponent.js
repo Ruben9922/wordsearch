@@ -7,21 +7,11 @@ class FormComponent extends Component {
     super(props);
 
     this.state = {
-      valid: {
-        size: true,
-        words: false
-      },
-      errorMessages: {
-        size: "",
-        words: ""
-      },
-      dirty: false
+      dirty: false,
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.validate = this.validate.bind(this);
-    this.isFormValid = this.isFormValid.bind(this);
   }
 
   handleChange(event, data) {
@@ -36,88 +26,29 @@ class FormComponent extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    this.props.onSubmit((size, words) => () => {
-      this.validate("size", size);
-      this.validate("words", words);
-    });
-  }
-
-  validate(name, value) {
-    let valid;
-    let errorMessage;
-    switch (name) { // TODO: Could neaten this up a bit
-      case "size":
-        let number = Number(value);
-        const min = 1;
-        const max = 50;
-        valid = Number.isInteger(number) && number >= min && number <= max;
-        errorMessage = valid ? "" : `Size must be an integer between ${min} and ${max} (inclusive)`;
-
-        if (valid) {
-          for (let word of this.props.words) {
-            if (word.length > number) {
-              valid = false;
-              errorMessage = valid ? "" : "Length of each word cannot exceed size";
-              break;
-            }
-          }
-        }
-
-        break;
-      case "words":
-        valid = true;
-        errorMessage = "";
-        const pattern = /^(\s*[a-zA-Z]+\s*)*$/;
-        for (let [index, word] of value.entries()) {
-          if (index === 0 && word === "") {
-            valid = false;
-            errorMessage = "At least 1 word is required";
-            break;
-          }
-          if (!pattern.test(word)) {
-            valid = false;
-            errorMessage = "Words must only consist of letters, optionally separated by spaces (e.g. \"dog\", \"dog food\", \"Rottweiler\")";
-            break;
-          }
-          if (word.length > this.props.size) {
-            valid = false;
-            errorMessage = "Length of each word cannot exceed size";
-            break;
-          }
-        }
-        break;
-      default:
-        return;
-    }
-    this.setState(prevState => ({
-      valid: Object.assign({}, prevState.valid, {[name]: valid}),
-      errorMessages: Object.assign({}, prevState.errorMessages, {[name]: errorMessage})
-    }));
-  }
-
-  isFormValid() {
-    return Object.values(this.state.valid).every(item => item === true);
+    this.props.onSubmit();
   }
 
   // TODO: Validate - e.g. check no words are longer than size
   render() {
-    let nonEmptyErrorMessages = Object.entries(this.state.errorMessages)
+    let nonEmptyErrorMessages = Object.entries(this.props.errorMessages)
       .filter(entry => {
         let name = entry[0];
         let errorMessage = entry[1];
-        return !this.state.valid[name] && errorMessage !== "";
+        return !this.props.valid[name] && errorMessage !== "";
       })
       .map((entry, index) => {
         let errorMessage = entry[1];
         return errorMessage;
       });
+    let displayErrorMessages = this.props.submitted && this.state.dirty && !Object.values(this.props.valid).every(item => item === true);
     return (
       <Grid stackable centered padded columns={2}>
         <Grid.Column>
           <Header as="h3" attached="top" inverted>Options</Header>
-          <Segment attached={this.state.dirty && !this.isFormValid() ? true : "bottom"}>
+          <Segment attached={displayErrorMessages ? true : "bottom"}>
             <Form onSubmit={this.handleSubmit}>
-              <Form.Field inline error={!this.state.valid.size}>
+              <Form.Field inline error={!this.props.valid.size}>
                 <label>Size</label>
                 <Input type="number" name="size" min={1} max={50} value={this.props.size} onChange={this.handleChange}/>
                 &nbsp;
@@ -152,7 +83,7 @@ class FormComponent extends Component {
               <Button type="submit" primary>Create</Button>
             </Form>
           </Segment>
-          {this.props.submitted && this.state.dirty && !this.isFormValid() && (
+          {displayErrorMessages && (
             <Message icon error attached="bottom">
               <Icon name="exclamation circle"/>
               <Message.Content>
