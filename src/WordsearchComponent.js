@@ -186,7 +186,6 @@ class WordsearchComponent extends Component {
   }
 
   render() {
-    console.log(Object.entries(this.props.valid));
     return (
       (!this.props.submitted || !Object.values(this.props.valid).every(item => item === true)) ? (
         <Container>

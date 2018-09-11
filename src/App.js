@@ -48,11 +48,9 @@ class App extends Component {
 
         return this.validate(name, value);
       });
-      console.log(promises);
       Promise.all(promises).then(validValues => {
         // Update wordsearch only all parameters valid
         if (validValues.every(item => item === true)) {
-          console.log("hi");
           this.wordsearchComponent.update();
         }
       })
