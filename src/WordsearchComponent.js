@@ -99,6 +99,8 @@ class WordsearchComponent extends Component {
   }
 
   static placeWord(wordsearch, word, wordId, size, allowBackwards) {
+    // If allowBackwards parameter is true, randomly choose whether to place the word backwards
+    // If the word is to be placed backwards, simply reverse the word string
     let backwards = allowBackwards && Math.random() >= 0.5;
     if (backwards) {
       word = WordsearchComponent.reverseString(word);
@@ -124,7 +126,7 @@ class WordsearchComponent extends Component {
       originY = Math.floor(Math.random() * (maxOriginY + 1 - minOriginY)) + minOriginY;
 
       // Check that, using the chosen origin, the word can be placed without overlapping other words
-      // Overlapping is allowed if any points of overlap involve the same letter
+      // Overlapping is only allowed if the points of overlap involve the same letter
       ok = true;
       let overlappedWordId = null;
       for (let j = 0; j < word.length; j++) {
@@ -135,9 +137,11 @@ class WordsearchComponent extends Component {
         let cell = wordsearch[y][x];
 
         if (cell.letter === letter) {
+          // Ensure the current word doesn't overlap another word completely, by checking that the previously overlapped word is different from the current overlapped word
+          // If no previous overlaps or previously overlapped word is different from the current overlapped word
           if (overlappedWordId === null || overlappedWordId !== cell.wordId) {
             overlappedWordId = cell.wordId;
-          } else {
+          } else { // Previously overlapped word was same as the currently overlapped word, so the same word has been overlapped twice, i.e., overlapped completely by the current word
             ok = false;
           }
         } else {
