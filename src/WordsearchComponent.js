@@ -41,7 +41,7 @@ class WordsearchComponent extends Component {
 
     let wordsearch = new Array(size);
 
-    WordsearchComponent.fillWordsearch(wordsearch, size);
+    this.fillWordsearch(wordsearch, size);
 
     let wordObjects = this.createStringObjects(words, index => index);
     let wordsPlaced = this.placeStrings(wordsearch, size, wordObjects, allowBackwards);
@@ -53,7 +53,7 @@ class WordsearchComponent extends Component {
     if (allowParts) {
       let parts = this.generateParts(wordsearch, size, words, allowBackwards);
       let partObjects = this.createStringObjects(parts, index => index + wordObjects.length);
-      let partsPlaced = WordsearchComponent.placeStrings(wordsearch, size, partObjects, allowBackwards);
+      let partsPlaced = this.placeStrings(wordsearch, size, partObjects, allowBackwards);
 
       if (!partsPlaced) {
         return null;
@@ -109,7 +109,7 @@ class WordsearchComponent extends Component {
   // TODO: Remove size parameter
   static placeStrings(wordsearch, size, stringObjects, allowBackwards) {
     for (let stringObject of stringObjects) {
-      let stringPlaced = WordsearchComponent.placeString(wordsearch, stringObject, size, allowBackwards);
+      let stringPlaced = this.placeString(wordsearch, stringObject, size, allowBackwards);
 
       if (!stringPlaced) {
         return false;
@@ -123,7 +123,7 @@ class WordsearchComponent extends Component {
     // If the word is to be placed backwards, simply reverse the word string
     let backwards = allowBackwards && Math.random() >= 0.5;
     if (backwards) {
-      stringObject.string = WordsearchComponent.reverseString(stringObject.string);
+      stringObject.string = this.reverseString(stringObject.string);
     }
 
     // Currently, if word cannot be placed, chooses new origin and direction and tries to place again; could change to
