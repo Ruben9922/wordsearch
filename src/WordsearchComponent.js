@@ -40,16 +40,8 @@ class WordsearchComponent extends Component {
     words = words.map(word => word.toUpperCase().replace(/[^A-Z]+/g, ""));
 
     let wordsearch = new Array(size);
-    let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    for (let i = 0; i < wordsearch.length; i++) {
-      wordsearch[i] = new Array(size);
-      for (let j = 0; j < wordsearch[i].length; j++) {
-        wordsearch[i][j] = {
-          letter: letters[Math.floor(Math.random() * letters.length)],
-          wordId: null
-        };
-      }
-    }
+
+    WordsearchComponent.fillWordsearch(wordsearch, size);
 
     let successful = this.placeWords(wordsearch, size, words, allowBackwards);
     if (!successful) {
@@ -64,6 +56,19 @@ class WordsearchComponent extends Component {
     }
 
     return wordsearch;
+  }
+
+  static fillWordsearch(wordsearch, size) {
+    let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for (let i = 0; i < wordsearch.length; i++) {
+      wordsearch[i] = new Array(size);
+      for (let j = 0; j < wordsearch[i].length; j++) {
+        wordsearch[i][j] = {
+          letter: letters[Math.floor(Math.random() * letters.length)],
+          wordId: null
+        };
+      }
+    }
   }
 
   static placeParts(wordsearch, size, words, allowBackwards) {
