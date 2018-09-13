@@ -43,14 +43,19 @@ class WordsearchComponent extends Component {
 
     WordsearchComponent.fillWordsearch(wordsearch, size);
 
-    let successful = this.placeStrings(wordsearch, size, words, allowBackwards);
-    if (!successful) {
+    let wordObjects = this.createStringObjects(words, index => index);
+    let wordsPlaced = this.placeStrings(wordsearch, size, wordObjects, allowBackwards);
+
+    if (!wordsPlaced) {
       return null;
     }
 
     if (allowParts) {
-      successful = this.placeParts(wordsearch, size, words, allowBackwards);
-      if (!successful) {
+      let parts = this.generateParts(wordsearch, size, words, allowBackwards);
+      let partObjects = this.createStringObjects(parts, index => index + wordObjects.length);
+      let partsPlaced = WordsearchComponent.placeStrings(wordsearch, size, partObjects, allowBackwards);
+
+      if (!partsPlaced) {
         return null;
       }
     }
@@ -71,7 +76,14 @@ class WordsearchComponent extends Component {
     }
   }
 
-  static placeParts(wordsearch, size, words, allowBackwards) {
+  static createStringObjects(strings, idFunction = index => index) {
+    return strings.map((element, index) => ({
+      string: element,
+      id: idFunction(index)
+    }));
+  }
+
+  static generateParts(wordsearch, size, words, allowBackwards) {
     // Arbitrary number that is multiplied by words.length to obtain number of parts to put into wordsearch
     const factor = 1.0;
 
@@ -91,30 +103,32 @@ class WordsearchComponent extends Component {
       parts[i] = word.slice(startIndex, endIndex);
     }
 
-    return this.placeStrings(wordsearch, size, parts, allowBackwards, false);
+    return parts;
   }
 
   // TODO: Remove size parameter
-  static placeStrings(wordsearch, size, words, allowBackwards, assignId = true) {
-    for (let [index, word] of words.entries()) {
-      let id = assignId ? index : null;
-      if (!WordsearchComponent.placeString(wordsearch, word, id, size, allowBackwards)) {
+  static placeStrings(wordsearch, size, stringObjects, allowBackwards) {
+    for (let stringObject of stringObjects) {
+      let stringPlaced = WordsearchComponent.placeString(wordsearch, stringObject, size, allowBackwards);
+
+      if (!stringPlaced) {
         return false;
       }
     }
     return true;
   }
 
-  static placeString(wordsearch, word, wordId, size, allowBackwards) {
+  static placeString(wordsearch, stringObject, size, allowBackwards) {
     // If allowBackwards parameter is true, randomly choose whether to place the word backwards
     // If the word is to be placed backwards, simply reverse the word string
     let backwards = allowBackwards && Math.random() >= 0.5;
     if (backwards) {
-      word = WordsearchComponent.reverseString(word);
+      stringObject.string = WordsearchComponent.reverseString(stringObject.string);
     }
 
     // Currently, if word cannot be placed, chooses new origin and direction and tries to place again; could change to
     // restrict choice of origin (so don't need to choose new origin) but possibly very complicated and inefficient
+    let string = stringObject.string;
     let direction;
     let originX;
     let originY;
@@ -125,9 +139,9 @@ class WordsearchComponent extends Component {
 
       // Both min and max origin values are inclusive
       let minOriginX = 0;
-      let maxOriginX = (direction === Direction.VERTICAL) ? size - 1 : size - word.length;
-      let minOriginY = (direction === Direction.DIAGONAL_UP) ? word.length - 1 : 0;
-      let maxOriginY = (direction === Direction.DIAGONAL_UP) ? size - 1 : size - word.length;
+      let maxOriginX = (direction === Direction.VERTICAL) ? size - 1 : size - string.length;
+      let minOriginY = (direction === Direction.DIAGONAL_UP) ? string.length - 1 : 0;
+      let maxOriginY = (direction === Direction.DIAGONAL_UP) ? size - 1 : size - string.length;
 
       originX = Math.floor(Math.random() * (maxOriginX + 1 - minOriginX)) + minOriginX;
       originY = Math.floor(Math.random() * (maxOriginY + 1 - minOriginY)) + minOriginY;
@@ -136,8 +150,8 @@ class WordsearchComponent extends Component {
       // Overlapping is only allowed if the points of overlap involve the same letter
       ok = true;
       let overlappedWordId = null;
-      for (let j = 0; j < word.length; j++) {
-        let letter = word.charAt(j);
+      for (let j = 0; j < string.length; j++) {
+        let letter = string.charAt(j);
 
         let x = (direction === Direction.VERTICAL) ? originX : originX + j;
         let y = (direction === Direction.HORIZONTAL) ? originY : ((direction === Direction.DIAGONAL_UP) ? originY - j : originY + j);
@@ -167,15 +181,16 @@ class WordsearchComponent extends Component {
       return false;
     }
 
-    for (let i = 0; i < word.length; i++) {
-      let letter = word.charAt(i);
+    let id = stringObject.id;
+    for (let i = 0; i < string.length; i++) {
+      let letter = string.charAt(i);
 
       let x = (direction === Direction.VERTICAL) ? originX : originX + i;
       let y = (direction === Direction.HORIZONTAL) ? originY : ((direction === Direction.DIAGONAL_UP) ? originY - i : originY + i);
 
       wordsearch[y][x] = {
         letter: letter,
-        wordId: wordId
+        wordId: id
       };
     }
 
