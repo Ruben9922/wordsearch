@@ -3,7 +3,6 @@ import {Checkbox, Container, Grid, Header, List, Message, Segment} from 'semanti
 import './WordsearchComponent.css';
 import {Enum} from 'enumify';
 
-// TODO: Fix arbitrary characters being highlighted
 class WordsearchComponent extends Component {
   constructor(props) {
     super(props);
