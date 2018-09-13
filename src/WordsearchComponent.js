@@ -43,7 +43,7 @@ class WordsearchComponent extends Component {
 
     WordsearchComponent.fillWordsearch(wordsearch, size);
 
-    let successful = this.placeWords(wordsearch, size, words, allowBackwards);
+    let successful = this.placeStrings(wordsearch, size, words, allowBackwards);
     if (!successful) {
       return null;
     }
@@ -91,21 +91,21 @@ class WordsearchComponent extends Component {
       parts[i] = word.slice(startIndex, endIndex);
     }
 
-    return this.placeWords(wordsearch, size, parts, allowBackwards, false);
+    return this.placeStrings(wordsearch, size, parts, allowBackwards, false);
   }
 
   // TODO: Remove size parameter
-  static placeWords(wordsearch, size, words, allowBackwards, assignId = true) {
+  static placeStrings(wordsearch, size, words, allowBackwards, assignId = true) {
     for (let [index, word] of words.entries()) {
       let id = assignId ? index : null;
-      if (!WordsearchComponent.placeWord(wordsearch, word, id, size, allowBackwards)) {
+      if (!WordsearchComponent.placeString(wordsearch, word, id, size, allowBackwards)) {
         return false;
       }
     }
     return true;
   }
 
-  static placeWord(wordsearch, word, wordId, size, allowBackwards) {
+  static placeString(wordsearch, word, wordId, size, allowBackwards) {
     // If allowBackwards parameter is true, randomly choose whether to place the word backwards
     // If the word is to be placed backwards, simply reverse the word string
     let backwards = allowBackwards && Math.random() >= 0.5;
