@@ -10,30 +10,12 @@ class WordsearchComponent extends Component {
 
     this.state = {
       wordsearch: null,
-      highlight: new Array(this.props.words.length).fill(false)
+      wordObjects: []
     };
 
     this.update = this.update.bind(this);
     this.handleHighlightAllNoneChange = this.handleHighlightAllNoneChange.bind(this);
     this.handleHighlight = this.handleHighlight.bind(this);
-  }
-
-  handleHighlightAllNoneChange(event, data) {
-    this.setState({
-      highlight: new Array(this.props.words.length).fill(data.checked)
-    });
-  }
-
-  handleHighlight(event, data, index) {
-    this.setState(prevState => {
-      let previousValue = prevState.highlight[index];
-      let highlightCopy = prevState.highlight.slice();
-      highlightCopy.splice(index, 1, !previousValue);
-
-      return {
-        highlight: highlightCopy
-      };
-    });
   }
 
   static generateWordsearch(size, words, allowBackwards, allowParts) {
@@ -43,7 +25,7 @@ class WordsearchComponent extends Component {
 
     this.fillWordsearch(wordsearch, size);
 
-    let wordObjects = this.createStringObjects(words, index => index);
+    let wordObjects = this.createStringObjects(words, index => index, false);
     let wordsPlaced = this.placeStrings(wordsearch, size, wordObjects, allowBackwards);
 
     if (!wordsPlaced) {
@@ -52,7 +34,7 @@ class WordsearchComponent extends Component {
 
     if (allowParts) {
       let parts = this.generateParts(wordsearch, size, words, allowBackwards);
-      let partObjects = this.createStringObjects(parts, index => index + wordObjects.length);
+      let partObjects = this.createStringObjects(parts, index => index + wordObjects.length, null);
       let partsPlaced = this.placeStrings(wordsearch, size, partObjects, allowBackwards);
 
       if (!partsPlaced) {
@@ -60,62 +42,15 @@ class WordsearchComponent extends Component {
       }
     }
 
-    return wordsearch;
+    return {wordsearch, wordObjects};
   }
 
-  static fillWordsearch(wordsearch, size) {
-    let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    for (let i = 0; i < wordsearch.length; i++) {
-      wordsearch[i] = new Array(size);
-      for (let j = 0; j < wordsearch[i].length; j++) {
-        wordsearch[i][j] = {
-          letter: letters[Math.floor(Math.random() * letters.length)],
-          wordId: null
-        };
-      }
-    }
-  }
-
-  static createStringObjects(strings, idFunction = index => index) {
+  static createStringObjects(strings, idFunction = index => index, highlight) {
     return strings.map((element, index) => ({
       string: element,
-      id: idFunction(index)
+      id: idFunction(index),
+      highlight: highlight
     }));
-  }
-
-  static generateParts(wordsearch, size, words, allowBackwards) {
-    // Arbitrary number that is multiplied by words.length to obtain number of parts to put into wordsearch
-    const factor = 1.0;
-
-    let partCount = Math.floor(Math.random() * words.length * factor);
-    let parts = new Array(partCount);
-    for (let i = 0; i < partCount; i++) {
-      // Randomly choose word
-      let wordIndex = Math.floor(Math.random() * words.length);
-      let word = words[wordIndex];
-
-      // Randomly choose start and end indices of substring, ensuring the substring length is at least 1
-      // Start index is just index between 0th and second last index
-      // End index is any index strictly greater than start index
-      let startIndex = Math.floor(Math.random() * (word.length - 1));
-      let endIndex = Math.floor(Math.random() * (word.length - startIndex + 1)) + startIndex + 1;
-
-      parts[i] = word.slice(startIndex, endIndex);
-    }
-
-    return parts;
-  }
-
-  // TODO: Remove size parameter
-  static placeStrings(wordsearch, size, stringObjects, allowBackwards) {
-    for (let stringObject of stringObjects) {
-      let stringPlaced = this.placeString(wordsearch, stringObject, size, allowBackwards);
-
-      if (!stringPlaced) {
-        return false;
-      }
-    }
-    return true;
   }
 
   static placeString(wordsearch, stringObject, size, allowBackwards) {
@@ -157,6 +92,7 @@ class WordsearchComponent extends Component {
         let y = (direction === Direction.HORIZONTAL) ? originY : ((direction === Direction.DIAGONAL_UP) ? originY - j : originY + j);
         let cell = wordsearch[y][x];
 
+        // TODO: Possibly restructure this
         if (cell.letter === letter) {
           // Ensure the current word doesn't overlap another word completely, by checking that the previously overlapped word is different from the current overlapped word
           // If no previous overlaps or previously overlapped word is different from the current overlapped word
@@ -197,6 +133,75 @@ class WordsearchComponent extends Component {
     return true;
   }
 
+  static fillWordsearch(wordsearch, size) {
+    let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for (let i = 0; i < wordsearch.length; i++) {
+      wordsearch[i] = new Array(size);
+      for (let j = 0; j < wordsearch[i].length; j++) {
+        wordsearch[i][j] = {
+          letter: letters[Math.floor(Math.random() * letters.length)],
+          wordId: null
+        };
+      }
+    }
+  }
+
+  handleHighlightAllNoneChange(event, data) {
+    this.setState(prevState => ({
+      wordObjects: prevState.wordObjects.map(element => Object.assign({}, element, {highlight: data.checked}))
+    }));
+  }
+
+  static generateParts(wordsearch, size, words, allowBackwards) {
+    // Arbitrary number that is multiplied by words.length to obtain number of parts to put into wordsearch
+    const factor = 1.0;
+
+    let partCount = Math.floor(Math.random() * words.length * factor);
+    let parts = new Array(partCount);
+    for (let i = 0; i < partCount; i++) {
+      // Randomly choose word
+      let wordIndex = Math.floor(Math.random() * words.length);
+      let word = words[wordIndex];
+
+      // Randomly choose start and end indices of substring, ensuring the substring length is at least 1
+      // Start index is just index between 0th and second last index
+      // End index is any index strictly greater than start index
+      let startIndex = Math.floor(Math.random() * (word.length - 1));
+      let endIndex = Math.floor(Math.random() * (word.length - startIndex + 1)) + startIndex + 1;
+
+      parts[i] = word.slice(startIndex, endIndex);
+    }
+
+    return parts;
+  }
+
+  // TODO: Remove size parameter
+  static placeStrings(wordsearch, size, stringObjects, allowBackwards) {
+    for (let stringObject of stringObjects) {
+      let stringPlaced = this.placeString(wordsearch, stringObject, size, allowBackwards);
+
+      if (!stringPlaced) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  handleHighlight(event, data, index) {
+    this.setState(prevState => {
+      let {wordObjects} = prevState;
+
+      let wordObject = wordObjects[index];
+      let newWordObject = Object.assign({}, wordObject, {highlight: !wordObject.highlight});
+      let newWordObjects = wordObjects.slice();
+      newWordObjects.splice(index, 1, newWordObject);
+
+      return {
+        wordObjects: newWordObjects
+      };
+    });
+  }
+
   static reverseString(string) {
     let result = "";
     for (let i = string.length - 1; i >= 0; i--) {
@@ -206,9 +211,7 @@ class WordsearchComponent extends Component {
   }
 
   update() {
-    this.setState({
-      wordsearch: WordsearchComponent.generateWordsearch(this.props.size, this.props.words, this.props.allowBackwards, this.props.allowParts)
-    });
+    this.setState(WordsearchComponent.generateWordsearch(this.props.size, this.props.words, this.props.allowBackwards, this.props.allowParts));
   }
 
   render() {
@@ -243,7 +246,7 @@ class WordsearchComponent extends Component {
                 {this.state.wordsearch.map((row, index1) => (
                   <tr key={index1}>
                     {row.map((cell, index2) => (
-                      <td key={index2} className={(this.state.highlight[cell.wordId]) && "highlighted"}>
+                      <td key={index2} className={cell.wordId !== null && this.state.wordObjects[cell.wordId].highlight && "highlighted"}>
                         {cell.wordId !== null ? cell.wordId + "," + cell.letter : ""}
                       </td>
                     ))}
@@ -256,15 +259,15 @@ class WordsearchComponent extends Component {
             <Segment>
               <Header sub dividing>Highlight Words</Header>
               <Checkbox label="Highlight all/none"
-                        checked={this.state.highlight.every(element => element)}
-                        indeterminate={!this.state.highlight.every(element => element) && !this.state.highlight.every(element => !element)}
+                        checked={this.state.wordObjects.every(element => element.highlight)}
+                        indeterminate={!this.state.wordObjects.every(element => element.highlight) && !this.state.wordObjects.every(element => !element.highlight)}
                         onChange={this.handleHighlightAllNoneChange}/>
               <List selection verticalAlign="middle">
-                {this.props.words.map((word, index) => (
-                  <List.Item key={index} active={this.state.highlight[index]}
+                {this.state.wordObjects.map((wordObject, index) => (
+                  <List.Item key={index} active={wordObject.highlight}
                              onClick={(event, data) => this.handleHighlight(event, data, index)}>
                     <List.Content>
-                      {word}
+                      {wordObject.string}
                     </List.Content>
                   </List.Item>
                 ))}
