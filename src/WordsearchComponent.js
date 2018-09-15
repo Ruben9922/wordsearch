@@ -61,14 +61,14 @@ class WordsearchComponent extends Component {
   static placeString(wordsearch, stringObject, size, allowBackwards) {
     // If allowBackwards parameter is true, randomly choose whether to place the word backwards
     // If the word is to be placed backwards, simply reverse the word string
+    let {string} = stringObject;
     let backwards = allowBackwards && Math.random() >= 0.5;
     if (backwards) {
-      stringObject.string = this.reverseString(stringObject.string);
+      string = this.reverseString(string);
     }
 
     // Currently, if word cannot be placed, chooses new origin and direction and tries to place again; could change to
     // restrict choice of origin (so don't need to choose new origin) but possibly very complicated and inefficient
-    let string = stringObject.string;
     let direction;
     let originX;
     let originY;
