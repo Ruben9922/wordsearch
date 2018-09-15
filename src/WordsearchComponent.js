@@ -257,7 +257,7 @@ class WordsearchComponent extends Component {
                   <tr key={index1}>
                     {row.map((cell, index2) => (
                       <td key={index2} className={cell.wordId !== null && this.state.wordObjectsMap.hasOwnProperty(cell.wordId) && this.state.wordObjectsMap[cell.wordId].highlight && "highlighted"}>
-                        {cell.wordId !== null ? cell.wordId + "," + cell.letter : ""}
+                        {cell.letter}
                       </td>
                     ))}
                   </tr>
