@@ -33,7 +33,7 @@ class WordsearchComponent extends Component {
     }
 
     if (allowParts) {
-      let parts = this.generateParts(wordsearch, size, words, allowBackwards);
+      let parts = this.generateParts(words);
       let partObjects = this.createStringObjects(parts, index => index + wordObjects.length, null);
       let partsPlaced = this.placeStrings(wordsearch, size, partObjects, allowBackwards);
 
@@ -164,7 +164,7 @@ class WordsearchComponent extends Component {
     });
   }
 
-  static generateParts(wordsearch, size, words, allowBackwards) {
+  static generateParts(words) {
     // Arbitrary number that is multiplied by words.length to obtain number of parts to put into wordsearch
     const factor = 1.0;
 
