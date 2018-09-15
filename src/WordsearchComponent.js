@@ -10,7 +10,7 @@ class WordsearchComponent extends Component {
 
     this.state = {
       wordsearch: null,
-      wordObjects: []
+      wordObjectsMap: {}
     };
 
     this.update = this.update.bind(this);
@@ -42,7 +42,12 @@ class WordsearchComponent extends Component {
       }
     }
 
-    return {wordsearch, wordObjects};
+    let wordObjectsMap = wordObjects.reduce((map, element) => {
+      map[element.id] = element;
+      return map;
+    }, {});
+
+    return {wordsearch, wordObjectsMap};
   }
 
   static createStringObjects(strings, idFunction = index => index, highlight) {
@@ -147,9 +152,14 @@ class WordsearchComponent extends Component {
   }
 
   handleHighlightAllNoneChange(event, data) {
-    this.setState(prevState => ({
-      wordObjects: prevState.wordObjects.map(element => Object.assign({}, element, {highlight: data.checked}))
-    }));
+    this.setState(prevState => {
+      let map = Object.entries(prevState.wordObjectsMap).map(([key, value]) => ({[key]: Object.assign({}, value, {highlight: data.checked})}));
+      let newWordObjectsMap = Object.assign({}, ...map);
+      console.log(newWordObjectsMap)
+      return {
+        wordObjectsMap: newWordObjectsMap
+      };
+    });
   }
 
   static generateParts(wordsearch, size, words, allowBackwards) {
@@ -187,17 +197,15 @@ class WordsearchComponent extends Component {
     return true;
   }
 
-  handleHighlight(event, data, index) {
+  handleHighlight(event, data, wordObject) {
     this.setState(prevState => {
-      let {wordObjects} = prevState;
+      let {wordObjectsMap} = prevState;
 
-      let wordObject = wordObjects[index];
       let newWordObject = Object.assign({}, wordObject, {highlight: !wordObject.highlight});
-      let newWordObjects = wordObjects.slice();
-      newWordObjects.splice(index, 1, newWordObject);
+      let newWordObjectsMap = Object.assign({}, wordObjectsMap, {[wordObject.id]: newWordObject});
 
       return {
-        wordObjects: newWordObjects
+        wordObjectsMap: newWordObjectsMap
       };
     });
   }
@@ -246,7 +254,7 @@ class WordsearchComponent extends Component {
                 {this.state.wordsearch.map((row, index1) => (
                   <tr key={index1}>
                     {row.map((cell, index2) => (
-                      <td key={index2} className={cell.wordId !== null && this.state.wordObjects[cell.wordId].highlight && "highlighted"}>
+                      <td key={index2} className={cell.wordId !== null && this.state.wordObjectsMap.hasOwnProperty(cell.wordId) && this.state.wordObjectsMap[cell.wordId].highlight && "highlighted"}>
                         {cell.wordId !== null ? cell.wordId + "," + cell.letter : ""}
                       </td>
                     ))}
@@ -259,13 +267,13 @@ class WordsearchComponent extends Component {
             <Segment>
               <Header sub dividing>Highlight Words</Header>
               <Checkbox label="Highlight all/none"
-                        checked={this.state.wordObjects.every(element => element.highlight)}
-                        indeterminate={!this.state.wordObjects.every(element => element.highlight) && !this.state.wordObjects.every(element => !element.highlight)}
+                        checked={Object.values(this.state.wordObjectsMap).every(element => element.highlight)}
+                        indeterminate={!Object.values(this.state.wordObjectsMap).every(element => element.highlight) && !Object.values(this.state.wordObjectsMap).every(element => !element.highlight)}
                         onChange={this.handleHighlightAllNoneChange}/>
               <List selection verticalAlign="middle">
-                {this.state.wordObjects.map((wordObject, index) => (
+                {Object.values(this.state.wordObjectsMap).map((wordObject, index) => (
                   <List.Item key={index} active={wordObject.highlight}
-                             onClick={(event, data) => this.handleHighlight(event, data, index)}>
+                             onClick={(event, data) => this.handleHighlight(event, data, wordObject)}>
                     <List.Content>
                       {wordObject.string}
                     </List.Content>
