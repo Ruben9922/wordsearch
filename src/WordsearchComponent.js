@@ -155,7 +155,6 @@ class WordsearchComponent extends Component {
     this.setState(prevState => {
       let map = Object.entries(prevState.wordObjectsMap).map(([key, value]) => ({[key]: Object.assign({}, value, {highlight: data.checked})}));
       let newWordObjectsMap = Object.assign({}, ...map);
-      console.log(newWordObjectsMap)
       return {
         wordObjectsMap: newWordObjectsMap
       };
