@@ -154,7 +154,7 @@ class WordsearchComponent extends Component {
   handleHighlightAllNoneChange(event, data) {
     this.setState(prevState => {
       let mapEntries = Object.entries(prevState.wordObjectsMap).map(([key, value]) => {
-        let newValue = Object.assign({}, value, {highlight: data.checked});
+        let newValue = Object.assign({}, value, {highlight: data.checked}); // New word object with updated highlight value
         return {[key]: newValue};
       });
       let newWordObjectsMap = Object.assign({}, ...mapEntries);
