@@ -1,0 +1,14 @@
+.wordsearch > tbody > tr > td {
+    padding: 5px 10px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.highlighted {
+    background-color: #0E6EB8;
+    color: white;
+}
+
+.ui.dividing.sub.header {
+    margin: 12px;
+}
