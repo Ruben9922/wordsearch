@@ -88,12 +88,12 @@ class App extends Component {
         }
         if (!pattern.test(word)) {
           valid.words[index] = false;
-          errorMessages.words[index] = "Words must only consist of letters, optionally separated by spaces (e.g. \"dog\", \"dog food\", \"Rottweiler\")";
+          errorMessages.words[index] = "Word must only consist of letters, optionally separated by spaces (e.g. \"dog\", \"dog food\", \"Rottweiler\")";
           continue;
         }
         if (valid.size && word.length > this.state.parameters.size) {
           valid.words[index] = false;
-          errorMessages.words[index] = "Length of each word cannot exceed size";
+          errorMessages.words[index] = "Length of word cannot exceed size";
         }
       }
     }
