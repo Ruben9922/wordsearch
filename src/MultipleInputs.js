@@ -47,17 +47,17 @@ class MultipleInputs extends Component {
   // TODO: Add remove button for each input
   render() {
     let inputs = this.props.value;
-    const inputElements = inputs.map((input, index) => (
-      <div>
-        <Input key={index} value={input} placeholder={"Word #" + (index + 1)}
-               onChange={(event) => this.handleChange(index, event)}/>
-        {!this.props.valid[index] && (<Label color="red" pointing="left">{this.props.errorMessages[index]}</Label>)}
-      </div>
-    ));
     return (
       <Grid columns={2} divided>
         <Grid.Column>
-          {inputElements}
+          {inputs.map((input, index) => (
+            <div>
+              <Input key={index} value={input} placeholder={"Word #" + (index + 1)}
+                     onChange={(event) => this.handleChange(index, event)}/>
+              {!this.props.valid[index] && (
+                <Label color="red" pointing="left">{this.props.errorMessages[index]}</Label>)}
+            </div>
+          ))}
         </Grid.Column>
         <Grid.Column>
           <Button icon="add" onClick={this.add}/>
