@@ -76,6 +76,7 @@ class App extends Component {
 
     // Words
     {
+      // TODO: Check words aren't empty
       valid.words = new Array(this.state.parameters.words.length).fill(true);
       errorMessages.words = new Array(this.state.parameters.words.length).fill("");
 

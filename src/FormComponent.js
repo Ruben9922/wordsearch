@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Button, Checkbox, Form, Grid, Header, Icon, Input, Label, Popup, Segment} from 'semantic-ui-react';
 import MultipleInputs from "./MultipleInputs";
 
+// TODO: Add error/confirmation message on form (?)
 class FormComponent extends Component {
   constructor(props) {
     super(props);
@@ -60,7 +61,7 @@ class FormComponent extends Component {
               </Form.Field>
               <Form.Field>
                 <label>Words</label>
-                <MultipleInputs name="words" value={this.props.words} onChange={this.handleChange} valid={this.props.valid.words} errorMessages={this.props.errorMessages.words}/>
+                <MultipleInputs name="words" value={this.props.words} onChange={this.handleChange} valid={this.props.valid.words} errorMessages={this.props.errorMessages.words} submitted={this.props.submitted}/>
               </Form.Field>
               <Form.Field>
                 <label>Misc.</label>

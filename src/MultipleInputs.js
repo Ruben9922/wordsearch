@@ -48,22 +48,31 @@ class MultipleInputs extends Component {
   render() {
     let inputs = this.props.value;
     return (
-      <Grid columns={2} divided>
-        <Grid.Column>
+      <div>
+        <Grid columns={2}>
           {inputs.map((input, index) => (
-            <div>
-              <Input key={index} value={input} placeholder={"Word #" + (index + 1)}
-                     onChange={(event) => this.handleChange(index, event)}/>
-              {!this.props.valid[index] && (
-                <Label color="red" pointing="left">{this.props.errorMessages[index]}</Label>)}
-            </div>
+            <Grid.Row>
+              <Grid.Column>
+                <Input key={index} value={input} placeholder={"Word #" + (index + 1)}
+                       error={this.props.submitted && !this.props.valid[index]}
+                       onChange={(event) => this.handleChange(index, event)}/>
+              </Grid.Column>
+
+              {this.props.submitted && !this.props.valid[index] && (
+                <Grid.Column>
+                  <Label color="red" pointing="left">{this.props.errorMessages[index]}</Label>
+                </Grid.Column>
+              )}
+            </Grid.Row>
           ))}
-        </Grid.Column>
-        <Grid.Column>
-          <Button icon="add" onClick={this.add}/>
-          <Button icon="remove" disabled={inputs.length <= 1} onClick={this.remove}/>
-        </Grid.Column>
-      </Grid>
+          <Grid.Row>
+            <Grid.Column>
+              <Button icon="add" onClick={this.add}/>
+              <Button icon="remove" disabled={inputs.length <= 1} onClick={this.remove}/>
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
+      </div>
     );
   }
 }
