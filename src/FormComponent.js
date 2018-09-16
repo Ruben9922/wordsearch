@@ -36,7 +36,7 @@ class FormComponent extends Component {
         let errorMessage = entry[1];
         return !this.props.valid[name] && errorMessage !== "";
       })
-      .map((entry, index) => {
+      .map(entry => {
         let errorMessage = entry[1];
         return errorMessage;
       });
