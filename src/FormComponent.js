@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Button, Checkbox, Form, Grid, Header, Icon, Input, Message, Popup, Segment} from 'semantic-ui-react';
+import {Button, Checkbox, Form, Grid, Header, Icon, Input, Label, Popup, Segment} from 'semantic-ui-react';
 import MultipleInputs from "./MultipleInputs";
 
 class FormComponent extends Component {
@@ -40,12 +40,13 @@ class FormComponent extends Component {
         let errorMessage = entry[1];
         return errorMessage;
       });
-    let displayErrorMessages = this.props.submitted && this.state.dirty && !Object.values(this.props.valid).every(item => item === true);
+    let displayErrorMessages = this.props.submitted && !Object.values(this.props.valid).every(item => item === true);
+    // TODO: Store min and max size in variables
     return (
       <Grid stackable centered padded columns={2}>
         <Grid.Column>
           <Header as="h3" attached="top" inverted>Options</Header>
-          <Segment attached={displayErrorMessages ? true : "bottom"}>
+          <Segment attached="bottom">
             <Form onSubmit={this.handleSubmit}>
               <Form.Field inline error={!this.props.valid.size}>
                 <label>Size</label>
@@ -54,10 +55,12 @@ class FormComponent extends Component {
                 <span>&times;</span>
                 &nbsp;
                 <Input type="number" name="size" min={1} max={50} value={this.props.size} onChange={this.handleChange}/>
+
+                {!this.props.valid.size && (<Label color="red" pointing="left">{this.props.errorMessages.size}</Label>)}
               </Form.Field>
               <Form.Field>
                 <label>Words</label>
-                <MultipleInputs name="words" value={this.props.words} onChange={this.handleChange}/>
+                <MultipleInputs name="words" value={this.props.words} onChange={this.handleChange} valid={this.props.valid.words} errorMessages={this.props.errorMessages.words}/>
               </Form.Field>
               <Form.Field>
                 <label>Misc.</label>
@@ -82,19 +85,6 @@ class FormComponent extends Component {
               <Button type="submit" primary>Create</Button>
             </Form>
           </Segment>
-          {displayErrorMessages && (
-            <Message icon error attached="bottom">
-              <Icon name="exclamation circle"/>
-              <Message.Content>
-                <Message.Header>Invalid options</Message.Header>
-                <Message.List>
-                  {nonEmptyErrorMessages.map((errorMessage, index) => (
-                    <Message.Item key={index}>{errorMessage}</Message.Item>
-                  ))}
-                </Message.List>
-              </Message.Content>
-            </Message>
-          )}
         </Grid.Column>
       </Grid>
     );

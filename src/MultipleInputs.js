@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Button, Form, Grid, Transition} from 'semantic-ui-react'
+import {Button, Grid, Input, Label} from 'semantic-ui-react'
 
 class MultipleInputs extends Component {
   constructor(props) {
@@ -48,8 +48,11 @@ class MultipleInputs extends Component {
   render() {
     let inputs = this.props.value;
     const inputElements = inputs.map((input, index) => (
-      <Form.Input key={index} value={input} placeholder={"Word #" + (index + 1)}
-                  onChange={(event) => this.handleChange(index, event)}/>
+      <div>
+        <Input key={index} value={input} placeholder={"Word #" + (index + 1)}
+               onChange={(event) => this.handleChange(index, event)}/>
+        {!this.props.valid[index] && (<Label color="red" pointing="left">{this.props.errorMessages[index]}</Label>)}
+      </div>
     ));
     return (
       <Grid columns={2} divided>

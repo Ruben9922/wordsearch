@@ -19,8 +19,8 @@ class App extends Component {
         words: false
       },
       errorMessages: {
-        size: "",
-        words: ""
+        size: [],
+        words: []
       },
       submitted: false,
     };
@@ -41,76 +41,67 @@ class App extends Component {
     this.setState(prevState => ({
       submitted: true
     }), () => {
-      // Validate all form fields
-      let promises = Object.entries(this.state.parameters).map(entry => {
-        let name = entry[0];
-        let value = entry[1];
-
-        return this.validate(name, value);
-      });
-      Promise.all(promises).then(validValues => {
-        // Update wordsearch only all parameters valid
-        if (validValues.every(item => item === true)) {
+      // Validate form field
+      this.validate(() => {
+        // Update wordsearch component, only if all form fields are valid (only once state has been updated, hence the callback)
+        if (Object.values(this.state.valid).every(item => item === true)) {
           this.wordsearchComponent.update();
         }
-      })
+      });
     });
   }
 
-  validate(name, value) {
-    let valid;
-    let errorMessage;
-    switch (name) { // TODO: Could neaten this up a bit
-      case "size":
-        let number = Number(value);
-        const min = 1;
-        const max = 50;
-        valid = Number.isInteger(number) && number >= min && number <= max;
-        errorMessage = valid ? "" : `Size must be an integer between ${min} and ${max} (inclusive)`;
+  // TODO: Move back to FormComponent
+  validate(callback) {
+    let valid = {};
+    let errorMessages = {};
 
-        if (valid) {
-          for (let word of this.state.parameters.words) {
-            if (word.length > number) {
-              valid = false;
-              errorMessage = valid ? "" : "Length of each word cannot exceed size";
-              break;
-            }
-          }
-        }
+    // Size
+    size: {
+      valid.size = true;
+      errorMessages.size = "";
 
-        break;
-      case "words":
-        valid = true;
-        errorMessage = "";
-        const pattern = /^(\s*[a-zA-Z]+\s*)*$/;
-        for (let [index, word] of value.entries()) {
-          if (index === 0 && word === "") {
-            valid = false;
-            errorMessage = "At least 1 word is required";
-            break;
-          }
-          if (!pattern.test(word)) {
-            valid = false;
-            errorMessage = "Words must only consist of letters, optionally separated by spaces (e.g. \"dog\", \"dog food\", \"Rottweiler\")";
-            break;
-          }
-          if (word.length > this.state.parameters.size) {
-            valid = false;
-            errorMessage = "Length of each word cannot exceed size";
-            break;
-          }
-        }
-        break;
-      default:
-        return Promise.resolve(true);
+      let number = Number(this.state.parameters.size);
+      const min = 1;
+      const max = 50;
+      if (!(Number.isInteger(number) && number >= min && number <= max)) {
+        valid.size = false;
+        errorMessages.size = `Size must be an integer between ${min} and ${max} (inclusive)`;
+      }
+
+      if (!valid.size) {
+        break size;
+      }
     }
 
-    return new Promise((resolve, reject) => {
-      this.setState(prevState => ({
-        valid: Object.assign({}, prevState.valid, {[name]: valid}),
-        errorMessages: Object.assign({}, prevState.errorMessages, {[name]: errorMessage})
-      }), () => resolve(valid));
-    });
+    // Words
+    {
+      valid.words = new Array(this.state.parameters.words.length).fill(true);
+      errorMessages.words = new Array(this.state.parameters.words.length).fill("");
+
+      const pattern = /^(\s*[a-zA-Z]+\s*)*$/;
+      for (let [index, word] of this.state.parameters.words.entries()) {
+        if (index === 0 && word === "") {
+          valid.words[index] = false;
+          errorMessages.words[index] = "At least 1 word is required";
+          continue;
+        }
+        if (!pattern.test(word)) {
+          valid.words[index] = false;
+          errorMessages.words[index] = "Words must only consist of letters, optionally separated by spaces (e.g. \"dog\", \"dog food\", \"Rottweiler\")";
+          continue;
+        }
+        if (valid.size && word.length > this.state.parameters.size) {
+          valid.words[index] = false;
+          errorMessages.words[index] = "Length of each word cannot exceed size";
+        }
+      }
+    }
+
+    this.setState({
+      valid: valid,
+      errorMessages: errorMessages
+    }, callback);
   }
 
   render() {
