@@ -29,7 +29,6 @@ class FormComponent extends Component {
     this.props.onSubmit();
   }
 
-  // TODO: Validate - e.g. check no words are longer than size
   render() {
     let nonEmptyErrorMessages = Object.entries(this.props.errorMessages)
       .filter(entry => {
