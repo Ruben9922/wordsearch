@@ -33,7 +33,7 @@ class FormComponent extends Component {
   render() {
     // TODO: Store min and max size in variables
     return (
-      <Grid.Column width={3} floated="left">
+      <Grid.Column width={4} floated="left">
         <div>
           <Header as="h3" attached="top" inverted>Options</Header>
           <Segment attached="bottom">

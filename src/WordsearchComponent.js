@@ -227,7 +227,7 @@ class WordsearchComponent extends Component {
   render() {
     return (
       (!this.props.submitted || !this.props.allValid()) ? (
-        <Grid.Column width={13}>
+        <Grid.Column width={12}>
           <Message
             info
             header="Wordsearch will appear here"
@@ -235,7 +235,7 @@ class WordsearchComponent extends Component {
           />
         </Grid.Column>
       ) : (this.state.wordsearch === null ? (
-        <Grid.Column width={13}>
+        <Grid.Column width={12}>
           <Message error>
             <Message.Header>Failed to generate wordsearch</Message.Header>
             <p>Failed to generate wordsearch using the specified options.</p>
@@ -249,7 +249,7 @@ class WordsearchComponent extends Component {
         </Grid.Column>
       ) : (
         <React.Fragment>
-          <Grid.Column width={10}>
+          <Grid.Column width={9}>
             <Header as="h3" attached="top" inverted>Wordsearch</Header>
             <Segment padded="very" attached="bottom">
               <Grid centered verticalAlign="middle" style={{overflow: "auto", whiteSpace: "nowrap", maxHeight: "50em"}}>
