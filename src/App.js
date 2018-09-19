@@ -38,9 +38,9 @@ class App extends Component {
   }
 
   handleSubmit() {
-    this.setState(prevState => ({
+    this.setState({
       submitted: true
-    }), () => {
+    }, () => {
       // Validate form field
       this.validate(() => {
         // Update wordsearch component, only if all form fields are valid (only once state has been updated, hence the callback)
