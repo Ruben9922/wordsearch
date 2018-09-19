@@ -16,7 +16,7 @@ class App extends Component {
       },
       valid: {
         size: true,
-        words: false
+        words: [false]
       },
       errorMessages: {
         size: [],
@@ -28,6 +28,7 @@ class App extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.validate = this.validate.bind(this);
+    this.allValid = this.allValid.bind(this);
   }
 
   handleChange(name, value) {
@@ -44,7 +45,7 @@ class App extends Component {
       // Validate form fields
       this.validate(() => {
         // Update wordsearch component, only if all form fields are valid (only once state has been updated, hence the callback)
-        if (Object.values(this.state.valid).every(item => item === true)) {
+        if (this.allValid()) {
           this.wordsearchComponent.update();
         }
       });
@@ -100,6 +101,10 @@ class App extends Component {
     }, callback);
   }
 
+  allValid() {
+    return this.state.valid.size === true && this.state.valid.words.every(item => item === true);
+  }
+
   render() {
     return (
       <div>
@@ -128,7 +133,7 @@ class App extends Component {
           </Container>
           <WordsearchComponent size={parseInt(this.state.parameters.size, 10)} words={this.state.parameters.words}
                                allowBackwards={this.state.parameters.allowBackwards} allowParts={this.state.parameters.allowParts}
-                               submitted={this.state.submitted} valid={this.state.valid} ref={input => this.wordsearchComponent = input}/>
+                               submitted={this.state.submitted} allValid={this.allValid} ref={input => this.wordsearchComponent = input}/>
         </div>
       </div>
     );

@@ -226,7 +226,7 @@ class WordsearchComponent extends Component {
 
   render() {
     return (
-      (!this.props.submitted || !Object.values(this.props.valid).every(item => item === true)) ? (
+      (!this.props.submitted || !this.props.allValid()) ? (
         <Container>
           <Message
             info
