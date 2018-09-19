@@ -123,7 +123,7 @@ class App extends Component {
             </Menu.Menu>
           </Container>
         </Menu>
-        <Container fluid style={{paddingTop: "4em", height: "100%"}}>
+        <Container fluid style={{paddingTop: "4em"}}>
           <Header as="h1" textAlign="center">Wordsearch Generator</Header>
 
           <Grid stackable padded divided>
