@@ -228,17 +228,14 @@ class WordsearchComponent extends Component {
     return (
       (!this.props.submitted || !this.props.allValid()) ? (
         <Grid.Column width={13}>
-          <div>
             <Message
               info
               header="Wordsearch will appear here"
               content="Choose options and click Create."
             />
-          </div>
         </Grid.Column>
       ) : (this.state.wordsearch === null ? (
         <Grid.Column width={13}>
-          <div>
             <Message error>
               <Message.Header>Failed to generate wordsearch</Message.Header>
               <p>Failed to generate wordsearch using the specified options.</p>
@@ -249,7 +246,6 @@ class WordsearchComponent extends Component {
                 <List.Item as="li">Disabling the <i>Allow parts of words</i> option</List.Item>
               </List>
             </Message>
-          </div>
         </Grid.Column>
       ) : (
         <React.Fragment>
