@@ -57,7 +57,7 @@ class App extends Component {
     let errorMessages = {};
 
     // Size
-    size: {
+    {
       valid.size = true;
       errorMessages.size = "";
 
@@ -68,10 +68,6 @@ class App extends Component {
         valid.size = false;
         errorMessages.size = `Size must be an integer between ${min} and ${max} (inclusive)`;
       }
-
-      if (!valid.size) {
-        break size;
-      }
     }
 
     // Words
@@ -81,9 +77,9 @@ class App extends Component {
 
       const pattern = /^(\s*[a-zA-Z]+\s*)+$/;
       for (let [index, word] of this.state.parameters.words.entries()) {
-        if (index === 0 && word === "") {
+        if (word === "") {
           valid.words[index] = false;
-          errorMessages.words[index] = "At least 1 word is required";
+          errorMessages.words[index] = "Word cannot be empty";
           continue;
         }
         if (!pattern.test(word)) {
