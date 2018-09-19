@@ -250,7 +250,8 @@ class WordsearchComponent extends Component {
       ) : (
         <Grid container centered>
           <div>
-            <Segment compact>
+            <Header as="h3" attached="top" inverted>Wordsearch</Header>
+            <Segment compact attached="bottom">
               <table className="wordsearch">
                 <tbody>
                 {this.state.wordsearch.map((row, index1) => (
@@ -266,8 +267,8 @@ class WordsearchComponent extends Component {
               </table>
             </Segment>
 
-            <Segment>
-              <Header sub dividing>Highlight Words</Header>
+            <Header as="h3" attached="top" inverted>Words</Header>
+            <Segment attached="bottom">
               <Checkbox label="Highlight all/none"
                         checked={Object.values(this.state.wordObjectsMap).every(element => element.highlight)}
                         indeterminate={!Object.values(this.state.wordObjectsMap).every(element => element.highlight) && !Object.values(this.state.wordObjectsMap).every(element => !element.highlight)}
