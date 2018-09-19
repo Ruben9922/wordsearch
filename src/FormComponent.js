@@ -31,17 +31,6 @@ class FormComponent extends Component {
   }
 
   render() {
-    let nonEmptyErrorMessages = Object.entries(this.props.errorMessages)
-      .filter(entry => {
-        let name = entry[0];
-        let errorMessage = entry[1];
-        return !this.props.valid[name] && errorMessage !== "";
-      })
-      .map(entry => {
-        let errorMessage = entry[1];
-        return errorMessage;
-      });
-    let displayErrorMessages = this.props.submitted && !Object.values(this.props.valid).every(item => item === true);
     // TODO: Store min and max size in variables
     return (
       <Grid stackable centered padded columns={2}>
