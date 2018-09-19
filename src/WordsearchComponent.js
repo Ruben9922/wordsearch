@@ -252,7 +252,7 @@ class WordsearchComponent extends Component {
           <Grid.Column width={10}>
             <Header as="h3" attached="top" inverted>Wordsearch</Header>
             <Segment padded="very" attached="bottom">
-              <Grid centered verticalAlign="middle" style={{overflow: "auto", whiteSpace: "nowrap"}}>
+              <Grid centered verticalAlign="middle" style={{overflow: "auto", whiteSpace: "nowrap", maxHeight: "50em"}}>
                 <div>
                   <table className="wordsearch">
                     <tbody>
