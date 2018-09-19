@@ -76,11 +76,10 @@ class App extends Component {
 
     // Words
     {
-      // TODO: Check words aren't empty
       valid.words = new Array(this.state.parameters.words.length).fill(true);
       errorMessages.words = new Array(this.state.parameters.words.length).fill("");
 
-      const pattern = /^(\s*[a-zA-Z]+\s*)*$/;
+      const pattern = /^(\s*[a-zA-Z]+\s*)+$/;
       for (let [index, word] of this.state.parameters.words.entries()) {
         if (index === 0 && word === "") {
           valid.words[index] = false;
