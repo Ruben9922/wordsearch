@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Checkbox, Container, Grid, Header, List, Message, Segment} from 'semantic-ui-react';
+import {Checkbox, Grid, Header, List, Message, Segment} from 'semantic-ui-react';
 import './WordsearchComponent.css';
 import {Enum} from 'enumify';
 
@@ -226,67 +226,75 @@ class WordsearchComponent extends Component {
 
   render() {
     return (
-      (!this.props.submitted || !this.props.allValid()) ? (
-        <Container>
-          <Message
-            info
-            header="Wordsearch will appear here"
-            content="Choose options and click Create."
-          />
-        </Container>
-      ) : (this.state.wordsearch === null ? (
-        <Container>
-          <Message error>
-            <Message.Header>Failed to generate wordsearch</Message.Header>
-            <p>Failed to generate wordsearch using the specified options.</p>
-            <p>Try simply regenerating the wordsearch a few times. If that fails, try the following:</p>
-            <List as="ul">
-              <List.Item as="li">Increasing the wordsearch size</List.Item>
-              <List.Item as="li">Using fewer and/or shorter words</List.Item>
-              <List.Item as="li">Disabling the <i>Allow parts of words</i> option</List.Item>
-            </List>
-          </Message>
-        </Container>
-      ) : (
-        <Grid container centered>
+      <Grid.Column width={13}>
+        {(!this.props.submitted || !this.props.allValid()) ? (
           <div>
-            <Header as="h3" attached="top" inverted>Wordsearch</Header>
-            <Segment compact attached="bottom">
-              <table className="wordsearch">
-                <tbody>
-                {this.state.wordsearch.map((row, index1) => (
-                  <tr key={index1}>
-                    {row.map((cell, index2) => (
-                      <td key={index2} className={cell.wordId !== null && this.state.wordObjectsMap.hasOwnProperty(cell.wordId) && this.state.wordObjectsMap[cell.wordId].highlight && "highlighted"}>
-                        {cell.letter}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-                </tbody>
-              </table>
-            </Segment>
-
-            <Header as="h3" attached="top" inverted>Words</Header>
-            <Segment attached="bottom">
-              <Checkbox label="Highlight all/none"
-                        checked={Object.values(this.state.wordObjectsMap).every(element => element.highlight)}
-                        indeterminate={!Object.values(this.state.wordObjectsMap).every(element => element.highlight) && !Object.values(this.state.wordObjectsMap).every(element => !element.highlight)}
-                        onChange={this.handleHighlightAllNoneChange}/>
-              <List selection verticalAlign="middle">
-                {Object.values(this.state.wordObjectsMap).map((wordObject, index) => (
-                  <List.Item key={index} active={wordObject.highlight}
-                             onClick={(event, data) => this.handleHighlight(event, data, wordObject)}>
-                    <List.Content>
-                      {wordObject.string}
-                    </List.Content>
-                  </List.Item>
-                ))}
-              </List>
-            </Segment>
+            <Message
+              info
+              header="Wordsearch will appear here"
+              content="Choose options and click Create."
+            />
           </div>
-        </Grid>
-      ))
+        ) : (this.state.wordsearch === null ? (
+          <div>
+            <Message error>
+              <Message.Header>Failed to generate wordsearch</Message.Header>
+              <p>Failed to generate wordsearch using the specified options.</p>
+              <p>Try simply regenerating the wordsearch a few times. If that fails, try the following:</p>
+              <List as="ul">
+                <List.Item as="li">Increasing the wordsearch size</List.Item>
+                <List.Item as="li">Using fewer and/or shorter words</List.Item>
+                <List.Item as="li">Disabling the <i>Allow parts of words</i> option</List.Item>
+              </List>
+            </Message>
+          </div>
+        ) : (
+          <Grid stackable divided>
+            <Grid.Column width={13}>
+              <Header as="h3" attached="top" inverted>Wordsearch</Header>
+              <Segment padded attached="bottom">
+                <Grid centered verticalAlign="middle">
+                  <div>
+                    <table className="wordsearch">
+                      <tbody>
+                      {this.state.wordsearch.map((row, index1) => (
+                        <tr key={index1}>
+                          {row.map((cell, index2) => (
+                            <td key={index2} className={cell.wordId !== null && this.state.wordObjectsMap.hasOwnProperty(cell.wordId) && this.state.wordObjectsMap[cell.wordId].highlight && "highlighted"}>
+                              {cell.letter}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </Grid>
+              </Segment>
+            </Grid.Column>
+
+            <Grid.Column width={3} floated="right">
+              <Header as="h3" attached="top" inverted>Words</Header>
+              <Segment attached="bottom">
+                <Checkbox label="Highlight all/none"
+                          checked={Object.values(this.state.wordObjectsMap).every(element => element.highlight)}
+                          indeterminate={!Object.values(this.state.wordObjectsMap).every(element => element.highlight) && !Object.values(this.state.wordObjectsMap).every(element => !element.highlight)}
+                          onChange={this.handleHighlightAllNoneChange}/>
+                <List selection verticalAlign="middle">
+                  {Object.values(this.state.wordObjectsMap).map((wordObject, index) => (
+                    <List.Item key={index} active={wordObject.highlight}
+                               onClick={(event, data) => this.handleHighlight(event, data, wordObject)}>
+                      <List.Content>
+                        {wordObject.string}
+                      </List.Content>
+                    </List.Item>
+                  ))}
+                </List>
+              </Segment>
+            </Grid.Column>
+          </Grid>
+        ))}
+      </Grid.Column>
     );
   }
 }

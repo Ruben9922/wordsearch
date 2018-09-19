@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Container, Divider, Header, Icon, Menu} from 'semantic-ui-react';
+import {Container, Grid, Header, Icon, Menu} from 'semantic-ui-react';
 import FormComponent from "./FormComponent";
 import WordsearchComponent from "./WordsearchComponent";
 
@@ -123,18 +123,21 @@ class App extends Component {
             </Menu.Menu>
           </Container>
         </Menu>
-        <div style={{marginTop: "4em"}}>
+        <Container fluid style={{paddingTop: "4em", height: "100%"}}>
           <Header as="h1" textAlign="center">Wordsearch Generator</Header>
-          <FormComponent size={this.state.parameters.size} words={this.state.parameters.words} allowBackwards={this.state.parameters.allowBackwards}
-                         allowParts={this.state.parameters.allowParts} onChange={this.handleChange}
-                         onSubmit={this.handleSubmit} submitted={this.state.submitted} valid={this.state.valid} errorMessages={this.state.errorMessages}/>
-          <Container>
-            <Divider section/>
-          </Container>
-          <WordsearchComponent size={parseInt(this.state.parameters.size, 10)} words={this.state.parameters.words}
-                               allowBackwards={this.state.parameters.allowBackwards} allowParts={this.state.parameters.allowParts}
-                               submitted={this.state.submitted} allValid={this.allValid} ref={input => this.wordsearchComponent = input}/>
-        </div>
+
+          <Grid stackable padded divided>
+            <Grid.Row>
+              <FormComponent size={this.state.parameters.size} words={this.state.parameters.words} allowBackwards={this.state.parameters.allowBackwards}
+                             allowParts={this.state.parameters.allowParts} onChange={this.handleChange}
+                             onSubmit={this.handleSubmit} submitted={this.state.submitted} valid={this.state.valid} errorMessages={this.state.errorMessages}/>
+
+              <WordsearchComponent size={parseInt(this.state.parameters.size, 10)} words={this.state.parameters.words}
+                                   allowBackwards={this.state.parameters.allowBackwards} allowParts={this.state.parameters.allowParts}
+                                   submitted={this.state.submitted} allValid={this.allValid} ref={input => this.wordsearchComponent = input}/>
+            </Grid.Row>
+          </Grid>
+        </Container>
       </div>
     );
   }

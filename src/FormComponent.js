@@ -33,8 +33,8 @@ class FormComponent extends Component {
   render() {
     // TODO: Store min and max size in variables
     return (
-      <Grid stackable centered padded columns={2}>
-        <Grid.Column>
+      <Grid.Column width={3} floated="left">
+        <div>
           <Header as="h3" attached="top" inverted>Options</Header>
           <Segment attached="bottom">
             <Form onSubmit={this.handleSubmit}>
@@ -75,8 +75,8 @@ class FormComponent extends Component {
               <Button type="submit" primary>Create</Button>
             </Form>
           </Segment>
-        </Grid.Column>
-      </Grid>
+        </div>
+      </Grid.Column>
     );
   }
 }
