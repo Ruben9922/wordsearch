@@ -68,7 +68,7 @@ class FormComponent extends Component {
                 &nbsp;
                 <Popup
                   trigger={<Icon color="blue" name="help circle"/>}
-                  content="Choose whether to add parts of words to make the game more difficult (e.g. &#34;awe&#34;, &#34;awesome&#34;, etc. as well as &#34;awesomeness&#34;)"
+                  content="Choose whether to add randomly generated substrings (&#34;parts&#34;) of words to make the game more difficult. For example, for the word &#34;awesomeness&#34;, add substrings like &#34;a&#34;, &#34;awe&#34; and &#34;awesome&#34;."
                   position="right center"
                 />
               </Form.Field>
