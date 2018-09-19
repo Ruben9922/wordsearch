@@ -251,7 +251,7 @@ class WordsearchComponent extends Component {
         <React.Fragment>
           <Grid.Column width={10}>
             <Header as="h3" attached="top" inverted>Wordsearch</Header>
-            <Segment padded attached="bottom">
+            <Segment padded="very" attached="bottom">
               <Grid centered verticalAlign="middle" style={{overflow: "auto", whiteSpace: "nowrap"}}>
                 <div>
                   <table className="wordsearch">
