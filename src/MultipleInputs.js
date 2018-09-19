@@ -49,13 +49,15 @@ class MultipleInputs extends Component {
     let inputs = this.props.value;
     return (
       <div>
-        <Grid columns={2}>
+        <Grid columns={2} padded="vertically">
           {inputs.map((input, index) => (
-            <Grid.Row verticalAlign="middle" key={index}>
+            <Grid.Row verticalAlign="middle" key={index} style={{paddingTop: "0px", paddingBottom: "0px"}}>
               <Grid.Column>
                 <Input value={input} placeholder={"Word #" + (index + 1)}
                        error={this.props.submitted && !this.props.valid[index]}
-                       onChange={(event) => this.handleChange(index, event)}/>
+                       onChange={(event) => this.handleChange(index, event)}
+                       style={{paddingTop: "6px", paddingBottom: "6px"}}
+                />
               </Grid.Column>
 
               {this.props.submitted && !this.props.valid[index] && (
