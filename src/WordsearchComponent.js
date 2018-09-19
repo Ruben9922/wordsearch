@@ -228,31 +228,31 @@ class WordsearchComponent extends Component {
     return (
       (!this.props.submitted || !this.props.allValid()) ? (
         <Grid.Column width={13}>
-            <Message
-              info
-              header="Wordsearch will appear here"
-              content="Choose options and click Create."
-            />
+          <Message
+            info
+            header="Wordsearch will appear here"
+            content="Choose options and click Create."
+          />
         </Grid.Column>
       ) : (this.state.wordsearch === null ? (
         <Grid.Column width={13}>
-            <Message error>
-              <Message.Header>Failed to generate wordsearch</Message.Header>
-              <p>Failed to generate wordsearch using the specified options.</p>
-              <p>Try simply regenerating the wordsearch a few times. If that fails, try the following:</p>
-              <List as="ul">
-                <List.Item as="li">Increasing the wordsearch size</List.Item>
-                <List.Item as="li">Using fewer and/or shorter words</List.Item>
-                <List.Item as="li">Disabling the <i>Allow parts of words</i> option</List.Item>
-              </List>
-            </Message>
+          <Message error>
+            <Message.Header>Failed to generate wordsearch</Message.Header>
+            <p>Failed to generate wordsearch using the specified options.</p>
+            <p>Try simply regenerating the wordsearch a few times. If that fails, try the following:</p>
+            <List as="ul">
+              <List.Item as="li">Increasing the wordsearch size</List.Item>
+              <List.Item as="li">Using fewer and/or shorter words</List.Item>
+              <List.Item as="li">Disabling the <i>Allow parts of words</i> option</List.Item>
+            </List>
+          </Message>
         </Grid.Column>
       ) : (
         <React.Fragment>
           <Grid.Column width={10}>
             <Header as="h3" attached="top" inverted>Wordsearch</Header>
             <Segment padded attached="bottom">
-              <Grid centered verticalAlign="middle">
+              <Grid centered verticalAlign="middle" style={{overflow: "auto", whiteSpace: "nowrap"}}>
                 <div>
                   <table className="wordsearch">
                     <tbody>
