@@ -51,9 +51,9 @@ class MultipleInputs extends Component {
       <div>
         <Grid columns={2}>
           {inputs.map((input, index) => (
-            <Grid.Row>
+            <Grid.Row key={index}>
               <Grid.Column>
-                <Input key={index} value={input} placeholder={"Word #" + (index + 1)}
+                <Input value={input} placeholder={"Word #" + (index + 1)}
                        error={this.props.submitted && !this.props.valid[index]}
                        onChange={(event) => this.handleChange(index, event)}/>
               </Grid.Column>
