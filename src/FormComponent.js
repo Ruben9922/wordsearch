@@ -38,7 +38,7 @@ class FormComponent extends Component {
           <Header as="h3" attached="top" inverted>Options</Header>
           <Segment attached="bottom">
             <Form onSubmit={this.handleSubmit}>
-              <Form.Field error={!this.props.valid.size}>
+              <Form.Field error={this.props.submitted && !this.props.valid.size}>
                 <label>Size</label>
                 <Input type="number"
                        name="size"
@@ -47,7 +47,9 @@ class FormComponent extends Component {
                        value={this.props.size}
                        onChange={this.handleChange}/>
 
-                {!this.props.valid.size && (<Label color="red" pointing="left">{this.props.errorMessages.size}</Label>)}
+                {this.props.submitted && !this.props.valid.size && (
+                  <Label color="red" pointing>{this.props.errorMessages.size}</Label>
+                )}
               </Form.Field>
               <Form.Field>
                 <label>Words</label>
