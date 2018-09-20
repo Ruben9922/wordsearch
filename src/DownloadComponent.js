@@ -25,7 +25,8 @@ class DownloadComponent extends Component {
 
     let url = this.makeTextFile(wordsearchString);
 
-    DownloadComponent.download(url, "wordsearch.txt");
+    let fileName = "wordsearch_" + DownloadComponent.formatDateAsYMDHMS(new Date()) + ".txt";
+    DownloadComponent.download(url, fileName);
   }
 
   makeTextFile(text) {
@@ -45,6 +46,13 @@ class DownloadComponent extends Component {
     element.href = url;
     element.download = fileName;
     element.click();
+  }
+
+  static formatDateAsYMDHMS(date) {
+    // TODO: Pad with zeros
+    return [date.getFullYear(), date.getMonth() + 1, date.getDate()].join("-")
+      + "_"
+      + [date.getHours(), date.getMinutes(), date.getSeconds()].join("-");
   }
 
   render() {
