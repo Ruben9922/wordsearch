@@ -38,13 +38,14 @@ class FormComponent extends Component {
           <Header as="h3" attached="top" inverted>Options</Header>
           <Segment attached="bottom">
             <Form onSubmit={this.handleSubmit}>
-              <Form.Field inline error={!this.props.valid.size}>
+              <Form.Field error={!this.props.valid.size}>
                 <label>Size</label>
-                <Input type="number" name="size" min={1} max={50} value={this.props.size} onChange={this.handleChange}/>
-                &nbsp;
-                <span>&times;</span>
-                &nbsp;
-                <Input type="number" name="size" min={1} max={50} value={this.props.size} onChange={this.handleChange}/>
+                <Input type="number"
+                       name="size"
+                       min={-1}
+                       max={50}
+                       value={this.props.size}
+                       onChange={this.handleChange}/>
 
                 {!this.props.valid.size && (<Label color="red" pointing="left">{this.props.errorMessages.size}</Label>)}
               </Form.Field>
