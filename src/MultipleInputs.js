@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Button, Divider, Grid, Input, Label} from 'semantic-ui-react'
+import {Button, Grid, Input, Label} from 'semantic-ui-react'
 
 class MultipleInputs extends Component {
   constructor(props) {
@@ -56,14 +56,14 @@ class MultipleInputs extends Component {
                 <Input key={index} value={input} placeholder={"Word #" + (index + 1)}
                        error={this.props.submitted && !this.props.valid[index]}
                        onChange={(event) => this.handleChange(index, event)}
+                       style={{paddingTop: "6px", paddingBottom: "6px"}}
                 />
 
                 {this.props.submitted && !this.props.valid[index] && (
-                  <Label color="red" pointing>{this.props.errorMessages[index]}</Label>
-                )}
-
-                {index !== inputs.length - 1 && (
-                  <Divider/>
+                  <Label color="red" pointing style={{
+                    marginTop: "6px",
+                    marginBottom: "12px"
+                  }}>{this.props.errorMessages[index]}</Label>
                 )}
               </React.Fragment>
             ))}
