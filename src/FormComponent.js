@@ -42,8 +42,6 @@ class FormComponent extends Component {
                 <label>Size</label>
                 <Input type="number"
                        name="size"
-                       min={1}
-                       max={50}
                        value={this.props.size}
                        onChange={this.handleChange}/>
 
