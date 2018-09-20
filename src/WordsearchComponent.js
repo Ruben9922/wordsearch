@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Checkbox, Grid, Header, List, Message, Segment} from 'semantic-ui-react';
 import './WordsearchComponent.css';
 import {Enum} from 'enumify';
+import DownloadComponent from "./DownloadComponent";
 
 // TODO: Change highlighting to use word IDs instead of array indices
 class WordsearchComponent extends Component {
@@ -259,7 +260,7 @@ class WordsearchComponent extends Component {
         <React.Fragment>
           <Grid.Column width={9}>
             <Header as="h3" attached="top" inverted>Wordsearch</Header>
-            <Segment padded="very" attached="bottom">
+            <Segment padded="very" attached>
               <Grid centered verticalAlign="middle" style={{overflow: "auto", whiteSpace: "nowrap", maxHeight: "50em"}}>
                 <div>
                   <table className="wordsearch">
@@ -277,6 +278,9 @@ class WordsearchComponent extends Component {
                   </table>
                 </div>
               </Grid>
+            </Segment>
+            <Segment attached="bottom" textAlign="center">
+              <DownloadComponent wordsearch={this.state.wordsearch}/>
             </Segment>
           </Grid.Column>
 
