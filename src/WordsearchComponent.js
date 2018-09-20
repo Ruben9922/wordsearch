@@ -226,7 +226,7 @@ class WordsearchComponent extends Component {
 
   render() {
     return (
-      (!this.props.submitted) ? (
+      !this.props.submitted ? (
         <Grid.Column width={12}>
           <Message
             info
