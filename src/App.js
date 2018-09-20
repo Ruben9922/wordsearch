@@ -109,7 +109,7 @@ class App extends Component {
     return (
       <div>
         <Menu fixed="top" inverted>
-          <Container>
+          <Container fluid>
             <Menu.Item header link href=".">Wordsearch Generator</Menu.Item>
             <Menu.Menu position="right">
               <Menu.Item link href="//rubendougall.co.uk/">
