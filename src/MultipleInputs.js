@@ -53,8 +53,11 @@ class MultipleInputs extends Component {
           <React.Fragment key={index}>
             <Form.Field error={this.props.submitted && !this.props.valid[index]}
                         style={{marginBottom: "10px"}}>
-              <Input value={input} placeholder={"Word #" + (index + 1)}
-                     onChange={(event) => this.handleChange(index, event)}/>
+              <Input
+                value={input}
+                placeholder={"Word #" + (index + 1)}
+                onChange={(event) => this.handleChange(index, event)}
+              />
 
               {this.props.submitted && !this.props.valid[index] && (
                 <Label color="red" pointing>
