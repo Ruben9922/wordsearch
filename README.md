@@ -10,4 +10,4 @@ Web application that allows one to easily generate wordsearches, made using Reac
 
 ## Future Updates
 *   Add ability to download the generated wordsearch (e.g. as PDF or text file)
-*   Remove requirement for wordsearches to be square
+*   Remove requirement for wordsearches to be square (i.e. number of rows and number of columns always being equal)
