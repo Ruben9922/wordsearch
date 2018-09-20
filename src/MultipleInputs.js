@@ -51,16 +51,17 @@ class MultipleInputs extends Component {
       <React.Fragment>
         {inputs.map((input, index) => (
           <React.Fragment key={index}>
-            <Form.Field error={this.props.submitted && !this.props.valid[index]} style={{marginBottom: "8px"}}>
+            <Form.Field error={this.props.submitted && !this.props.valid[index]}
+                        style={{marginBottom: "10px"}}>
               <Input value={input} placeholder={"Word #" + (index + 1)}
                      onChange={(event) => this.handleChange(index, event)}/>
-            </Form.Field>
 
-            {this.props.submitted && !this.props.valid[index] && (
-              <Label color="red" pointing style={{marginTop: "4px", marginBottom: "10px"}}>
-                {this.props.errorMessages[index]}
-              </Label>
-            )}
+              {this.props.submitted && !this.props.valid[index] && (
+                <Label color="red" pointing>
+                  {this.props.errorMessages[index]}
+                </Label>
+              )}
+            </Form.Field>
           </React.Fragment>
         ))}
         <div>
