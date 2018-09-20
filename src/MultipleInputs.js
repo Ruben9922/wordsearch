@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Button, Grid, Input, Label} from 'semantic-ui-react'
+import {Button, Form, Input, Label} from 'semantic-ui-react'
 
 class MultipleInputs extends Component {
   constructor(props) {
@@ -48,34 +48,26 @@ class MultipleInputs extends Component {
   render() {
     let inputs = this.props.value;
     return (
-      <Grid>
-        <Grid.Row>
-          <Grid.Column>
-            {inputs.map((input, index) => (
-              <React.Fragment>
-                <Input key={index} value={input} placeholder={"Word #" + (index + 1)}
-                       error={this.props.submitted && !this.props.valid[index]}
-                       onChange={(event) => this.handleChange(index, event)}
-                       style={{paddingTop: "6px", paddingBottom: "6px"}}
-                />
+      <React.Fragment>
+        {inputs.map((input, index) => (
+          <React.Fragment key={index}>
+            <Form.Field error={this.props.submitted && !this.props.valid[index]} style={{marginBottom: "8px"}}>
+              <Input value={input} placeholder={"Word #" + (index + 1)}
+                     onChange={(event) => this.handleChange(index, event)}/>
+            </Form.Field>
 
-                {this.props.submitted && !this.props.valid[index] && (
-                  <Label color="red" pointing style={{
-                    marginTop: "6px",
-                    marginBottom: "12px"
-                  }}>{this.props.errorMessages[index]}</Label>
-                )}
-              </React.Fragment>
-            ))}
-          </Grid.Column>
-        </Grid.Row>
-        <Grid.Row>
-          <Grid.Column>
-            <Button icon="add" onClick={this.add}/>
-            <Button icon="remove" disabled={inputs.length <= 1} onClick={this.remove}/>
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
+            {this.props.submitted && !this.props.valid[index] && (
+              <Label color="red" pointing style={{marginTop: "4px", marginBottom: "10px"}}>
+                {this.props.errorMessages[index]}
+              </Label>
+            )}
+          </React.Fragment>
+        ))}
+        <div>
+          <Button icon="add" onClick={this.add}/>
+          <Button icon="remove" disabled={inputs.length <= 1} onClick={this.remove}/>
+        </div>
+      </React.Fragment>
     );
   }
 }
