@@ -226,12 +226,20 @@ class WordsearchComponent extends Component {
 
   render() {
     return (
-      (!this.props.submitted || !this.props.allValid()) ? (
+      (!this.props.submitted) ? (
         <Grid.Column width={12}>
           <Message
             info
-            header="Wordsearch will appear here"
-            content="Choose options and click Create."
+            header="Wordsearch not created yet"
+            content="Choose options and click Create to generate a wordsearch."
+          />
+        </Grid.Column>
+      ) : (!this.props.allValid() ? (
+        <Grid.Column width={12}>
+          <Message
+            error
+            header="Invalid options"
+            content="Fix the errors and try again."
           />
         </Grid.Column>
       ) : (this.state.wordsearch === null ? (
@@ -292,7 +300,7 @@ class WordsearchComponent extends Component {
             </Segment>
           </Grid.Column>
         </React.Fragment>
-      ))
+      )))
     );
   }
 }
