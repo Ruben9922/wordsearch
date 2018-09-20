@@ -40,10 +40,7 @@ class FormComponent extends Component {
             <Form onSubmit={this.handleSubmit}>
               <Form.Field error={this.props.submitted && !this.props.valid.size}>
                 <label>Size</label>
-                <Input type="number"
-                       name="size"
-                       value={this.props.size}
-                       onChange={this.handleChange}/>
+                <Input type="number" name="size" value={this.props.size} onChange={this.handleChange}/>
 
                 {this.props.submitted && !this.props.valid.size && (
                   <Label color="red" pointing>{this.props.errorMessages.size}</Label>
