@@ -11,21 +11,21 @@ class MultipleInputs extends Component {
   }
 
   handleChange(index, event) {
-    let inputs = this.props.value;
-    let inputsCopy = inputs.slice();
-    inputsCopy.splice(index, 1, event.target.value);
+    let values = this.props.value;
+    let valuesCopy = values.slice();
+    valuesCopy.splice(index, 1, event.target.value);
 
     this.props.onChange(event, {
       name: this.props.name,
-      value: inputsCopy
+      value: valuesCopy
     });
   }
 
   add(event) {
     event.preventDefault();
 
-    let inputs = this.props.value;
-    let value = inputs.concat([""]);
+    let values = this.props.value;
+    let value = values.concat([""]);
     this.props.onChange(event, {
       name: this.props.name,
       value: value
@@ -35,8 +35,8 @@ class MultipleInputs extends Component {
   remove(event) {
     event.preventDefault();
 
-    let inputs = this.props.value;
-    let value = inputs.slice(0, -1);
+    let values = this.props.value;
+    let value = values.slice(0, -1);
     this.props.onChange(event, {
       name: this.props.name,
       value: value
@@ -46,15 +46,15 @@ class MultipleInputs extends Component {
   // TODO: Fix input values not changing properly when using transition group
   // TODO: Add remove button for each input
   render() {
-    let inputs = this.props.value;
+    let values = this.props.value;
     return (
       <React.Fragment>
-        {inputs.map((input, index) => (
+        {values.map((value, index) => (
           <React.Fragment key={index}>
             <Form.Field error={this.props.submitted && !this.props.valid[index]}
                         style={{marginBottom: "10px"}}>
               <Input
-                value={input}
+                value={value}
                 placeholder={"Word #" + (index + 1)}
                 onChange={(event) => this.handleChange(index, event)}
               />
@@ -69,7 +69,7 @@ class MultipleInputs extends Component {
         ))}
         <div>
           <Button icon="add" onClick={this.add}/>
-          <Button icon="remove" disabled={inputs.length <= 1} onClick={this.remove}/>
+          <Button icon="remove" disabled={values.length <= 1} onClick={this.remove}/>
         </div>
       </React.Fragment>
     );
