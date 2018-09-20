@@ -24,7 +24,6 @@ class DownloadComponent extends Component {
     let wordsearchString = wordsearchLetters.map(row => row.join(" ")).join("\n");
 
     let url = this.makeTextFile(wordsearchString);
-    console.log(url);
 
     DownloadComponent.download(url, "wordsearch.txt");
   }
