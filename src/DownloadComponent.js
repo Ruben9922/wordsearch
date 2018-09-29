@@ -58,7 +58,7 @@ class DownloadComponent extends Component {
   render() {
     return (
       <Button.Group>
-        <Button onClick={this.handleClick}>
+        <Button color="blue" onClick={this.handleClick}>
           <Icon name="file text"/>
           Download as text file
         </Button>
