@@ -9,4 +9,5 @@ deploy:
   auth:
     secure: fe6+oIqyNERbtL25Qv1qS+mKRE4GqXx2C5id0VN9Mlg9RVETFkFFSimH2bZiBanjNPI3L6vEkjDt81ZsDp29o4XHICTRwLtj6kMPjPeIyyHyFXyS4m7L7xez+KDYx6VnDTk7FyGTnK5p/O9u+wrccYnVABuGh4jW91LdiR0oyEgex+9Qsu95+ycZ0J3/NP67Mbf/ZvP7bAjQfbHBHZVI98xT4kF60Fvf8TYzKpmPGsLzeQwllOPywlLOMVb+f2sNrGVjowloKmrpKZ1akQP06bRLl2vCyyL/DlTpxs1+OyKE7E3Zw0bmU9+jS7uBm9NP2OtrS+QfAdcFRlE++sc1JhpPUlUrm2C6gE+x+WkUUSD63ntzrxqJMS//4exExVhQuWtpygF4Iu3icxnupn9GyxH81bV7bJGg4fhcOa8vaNAJhGmZIx4NOe7X+PY+ux2wQfIXMvBilg+P5mbTQXesxe6IxqNJaUPsp4lT79nwuswZHxxvBfU1gLwvotaINbteDzxkE76HJn4hlbCyP8qy9mg3gueeQ4Mq+O0NQH2BfGROhuiNow9w06urP5gKBXvYSFp6MXZig26/NjgREK/SEl5+shx8nDgtuGWphgKbSZZNdaxiQHCkcGYvA/rscWNYcwCtPK+e8T0bGM68AyWJrpVkNIAxiiaL6iweAwzzYRc=
   prod: true
+  dir: "build/"
   edge: true
