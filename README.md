@@ -1,4 +1,7 @@
 # Wordsearch
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/d6fe0b8d-50d8-41e3-a661-f4979dff0cd0/deploy-status)](https://app.netlify.com/sites/rubendougall-wordsearch/deploys)
+
 Web application that allows one to easily generate wordsearches, made using React.
 
 ## Features
