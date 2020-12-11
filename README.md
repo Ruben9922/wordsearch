@@ -15,3 +15,7 @@ Web application that allows one to easily generate wordsearches, made using Reac
 ## Future Updates
 *   Add ability to download the generated wordsearch as an image or PDF document
 *   Remove requirement for wordsearches to be square (i.e. number of rows and number of columns always being equal)
+*   Add option to automatically generate the word bank using a dictionary API such as Wordnik
+*   Add ability to actually play the wordsearch
+    -   Identify words using drag-and-drop or clicking (click on start and end letter)
+    -   Maybe have cooldown timer to stop this being abused
