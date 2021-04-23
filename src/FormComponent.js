@@ -65,6 +65,11 @@ class FormComponent extends Component {
           InputLabelProps={{
             shrink: true,
           }}
+          InputProps={{
+            inputProps: {
+              min: 0,
+            }
+          }}
           value={this.props.size}
           onChange={this.handleChange}
           error={this.props.submitted && !this.props.valid.size}
