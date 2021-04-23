@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
-import {Button, Form, Input, Label} from 'semantic-ui-react'
+import {IconButton, TextField} from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 class MultipleInputs extends Component {
   constructor(props) {
@@ -50,27 +52,23 @@ class MultipleInputs extends Component {
     return (
       <React.Fragment>
         {values.map((value, index) => (
-          <React.Fragment key={index}>
-            <Form.Field error={this.props.submitted && !this.props.valid[index]}
-                        style={{marginBottom: "10px"}}>
-              <Input
-                value={value}
-                placeholder={"Word #" + (index + 1)}
-                onChange={(event) => this.handleChange(index, event)}
-              />
-
-              {this.props.submitted && !this.props.valid[index] && (
-                <Label color="red" pointing>
-                  {this.props.errorMessages[index]}
-                </Label>
-              )}
-            </Form.Field>
-          </React.Fragment>
+          <TextField
+            key={index}
+            label={"Word " + (index + 1)}
+            value={value}
+            onChange={(event) => this.handleChange(index, event)}
+            error={this.props.submitted && !this.props.valid[index]}
+            helperText={this.props.submitted && !this.props.valid[index] && this.props.errorMessages[index]}
+          />
         ))}
-        <div>
-          <Button icon="add" onClick={this.add}/>
-          <Button icon="remove" disabled={values.length <= 1} onClick={this.remove}/>
-        </div>
+        {/*<div>*/}
+          <IconButton onClick={this.add}>
+            <AddIcon />
+          </IconButton>
+          <IconButton disabled={values.length <= 1} onClick={this.remove}>
+            <DeleteIcon />
+          </IconButton>
+        {/*</div>*/}
       </React.Fragment>
     );
   }

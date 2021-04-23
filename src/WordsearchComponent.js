@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import {Checkbox, Grid, Header, List, Message, Segment} from 'semantic-ui-react';
 import './WordsearchComponent.css';
 import {Enum} from 'enumify';
 import DownloadComponent from "./DownloadComponent";
+import { Alert, AlertTitle } from '@material-ui/lab';
+import {Checkbox, FormControlLabel, List, ListItem, ListItemIcon, ListItemText} from "@material-ui/core";
 
 // TODO: Change highlighting to use word IDs instead of array indices
 class WordsearchComponent extends Component {
@@ -228,81 +229,78 @@ class WordsearchComponent extends Component {
   render() {
     return (
       !this.props.submitted ? (
-        <Grid.Column width={12}>
-          <Message
-            info
-            header="Wordsearch not created yet"
-            content="Choose options and click Create to generate a wordsearch."
-          />
-        </Grid.Column>
+        <Alert severity="info">
+          <AlertTitle>Wordsearch not created yet</AlertTitle>
+          Choose options and click Create to generate a wordsearch.
+        </Alert>
       ) : (!this.props.allValid() ? (
-        <Grid.Column width={12}>
-          <Message
-            error
-            header="Invalid options"
-            content="Fix the errors and try again."
-          />
-        </Grid.Column>
+        <Alert severity="error">
+          <AlertTitle>Invalid options</AlertTitle>
+          Fix the errors and try again.
+        </Alert>
       ) : (this.state.wordsearch === null ? (
-        <Grid.Column width={12}>
-          <Message error>
-            <Message.Header>Failed to generate wordsearch</Message.Header>
+          <Alert severity="error">
+            <AlertTitle>Failed to generate wordsearch</AlertTitle>
             <p>Failed to generate wordsearch using the specified options.</p>
             <p>Try simply regenerating the wordsearch a few times. If that fails, try the following:</p>
-            <List as="ul">
-              <List.Item as="li">Increasing the wordsearch size</List.Item>
-              <List.Item as="li">Using fewer and/or shorter words</List.Item>
-              <List.Item as="li">Disabling the <i>Allow parts of words</i> option</List.Item>
-            </List>
-          </Message>
-        </Grid.Column>
+            <ul>
+              <li>Increasing the wordsearch size</li>
+              <li>Using fewer and/or shorter words</li>
+              <li>Disabling the <i>Allow parts of words</i> option</li>
+            </ul>
+          </Alert>
       ) : (
         <React.Fragment>
-          <Grid.Column width={9}>
-            <Header as="h3" attached="top" inverted>Wordsearch</Header>
-            <Segment padded="very" attached>
-              <Grid centered verticalAlign="middle" style={{overflow: "auto", whiteSpace: "nowrap", maxHeight: "50em"}}>
-                <div>
-                  <table className="wordsearch">
-                    <tbody>
-                    {this.state.wordsearch.map((row, index1) => (
-                      <tr key={index1}>
-                        {row.map((cell, index2) => (
-                          <td key={index2} className={cell.wordId !== null && this.state.wordObjectsMap.hasOwnProperty(cell.wordId) && this.state.wordObjectsMap[cell.wordId].highlight && "highlighted"}>
-                            {cell.letter}
-                          </td>
-                        ))}
-                      </tr>
+          {/*<Grid centered verticalAlign="middle" style={{overflow: "auto", whiteSpace: "nowrap", maxHeight: "50em"}}>*/}
+            <div>
+              <table className="wordsearch">
+                <tbody>
+                {this.state.wordsearch.map((row, index1) => (
+                  <tr key={index1}>
+                    {row.map((cell, index2) => (
+                      <td key={index2} className={cell.wordId !== null && this.state.wordObjectsMap.hasOwnProperty(cell.wordId) && this.state.wordObjectsMap[cell.wordId].highlight && "highlighted"}>
+                        {cell.letter}
+                      </td>
                     ))}
-                    </tbody>
-                  </table>
-                </div>
-              </Grid>
-            </Segment>
-            <Segment attached="bottom" textAlign="center">
-              <DownloadComponent wordsearch={this.state.wordsearch}/>
-            </Segment>
-          </Grid.Column>
-
-          <Grid.Column width={3} floated="right">
-            <Header as="h3" attached="top" inverted>Words</Header>
-            <Segment attached="bottom">
-              <Checkbox label="Highlight all/none"
-                        checked={Object.values(this.state.wordObjectsMap).every(element => element.highlight)}
-                        indeterminate={!Object.values(this.state.wordObjectsMap).every(element => element.highlight) && !Object.values(this.state.wordObjectsMap).every(element => !element.highlight)}
-                        onChange={this.handleHighlightAllNoneChange}/>
-              <List selection verticalAlign="middle">
-                {Object.values(this.state.wordObjectsMap).map((wordObject, index) => (
-                  <List.Item key={index} active={wordObject.highlight}
-                             onClick={(event, data) => this.handleHighlight(event, data, wordObject)}>
-                    <List.Content>
-                      {wordObject.string}
-                    </List.Content>
-                  </List.Item>
+                  </tr>
                 ))}
-              </List>
-            </Segment>
-          </Grid.Column>
+                </tbody>
+              </table>
+            </div>
+          {/*</Grid>*/}
+          <DownloadComponent wordsearch={this.state.wordsearch}/>
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={Object.values(this.state.wordObjectsMap).every(element => element.highlight)}
+                indeterminate={!Object.values(this.state.wordObjectsMap).every(element => element.highlight) && !Object.values(this.state.wordObjectsMap).every(element => !element.highlight)}
+                onChange={this.handleHighlightAllNoneChange}
+              />
+            }
+            label="Highlight all/none"
+          />
+          <List>
+            {Object.values(this.state.wordObjectsMap).map((wordObject, index) => {
+              const labelId = `word-list-label-${index}`;
+
+              return (
+                <ListItem key={index} role={undefined} button
+                          onClick={(event, data) => this.handleHighlight(event, data, wordObject)}>
+                  <ListItemIcon>
+                    <Checkbox
+                      edge="start"
+                      checked={wordObject.highlight}
+                      tabIndex={-1}
+                      disableRipple
+                      inputProps={{'aria-labelledby': labelId}}
+                    />
+                  </ListItemIcon>
+                  <ListItemText primary={wordObject.string} id={labelId} />
+                </ListItem>
+              );
+            })}
+          </List>
         </React.Fragment>
       )))
     );

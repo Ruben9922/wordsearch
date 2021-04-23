@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {Button, Icon} from 'semantic-ui-react';
+import {Button} from "@material-ui/core";
+import DescriptionIcon from '@material-ui/icons/Description';
 
 class DownloadComponent extends Component {
   constructor(props) {
@@ -57,12 +58,15 @@ class DownloadComponent extends Component {
 
   render() {
     return (
-      <Button.Group>
-        <Button color="blue" onClick={this.handleClick}>
-          <Icon name="file text"/>
-          Download as text file
-        </Button>
-      </Button.Group>
+      <Button
+        variant="contained"
+        color="default"
+        // className={classes.button}
+        onClick={this.handleClick}
+        startIcon={<DescriptionIcon />}
+      >
+        Download as text file
+      </Button>
     );
   }
 }

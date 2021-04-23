@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
-import {Container, Grid, Header, Icon, Menu} from 'semantic-ui-react';
 import FormComponent from "./FormComponent";
 import WordsearchComponent from "./WordsearchComponent";
+import Header from "./Header";
+import {Container} from "@material-ui/core";
 
 class App extends Component {
   constructor(props) {
@@ -107,38 +108,18 @@ class App extends Component {
 
   render() {
     return (
-      <div>
-        <Menu fixed="top" inverted>
-          <Container fluid>
-            <Menu.Item header link href=".">Wordsearch Generator</Menu.Item>
-            <Menu.Menu position="right">
-              <Menu.Item link href="//rubendougall.co.uk/">
-                <Icon name="arrow left"/>
-                Back to Main Website
-              </Menu.Item>
-              <Menu.Item link href="https://github.com/Ruben9922/wordsearch">
-                <Icon name="github"/>
-                GitHub
-              </Menu.Item>
-            </Menu.Menu>
-          </Container>
-        </Menu>
-        <Container fluid style={{paddingTop: "4em"}}>
-          <Header as="h1" textAlign="center">Wordsearch Generator</Header>
+      <React.Fragment>
+        <Header />
+        <Container maxWidth="md">
+          <FormComponent size={this.state.parameters.size} words={this.state.parameters.words} allowBackwards={this.state.parameters.allowBackwards}
+                         allowParts={this.state.parameters.allowParts} onChange={this.handleChange}
+                         onSubmit={this.handleSubmit} submitted={this.state.submitted} valid={this.state.valid} errorMessages={this.state.errorMessages}/>
 
-          <Grid stackable padded divided>
-            <Grid.Row>
-              <FormComponent size={this.state.parameters.size} words={this.state.parameters.words} allowBackwards={this.state.parameters.allowBackwards}
-                             allowParts={this.state.parameters.allowParts} onChange={this.handleChange}
-                             onSubmit={this.handleSubmit} submitted={this.state.submitted} valid={this.state.valid} errorMessages={this.state.errorMessages}/>
-
-              <WordsearchComponent size={parseInt(this.state.parameters.size, 10)} words={this.state.parameters.words}
-                                   allowBackwards={this.state.parameters.allowBackwards} allowParts={this.state.parameters.allowParts}
-                                   submitted={this.state.submitted} allValid={this.allValid} ref={input => this.wordsearchComponent = input}/>
-            </Grid.Row>
-          </Grid>
+          <WordsearchComponent size={parseInt(this.state.parameters.size, 10)} words={this.state.parameters.words}
+                               allowBackwards={this.state.parameters.allowBackwards} allowParts={this.state.parameters.allowParts}
+                               submitted={this.state.submitted} allValid={this.allValid} ref={input => this.wordsearchComponent = input}/>
         </Container>
-      </div>
+      </React.Fragment>
     );
   }
 }
