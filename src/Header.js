@@ -22,7 +22,7 @@ export default function Header() {
           Wordsearch Generator
         </Typography>
         <Tooltip title="GitHub repository">
-          <IconButton aria-label="GitHub" href="https://github.com/Ruben9922/automaton-tool-react" color="inherit">
+          <IconButton aria-label="GitHub" href="https://github.com/Ruben9922/wordsearch" color="inherit">
             <GitHubIcon />
           </IconButton>
         </Tooltip>
