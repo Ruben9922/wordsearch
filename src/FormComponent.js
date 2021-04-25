@@ -37,9 +37,7 @@ class FormComponent extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleChange(event) {
-    const name = event.target.name;
-    const value = event.target.value;
+  handleChange(name, value) {
     this.props.onChange(name, value);
 
     this.setState({
@@ -71,7 +69,7 @@ class FormComponent extends Component {
             }
           }}
           value={this.props.size}
-          onChange={this.handleChange}
+          onChange={(event) => this.handleChange(event.target.name, event.target.value)}
           error={this.props.submitted && !this.props.valid.size}
           helperText={this.props.submitted && !this.props.valid.size && this.props.errorMessages.size}
         />

@@ -17,10 +17,7 @@ class MultipleInputs extends Component {
     let valuesCopy = values.slice();
     valuesCopy.splice(index, 1, event.target.value);
 
-    this.props.onChange(event, {
-      name: this.props.name,
-      value: valuesCopy
-    });
+    this.props.onChange(this.props.name, valuesCopy);
   }
 
   add(event) {
@@ -28,10 +25,7 @@ class MultipleInputs extends Component {
 
     let values = this.props.value;
     let value = values.concat([""]);
-    this.props.onChange(event, {
-      name: this.props.name,
-      value: value
-    });
+    this.props.onChange(this.props.name, value);
   }
 
   remove(event) {
@@ -39,10 +33,7 @@ class MultipleInputs extends Component {
 
     let values = this.props.value;
     let value = values.slice(0, -1);
-    this.props.onChange(event, {
-      name: this.props.name,
-      value: value
-    });
+    this.props.onChange(this.props.name, value);
   }
 
   // TODO: Fix input values not changing properly when using transition group
