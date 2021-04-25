@@ -7,9 +7,11 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "enumify": "^1.0.4",
+    "ramda": "^0.27.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
-    "react-scripts": "1.0.11"
+    "react-scripts": "1.0.11",
+    "uuid": "^8.3.2"
   },
   "scripts": {
     "start": "react-scripts start",

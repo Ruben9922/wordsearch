@@ -1,6 +1,5 @@
 import React from 'react';
 import {AppBar, IconButton, makeStyles, Toolbar, Tooltip, Typography} from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
 import GitHubIcon from "@material-ui/icons/GitHub";
 
 const useStyles = makeStyles(theme => ({
