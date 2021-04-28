@@ -1,5 +1,5 @@
 import React from 'react';
-import {Checkbox, FormControlLabel, List, ListItem, ListItemIcon, ListItemText} from "@material-ui/core";
+import {Checkbox, FormControlLabel, List, ListItem, ListItemIcon, ListItemText, Paper} from "@material-ui/core";
 import * as R from "ramda";
 import {likeSet} from "./utilities";
 
