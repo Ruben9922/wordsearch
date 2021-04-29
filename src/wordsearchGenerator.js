@@ -1,30 +1,33 @@
 import Direction from "./direction";
-import {reverseString} from "./utilities";
 import * as R from "ramda";
 import {v4 as uuidv4} from "uuid";
 
+// noinspection SpellCheckingInspection
+const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
 export function generateWordsearch(size, words, allowBackwards, allowParts) {
-  // Convert each word string to upper case and remove non-alphabet characters
-  words = words.map(word => ({
-    id: word.id,
-    text: word.text.toUpperCase().replace(/[^A-Z]+/g, "")
-  }));
+  // Preprocess the words by converting each word string to upper case and removing non-alphabet characters
+  words = R.map(w => ({
+    id: w.id,
+    text: R.filter(letter => R.includes(letter, letters.split("")), R.toUpper(w.text)).join("")
+  }), words);
 
-  let wordsearch = new Array(size);
+  words = reverseSomeWords(words, allowBackwards);
 
-  fillWordsearch(wordsearch, size);
+  let wordsearch = fillWordsearch(size);
 
-  let wordsPlaced = placeWords(wordsearch, size, words, allowBackwards);
+  wordsearch = placeWords(wordsearch, size, words, false);
 
-  if (!wordsPlaced) {
+  if (wordsearch === null) {
     return null;
   }
 
   if (allowParts) {
     let parts = generateParts(words);
-    let partsPlaced = placeWords(wordsearch, size, parts, allowBackwards);
+    parts = reverseSomeWords(parts, allowBackwards);
+    wordsearch = placeWords(wordsearch, size, parts, true);
 
-    if (!partsPlaced) {
+    if (wordsearch === null) {
       return null;
     }
   }
@@ -32,79 +35,100 @@ export function generateWordsearch(size, words, allowBackwards, allowParts) {
   return wordsearch;
 }
 
-function computeX(direction, originX, j) {
-  return (direction === Direction.VERTICAL) ? originX : originX + j;
+function reverseSomeWords(words, allowBackwards) {
+  // Reverse some words (if allowBackwards is true)
+  return R.map(w => {
+    // If allowBackwards parameter is true, randomly choose whether to place the word backwards
+    const backwards = allowBackwards && Math.random() >= 0.5;
+    return {
+      id: w.id,
+      text: backwards ? R.reverse(w.text) : w.text
+    };
+  }, words);
 }
 
-function computeY(direction, originY, j) {
-  return (direction === Direction.HORIZONTAL) ? originY : ((direction === Direction.DIAGONAL_UP) ? originY - j : originY + j);
+// Given a direction, origin and index of a letter within a word, compute the coordinates this letter should be placed in
+function computeLetterCoords(direction, origin, index) {
+  return {
+    x: (direction === Direction.VERTICAL) ? origin.x : origin.x + index,
+    y: (direction === Direction.HORIZONTAL) ? origin.y : ((direction === Direction.DIAGONAL_UP) ? origin.y - index : origin.y + index),
+  };
 }
 
-function placeWord(wordsearch, word, size, allowBackwards) {
-  // If allowBackwards parameter is true, randomly choose whether to place the word backwards
-  // If the word is to be placed backwards, simply reverse the word string
-  let string = word.text;
-  let backwards = allowBackwards && Math.random() >= 0.5;
-  if (backwards) {
-    string = reverseString(string);
-  }
+function generateWordOrigin(direction, size, word) {
+  // Both min and max origin values are inclusive
+  const minOrigin = computeMinOrigin(direction, word);
+  const maxOrigin = computeMaxOrigin(direction, size, word);
 
+  return {
+    x: Math.floor(Math.random() * (maxOrigin.x + 1 - minOrigin.x)) + minOrigin.x,
+    y: Math.floor(Math.random() * (maxOrigin.y + 1 - minOrigin.y)) + minOrigin.y,
+  };
+}
+
+function computeMinOrigin(direction, word) {
+  return {
+    x: 0,
+    y: (direction === Direction.DIAGONAL_UP) ? R.length(word.text) - 1 : 0,
+  };
+}
+
+function computeMaxOrigin(direction, size, word) {
+  return {
+    x: (direction === Direction.VERTICAL) ? size - 1 : size - R.length(word.text),
+    y: (direction === Direction.DIAGONAL_UP) ? size - 1 : size - R.length(word.text),
+  };
+}
+
+function placeWord(wordsearch, word, size) {
   // Currently, if word cannot be placed, chooses new origin and direction and tries to place again; could change to
   // restrict choice of origin (so don't need to choose new origin) but possibly very complicated and inefficient
   let direction;
-  let originX;
-  let originY;
+  let origin;
   let ok;
-  const attempts = 10000;
-  for (let i = 0; i < attempts && !ok; i++) {
+  const maxAttempts = 10000;
+  for (let i = 0; i < maxAttempts && !ok; i++) {
     direction = Direction.enumValues[Math.floor(Math.random() * Direction.enumValues.length)];
 
-    // Both min and max origin values are inclusive
-    let minOriginX = 0;
-    let maxOriginX = (direction === Direction.VERTICAL) ? size - 1 : size - string.length;
-    let minOriginY = (direction === Direction.DIAGONAL_UP) ? string.length - 1 : 0;
-    let maxOriginY = (direction === Direction.DIAGONAL_UP) ? size - 1 : size - string.length;
+    origin = generateWordOrigin(direction, size, word);
 
-    originX = Math.floor(Math.random() * (maxOriginX + 1 - minOriginX)) + minOriginX;
-    originY = Math.floor(Math.random() * (maxOriginY + 1 - minOriginY)) + minOriginY;
-
-    ok = checkOverlap(wordsearch, direction, string, originX, originY);
+    ok = checkOverlap(wordsearch, direction, word.text, origin);
   }
 
   // If such origin not found (max no. of attempts was reached) then return
   if (!ok) {
-    return false;
+    return null;
   }
 
-  let id = word.id;
-  for (let i = 0; i < string.length; i++) {
-    let letter = string.charAt(i);
+  // Actually place the letters into the wordsearch
+  let updatedWordsearch = R.clone(wordsearch);
+  for (let i = 0; i < word.text.length; i++) {
+    let letter = word.text[i]
+    let letterCoords = computeLetterCoords(direction, origin, i);
 
-    let x = (direction === Direction.VERTICAL) ? originX : originX + i;
-    let y = (direction === Direction.HORIZONTAL) ? originY : ((direction === Direction.DIAGONAL_UP) ? originY - i : originY + i);
-
-    wordsearch[y][x] = {
+    updatedWordsearch[letterCoords.y][letterCoords.x] = {
       letter: letter,
-      wordIds: id === null ? wordsearch[y][x].wordIds : R.append(id, wordsearch[y][x].wordIds)
+      wordIds: word.id === null
+        ? updatedWordsearch[letterCoords.y][letterCoords.x].wordIds
+        : R.append(word.id, updatedWordsearch[letterCoords.y][letterCoords.x].wordIds)
     };
   }
 
-  return true;
+  return updatedWordsearch;
 }
 
-function checkOverlap(wordsearch, direction, string, originX, originY) {
+function checkOverlap(wordsearch, direction, string, origin) {
   // Check that, using the chosen origin, the word can be placed without overlapping other words
   // Overlapping is only allowed if:
   // 1. The points of overlap involve the same letter
   // 2. There is only one point of intersection
   let prevCellWordIds = [];
-  for (let j = 0; j < string.length; j++) {
-    let letter = string.charAt(j);
+  for (let i = 0; i < string.length; i++) {
+    let letter = string[i];
 
     // Get cell in the wordsearch where the letter will be placed
-    const x = computeX(direction, originX, j);
-    const y = computeY(direction, originY, j);
-    const cell = wordsearch[y][x];
+    const letterCoords = computeLetterCoords(direction, origin, i);
+    const cell = wordsearch[letterCoords.y][letterCoords.x];
 
     // If cell not already used by any words, that's fine - continue to next letter
     // If cell is already used, check the letters are the same and that no same two words have been intersected
@@ -119,38 +143,31 @@ function checkOverlap(wordsearch, direction, string, originX, originY) {
   return true;
 }
 
-function fillWordsearch(wordsearch, size) {
-  let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  for (let i = 0; i < wordsearch.length; i++) {
-    wordsearch[i] = new Array(size);
-    for (let j = 0; j < wordsearch[i].length; j++) {
-      wordsearch[i][j] = {
-        letter: letters[Math.floor(Math.random() * letters.length)],
-        wordIds: []
-      };
-    }
-  }
+function fillWordsearch(size) {
+  return R.map(() => R.map(() => ({
+    letter: letters[Math.floor(Math.random() * letters.length)],
+    wordIds: []
+  }), R.range(0, size)), R.range(0, size));
 }
 
 function generateParts(words) {
   // Arbitrary number that is multiplied by words.length to obtain number of parts to put into wordsearch
   const factor = 1.0;
 
-  let partCount = Math.floor(Math.random() * words.length * factor);
-  let partStrings = new Array(partCount);
-  for (let i = 0; i < partCount; i++) {
+  const partCount = Math.ceil(Math.random() * R.length(words) * factor);
+  let partStrings = R.map(() => {
     // Randomly choose word
-    let wordIndex = Math.floor(Math.random() * words.length);
+    let wordIndex = Math.floor(Math.random() * R.length(words));
 
     // Randomly choose start and end indices of substring, ensuring the substring length is at least 1
     // Start index is just index between 0th and second last index
     // End index is any index strictly greater than start index
     let string = words[wordIndex].text;
-    let startIndex = Math.floor(Math.random() * (string.length - 1));
-    let endIndex = Math.floor(Math.random() * (string.length - startIndex + 1)) + startIndex + 1;
+    let startIndex = Math.floor(Math.random() * (R.length(string) - 1));
+    let endIndex = Math.floor(Math.random() * (R.length(string) - startIndex + 1)) + startIndex + 1;
 
-    partStrings[i] = string.slice(startIndex, endIndex);
-  }
+    return R.slice(startIndex, endIndex, string);
+  }, R.range(0, partCount));
 
   let parts = R.map(s => ({
     id: uuidv4(),
@@ -160,14 +177,24 @@ function generateParts(words) {
   return parts;
 }
 
-// TODO: Remove size parameter
-function placeWords(wordsearch, size, words, allowBackwards) {
-  for (let word of words) {
-    let stringPlaced = placeWord(wordsearch, word, size, allowBackwards);
+function placeWords(wordsearch, size, words, ignoreFailures = false) {
+  // Could use R.all() but that doesn't seem to short-circuit
+  let updatedWordsearch = wordsearch; // OK as wordsearch is cloned inside placeWord() anyway
 
-    if (!stringPlaced) {
-      return false;
+  for (const word of words) {
+    let updatedWordsearch1 = placeWord(updatedWordsearch, word, size);
+    // If placing word fails (i.e. resulting wordsearch is null):
+    // * If ignoreFailures is true, don't do anything - effectively discarding the resulting wordsearch
+    // * Otherwise, immediately return null
+    // If word was placed successfully (i.e. resulting wordsearch is not null), keep the resulting wordsearch
+    if (updatedWordsearch1 === null) {
+      if (!ignoreFailures) {
+        return null;
+      }
+    } else {
+      updatedWordsearch = updatedWordsearch1;
     }
   }
-  return true;
+
+  return updatedWordsearch;
 }
