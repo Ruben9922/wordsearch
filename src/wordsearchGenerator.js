@@ -1,6 +1,7 @@
 import Direction from "./direction";
 import {reverseString} from "./utilities";
 import * as R from "ramda";
+import {v4 as uuidv4} from "uuid";
 
 export function generateWordsearch(size, words, allowBackwards, allowParts) {
   // Convert each word string to upper case and remove non-alphabet characters
@@ -31,6 +32,14 @@ export function generateWordsearch(size, words, allowBackwards, allowParts) {
   return wordsearch;
 }
 
+function computeX(direction, originX, j) {
+  return (direction === Direction.VERTICAL) ? originX : originX + j;
+}
+
+function computeY(direction, originY, j) {
+  return (direction === Direction.HORIZONTAL) ? originY : ((direction === Direction.DIAGONAL_UP) ? originY - j : originY + j);
+}
+
 function placeWord(wordsearch, word, size, allowBackwards) {
   // If allowBackwards parameter is true, randomly choose whether to place the word backwards
   // If the word is to be placed backwards, simply reverse the word string
@@ -59,35 +68,7 @@ function placeWord(wordsearch, word, size, allowBackwards) {
     originX = Math.floor(Math.random() * (maxOriginX + 1 - minOriginX)) + minOriginX;
     originY = Math.floor(Math.random() * (maxOriginY + 1 - minOriginY)) + minOriginY;
 
-    // Check that, using the chosen origin, the word can be placed without overlapping other words
-    // Overlapping is only allowed if the points of overlap involve the same letter
-    ok = true;
-    let overlappedWordId = null;
-    for (let j = 0; j < string.length; j++) {
-      let letter = string.charAt(j);
-
-      let x = (direction === Direction.VERTICAL) ? originX : originX + j;
-      let y = (direction === Direction.HORIZONTAL) ? originY : ((direction === Direction.DIAGONAL_UP) ? originY - j : originY + j);
-      let cell = wordsearch[y][x];
-
-      // TODO: Possibly restructure this
-      if (cell.letter === letter) {
-        // Ensure the current word doesn't overlap another word completely, by checking that the previously overlapped word is different from the current overlapped word
-        // If no previous overlaps or previously overlapped word is different from the current overlapped word
-        if (overlappedWordId === null || overlappedWordId !== cell.wordId) {
-          overlappedWordId = cell.wordId;
-        } else { // Previously overlapped word was same as the currently overlapped word, so the same word has been overlapped twice, i.e., overlapped completely by the current word
-          ok = false;
-        }
-      } else {
-        overlappedWordId = null; // Reset overlapped substring
-
-        if (cell.wordId !== null) {
-          ok = false;
-          break;
-        }
-      }
-    }
+    ok = checkOverlap(wordsearch, direction, string, originX, originY);
   }
 
   // If such origin not found (max no. of attempts was reached) then return
@@ -104,8 +85,35 @@ function placeWord(wordsearch, word, size, allowBackwards) {
 
     wordsearch[y][x] = {
       letter: letter,
-      wordId: id
+      wordIds: id === null ? wordsearch[y][x].wordIds : R.append(id, wordsearch[y][x].wordIds)
     };
+  }
+
+  return true;
+}
+
+function checkOverlap(wordsearch, direction, string, originX, originY) {
+  // Check that, using the chosen origin, the word can be placed without overlapping other words
+  // Overlapping is only allowed if:
+  // 1. The points of overlap involve the same letter
+  // 2. There is only one point of intersection
+  let prevCellWordIds = [];
+  for (let j = 0; j < string.length; j++) {
+    let letter = string.charAt(j);
+
+    // Get cell in the wordsearch where the letter will be placed
+    const x = computeX(direction, originX, j);
+    const y = computeY(direction, originY, j);
+    const cell = wordsearch[y][x];
+
+    // If cell not already used by any words, that's fine - continue to next letter
+    // If cell is already used, check the letters are the same and that no same two words have been intersected
+    // consecutively by this word
+    if (!R.isEmpty(cell.wordIds) && (cell.letter !== letter || !R.empty(R.intersection(prevCellWordIds, cell.wordIds)))) {
+      return false;
+    } else {
+      prevCellWordIds = cell.wordIds;
+    }
   }
 
   return true;
@@ -118,7 +126,7 @@ function fillWordsearch(wordsearch, size) {
     for (let j = 0; j < wordsearch[i].length; j++) {
       wordsearch[i][j] = {
         letter: letters[Math.floor(Math.random() * letters.length)],
-        wordId: null
+        wordIds: []
       };
     }
   }
@@ -145,7 +153,7 @@ function generateParts(words) {
   }
 
   let parts = R.map(s => ({
-    id: null,
+    id: uuidv4(),
     text: s
   }), partStrings);
 

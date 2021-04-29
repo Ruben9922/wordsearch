@@ -19,7 +19,7 @@ export default function WordsearchComponent({
               {row.map((cell, index2) => (
                 <td
                   key={index2}
-                  className={cell.wordId !== null && R.includes(cell.wordId, highlightedWordIds) ? "highlighted" : undefined}
+                  className={!R.isEmpty(R.intersection(cell.wordIds, highlightedWordIds)) ? "highlighted" : undefined}
                 >
                   {cell.letter}
                 </td>
