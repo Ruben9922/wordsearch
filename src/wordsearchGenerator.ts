@@ -1,20 +1,31 @@
-import Direction from "./direction";
 import * as R from "ramda";
 import {v4 as uuidv4} from "uuid";
+import {getEnumLength} from "./utilities";
+
+type Word = {id: string, text: string};
+type Wordsearch = {letter: string, wordIds: string[]}[][];
+type Coords = {x: number, y: number};
+
+enum Direction {
+  Horizontal,
+  Vertical,
+  DiagonalUp,
+  DiagonalDown,
+}
 
 // noinspection SpellCheckingInspection
 const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-export function generateWordsearch(size, words, allowBackwards, allowParts) {
+export function generateWordsearch(size: number, words: Word[], allowBackwards: boolean, allowParts: boolean): Wordsearch | null {
   // Preprocess the words by converting each word string to upper case and removing non-alphabet characters
   words = R.map(w => ({
     id: w.id,
-    text: R.filter(letter => R.includes(letter, letters.split("")), R.toUpper(w.text)).join("")
+    text: R.join("", R.filter(letter => R.includes(letter, letters), R.split("", R.toUpper(w.text))))
   }), words);
 
   words = reverseSomeWords(words, allowBackwards);
 
-  let wordsearch = fillWordsearch(size);
+  let wordsearch: Wordsearch | null = fillWordsearch(size);
 
   wordsearch = placeWords(wordsearch, size, words, false);
 
@@ -35,7 +46,7 @@ export function generateWordsearch(size, words, allowBackwards, allowParts) {
   return wordsearch;
 }
 
-function reverseSomeWords(words, allowBackwards) {
+function reverseSomeWords(words: Word[], allowBackwards: boolean): Word[] {
   // Reverse some words (if allowBackwards is true)
   return R.map(w => {
     // If allowBackwards parameter is true, randomly choose whether to place the word backwards
@@ -48,14 +59,14 @@ function reverseSomeWords(words, allowBackwards) {
 }
 
 // Given a direction, origin and index of a letter within a word, compute the coordinates this letter should be placed in
-function computeLetterCoords(direction, origin, index) {
+function computeLetterCoords(direction: Direction, origin: Coords, index: number): Coords {
   return {
-    x: (direction === Direction.VERTICAL) ? origin.x : origin.x + index,
-    y: (direction === Direction.HORIZONTAL) ? origin.y : ((direction === Direction.DIAGONAL_UP) ? origin.y - index : origin.y + index),
+    x: (direction === Direction.Vertical) ? origin.x : origin.x + index,
+    y: (direction === Direction.Horizontal) ? origin.y : ((direction === Direction.DiagonalUp) ? origin.y - index : origin.y + index),
   };
 }
 
-function generateWordOrigin(direction, size, word) {
+function generateWordOrigin(direction: Direction, size: number, word: Word): Coords {
   // Both min and max origin values are inclusive
   const minOrigin = computeMinOrigin(direction, word);
   const maxOrigin = computeMaxOrigin(direction, size, word);
@@ -66,29 +77,29 @@ function generateWordOrigin(direction, size, word) {
   };
 }
 
-function computeMinOrigin(direction, word) {
+function computeMinOrigin(direction: Direction, word: Word): Coords {
   return {
     x: 0,
-    y: (direction === Direction.DIAGONAL_UP) ? R.length(word.text) - 1 : 0,
+    y: (direction === Direction.DiagonalUp) ? word.text.length - 1 : 0,
   };
 }
 
-function computeMaxOrigin(direction, size, word) {
+function computeMaxOrigin(direction: Direction, size: number, word: Word): Coords {
   return {
-    x: (direction === Direction.VERTICAL) ? size - 1 : size - R.length(word.text),
-    y: (direction === Direction.DIAGONAL_UP) ? size - 1 : size - R.length(word.text),
+    x: (direction === Direction.Vertical) ? size - 1 : size - word.text.length,
+    y: (direction === Direction.DiagonalUp) ? size - 1 : size - word.text.length,
   };
 }
 
-function placeWord(wordsearch, word, size) {
+function placeWord(wordsearch: Wordsearch, word: Word, size: number): Wordsearch | null {
   // Currently, if word cannot be placed, chooses new origin and direction and tries to place again; could change to
   // restrict choice of origin (so don't need to choose new origin) but possibly very complicated and inefficient
-  let direction;
-  let origin;
-  let ok;
+  let direction: Direction | null = null;
+  let origin: Coords | null = null;
+  let ok: boolean = false;
   const maxAttempts = 10000;
   for (let i = 0; i < maxAttempts && !ok; i++) {
-    direction = Direction.enumValues[Math.floor(Math.random() * Direction.enumValues.length)];
+    direction = Math.floor(Math.random() * getEnumLength(Direction));
 
     origin = generateWordOrigin(direction, size, word);
 
@@ -96,14 +107,14 @@ function placeWord(wordsearch, word, size) {
   }
 
   // If such origin not found (max no. of attempts was reached) then return
-  if (!ok) {
+  if (!ok || direction === null || origin === null) {
     return null;
   }
 
   // Actually place the letters into the wordsearch
   let updatedWordsearch = R.clone(wordsearch);
   for (let i = 0; i < word.text.length; i++) {
-    let letter = word.text[i]
+    let letter = word.text[i];
     let letterCoords = computeLetterCoords(direction, origin, i);
 
     updatedWordsearch[letterCoords.y][letterCoords.x] = {
@@ -117,12 +128,12 @@ function placeWord(wordsearch, word, size) {
   return updatedWordsearch;
 }
 
-function checkOverlap(wordsearch, direction, string, origin) {
+function checkOverlap(wordsearch: Wordsearch, direction: Direction, string: string, origin: Coords): boolean {
   // Check that, using the chosen origin, the word can be placed without overlapping other words
   // Overlapping is only allowed if:
   // 1. The points of overlap involve the same letter
   // 2. There is only one point of intersection
-  let prevCellWordIds = [];
+  let prevCellWordIds: string[] = [];
   for (let i = 0; i < string.length; i++) {
     let letter = string[i];
 
@@ -143,14 +154,14 @@ function checkOverlap(wordsearch, direction, string, origin) {
   return true;
 }
 
-function fillWordsearch(size) {
+function fillWordsearch(size: number): Wordsearch {
   return R.map(() => R.map(() => ({
     letter: letters[Math.floor(Math.random() * letters.length)],
     wordIds: []
   }), R.range(0, size)), R.range(0, size));
 }
 
-function generateParts(words) {
+function generateParts(words: Word[]): Word[] {
   // Arbitrary number that is multiplied by words.length to obtain number of parts to put into wordsearch
   const factor = 1.0;
 
@@ -163,8 +174,8 @@ function generateParts(words) {
     // Start index is just index between 0th and second last index
     // End index is any index strictly greater than start index
     let string = words[wordIndex].text;
-    let startIndex = Math.floor(Math.random() * (R.length(string) - 1));
-    let endIndex = Math.floor(Math.random() * (R.length(string) - startIndex + 1)) + startIndex + 1;
+    let startIndex = Math.floor(Math.random() * (string.length - 1));
+    let endIndex = Math.floor(Math.random() * (string.length - startIndex + 1)) + startIndex + 1;
 
     return R.slice(startIndex, endIndex, string);
   }, R.range(0, partCount));
@@ -177,7 +188,7 @@ function generateParts(words) {
   return parts;
 }
 
-function placeWords(wordsearch, size, words, ignoreFailures = false) {
+function placeWords(wordsearch: Wordsearch, size: number, words: Word[], ignoreFailures: boolean = false): Wordsearch | null {
   // Could use R.all() but that doesn't seem to short-circuit
   let updatedWordsearch = wordsearch; // OK as wordsearch is cloned inside placeWord() anyway
 
