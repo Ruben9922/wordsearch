@@ -77,6 +77,7 @@ export default function App() {
   const [allowParts, setAllowParts] = React.useState(true);
   const [wordsearch, setWordsearch] = React.useState(null);
   const [highlightedWordIds, setHighlightedWordIds] = React.useState([]);
+  const [submitted, setSubmitted] = React.useState(false);
 
   const [valid, errorMessages] = validate(size, R.map(w => w.text, words));
 
@@ -105,16 +106,17 @@ export default function App() {
                   words={words}
                   allowBackwards={allowBackwards}
                   allowParts={allowParts}
-                  onSizeChange={setSize}
-                  onWordsChange={setWords}
-                  onAllowBackwardsChange={setAllowBackwards}
-                  onAllowPartsChange={setAllowParts}
+                  onSizeChange={size => {setSize(size); setSubmitted(false);}}
+                  onWordsChange={words => {setWords(words); setSubmitted(false);}}
+                  onAllowBackwardsChange={allowBackwards => {setAllowBackwards(allowBackwards); setSubmitted(false);}}
+                  onAllowPartsChange={allowParts => {setAllowParts(allowParts); setSubmitted(false);}}
                   onSubmit={() => {
                     if (allValid(valid)) {
                       setWordsearch(generateWordsearch(parseInt(size, 10), words, allowBackwards, allowParts));
                     } else {
                       setWordsearch(null);
                     }
+                    setSubmitted(true);
                   }}
                   valid={valid}
                   allValid={allValid(valid)}
@@ -138,19 +140,13 @@ export default function App() {
             </Grid>
           </Grid>
           <Grid item sm>
-            {!wordsearch && (
+            {!submitted && (
               <Alert severity="info">
                 <AlertTitle>Wordsearch not created yet</AlertTitle>
                 Choose options and click Create to generate a wordsearch.
               </Alert>
             )}
-            {!allValid(valid) && (
-              <Alert severity="error">
-                <AlertTitle>Invalid options</AlertTitle>
-                Fix the errors and try again.
-              </Alert>
-            )}
-            {wordsearch === null && (
+            {submitted && wordsearch === null && (
               <Alert severity="error">
                 <AlertTitle>Failed to generate wordsearch</AlertTitle>
                 <p>Failed to generate wordsearch using the specified options.</p>
@@ -162,7 +158,7 @@ export default function App() {
                 </ul>
               </Alert>
             )}
-            {allValid(valid) && wordsearch && (
+            {submitted && allValid(valid) && wordsearch && (
               <React.Fragment>
                 <Typography variant="h5" component="h1" gutterBottom>
                   Wordsearch
