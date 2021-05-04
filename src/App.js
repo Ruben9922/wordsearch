@@ -26,53 +26,43 @@ function validate(size, wordStrings) {
   let errorMessages = {};
 
   // Size
-  {
-    valid.size = true;
-    errorMessages.size = "";
+  valid.size = true;
+  errorMessages.size = "";
 
-    let number = Number(size);
-    const min = 1;
-    const max = 50;
-    if (!(Number.isInteger(number) && number >= min && number <= max)) {
-      valid.size = false;
-      errorMessages.size = `Size must be an integer between ${min} and ${max} (inclusive)`;
-    }
+  let number = Number(size);
+  const min = 1;
+  const max = 50;
+  if (!(Number.isInteger(number) && number >= min && number <= max)) {
+    valid.size = false;
+    errorMessages.size = `Size must be an integer between ${min} and ${max} (inclusive)`;
   }
 
   // Words
-  {
-    valid.words = new Array(wordStrings.length).fill(true);
-    errorMessages.words = new Array(wordStrings.length).fill("");
-
-    const pattern = /^(\s*[a-zA-Z]+\s*)+$/;
-    for (let [index, wordString] of wordStrings.entries()) {
-      if (wordString === "") {
-        valid.words[index] = false;
-        errorMessages.words[index] = "Word cannot be empty";
-        continue;
-      }
-      if (!pattern.test(wordString)) {
-        valid.words[index] = false;
-        errorMessages.words[index] = "Word may only contain letters and spaces";
-        continue;
-      }
-      if (valid.size && wordString.length > size) {
-        valid.words[index] = false;
-        errorMessages.words[index] = "Length of word cannot exceed size";
-      }
-    }
+  const pattern = /^(\s*[a-zA-Z]+\s*)+$/;
+  if (R.isEmpty(wordStrings)) {
+    valid.words = false;
+    errorMessages.words = "Words cannot be empty";
+  } else if (R.any(ws => !R.test(pattern, ws), wordStrings)) {
+    valid.words = false;
+    errorMessages.words = "Words may only contain letters and spaces";
+  } else if (valid.size && R.any(ws => ws.length > size, wordStrings)) {
+    valid.words = false;
+    errorMessages.words = "Length of each word cannot exceed size";
+  } else {
+    valid.words = true;
+    errorMessages.words = "";
   }
 
   return [valid, errorMessages];
 }
 
-const allValid = (valid) => valid.size === true && valid.words.every(item => item === true);
+const allValid = valid => valid.size && valid.words;
 
 export default function App() {
   const classes = useStyles();
 
   const [size, setSize] = React.useState("15");
-  const [words, setWords] = React.useState([{id: uuidv4(), text: ""}]);
+  const [words, setWords] = React.useState([]);
   const [allowBackwards, setAllowBackwards] = React.useState(true);
   const [allowParts, setAllowParts] = React.useState(true);
   const [wordsearch, setWordsearch] = React.useState(null);

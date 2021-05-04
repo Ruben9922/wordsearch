@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import MultipleInputs from "./MultipleInputs";
 import {
   Button,
   Checkbox,
@@ -9,6 +8,9 @@ import {
   FormLabel, makeStyles,
   TextField
 } from "@material-ui/core";
+import ChipInput from "material-ui-chip-input";
+import * as R from "ramda";
+import {v4 as uuidv4} from "uuid";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -37,16 +39,16 @@ export default function FormComponent({
   allValid,
   helperText,
 }) {
-  const handleSubmit = (event) => {
+  const classes = useStyles();
+
+  const handleClick = event => {
     event.preventDefault();
     onSubmit();
   };
 
-  const classes = useStyles();
-
   // TODO: Store min and max size in variables
   return (
-    <form className={classes.root} autoComplete="off" onSubmit={handleSubmit}>
+    <form className={classes.root} autoComplete="off">
       <TextField
         label="Size"
         name="size"
@@ -64,11 +66,13 @@ export default function FormComponent({
         error={!valid.size}
         helperText={!valid.size && helperText.size}
       />
-      <MultipleInputs
-        value={words}
-        onChange={onWordsChange}
-        valid={valid.words}
-        errorMessages={helperText.words}
+      <ChipInput
+        label="Words"
+        value={R.map(w => w.text, words)}
+        onAdd={chip => onWordsChange(words => R.append({id: uuidv4(), text: chip}, words))}
+        onDelete={(chip, index) => onWordsChange(words => R.remove(index, 1, words))}
+        error={!valid.words}
+        helperText={helperText.words}
       />
       {/*<Form.Field>*/}
       {/*  <label>Misc.</label>*/}
@@ -116,10 +120,10 @@ export default function FormComponent({
         </FormGroup>
       </FormControl>
       <Button
-        type="submit"
         variant="contained"
         color="primary"
         disabled={!allValid}
+        onClick={handleClick}
       >
         Create
       </Button>
