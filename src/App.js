@@ -26,15 +26,15 @@ function validate(size, wordStrings) {
   let errorMessages = {};
 
   // Size
-  valid.size = true;
-  errorMessages.size = "";
-
   let number = Number(size);
   const min = 1;
   const max = 50;
   if (!(Number.isInteger(number) && number >= min && number <= max)) {
     valid.size = false;
     errorMessages.size = `Size must be an integer between ${min} and ${max} (inclusive)`;
+  } else {
+    valid.size = true;
+    errorMessages.size = "";
   }
 
   // Words
@@ -74,7 +74,7 @@ export default function App() {
   return (
     <React.Fragment>
       <Header />
-      <Container maxWidth="xl" className={classes.root}>
+      <Container maxWidth={false} className={classes.root}>
         <Grid
           container
           spacing={3}
@@ -85,11 +85,11 @@ export default function App() {
           <Grid
             item
             container
-            sm={3}
+            md={3}
             direction="column"
             spacing={3}
           >
-            <Grid item sm>
+            <Grid item md>
               <Paper>
                 <FormComponent
                   size={size}
@@ -114,7 +114,7 @@ export default function App() {
                 />
               </Paper>
             </Grid>
-            <Grid item sm>
+            <Grid item md>
               {allValid(valid) && wordsearch && (
                 <Paper>
                   <Typography variant="h5" component="h1" gutterBottom>
@@ -129,7 +129,7 @@ export default function App() {
               )}
             </Grid>
           </Grid>
-          <Grid item sm>
+          <Grid item md>
             {!submitted && (
               <Alert severity="info">
                 <AlertTitle>Wordsearch not created yet</AlertTitle>
