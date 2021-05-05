@@ -6,11 +6,12 @@ import {
   FormControlLabel,
   FormGroup,
   FormLabel, makeStyles,
-  TextField
+  TextField, Tooltip
 } from "@material-ui/core";
 import ChipInput from "material-ui-chip-input";
 import * as R from "ramda";
 import {v4 as uuidv4} from "uuid";
+import HelpIcon from '@material-ui/icons/Help';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -74,26 +75,6 @@ export default function FormComponent({
         error={!valid.words}
         helperText={helperText.words}
       />
-      {/*<Form.Field>*/}
-      {/*  <label>Misc.</label>*/}
-      {/*  <Checkbox type="checkbox" label=""*/}
-      {/*            checked={} onChange={}/>*/}
-      {/*  &nbsp;*/}
-      {/*  <Popup*/}
-      {/*    trigger={<Icon color="blue" name="help circle"/>}*/}
-      {/*    content="Choose whether words can be placed right-to-left as well as left-to-right"*/}
-      {/*    position="right center"*/}
-      {/*  />*/}
-      {/*  <br/>*/}
-      {/*  <Checkbox type="checkbox" label=""  checked={}*/}
-      {/*            onChange={}/>*/}
-      {/*  &nbsp;*/}
-      {/*  <Popup*/}
-      {/*    trigger={<Icon color="blue" name="help circle"/>}*/}
-      {/*    content="Choose whether to add randomly generated substrings (&#34;parts&#34;) of words to make the game more difficult. For example, for the word &#34;awesomeness&#34;, add substrings like &#34;a&#34;, &#34;awe&#34; and &#34;awesome&#34;."*/}
-      {/*    position="right center"*/}
-      {/*  />*/}
-      {/*</Form.Field>*/}
       <FormControl component="fieldset" className={classes.formControl}>
         <FormLabel component="legend">Misc.</FormLabel>
         <FormGroup>
@@ -105,7 +86,18 @@ export default function FormComponent({
                 name="allowBackwards"
               />
             }
-            label="Allow words to be placed backwards"
+            label={
+              <>
+                Allow words to be placed backwards
+                <Tooltip
+                  arrow
+                  placement="right"
+                  title="Choose whether words can be placed right-to-left as well as left-to-right"
+                >
+                  <HelpIcon color="primary" />
+                </Tooltip>
+              </>
+            }
           />
           <FormControlLabel
             control={
@@ -115,7 +107,18 @@ export default function FormComponent({
                 name="allowParts"
               />
             }
-            label="Allow parts of words"
+            label={
+              <>
+                Allow parts of words
+                <Tooltip
+                  arrow
+                  placement="right"
+                  title="Choose whether to add randomly generated substrings (&#34;parts&#34;) of words to make the game more difficult. For example, for the word &#34;awesomeness&#34;, add substrings like &#34;a&#34;, &#34;awe&#34; and &#34;awesome&#34;."
+                >
+                  <HelpIcon color="primary" />
+                </Tooltip>
+              </>
+            }
           />
         </FormGroup>
       </FormControl>
