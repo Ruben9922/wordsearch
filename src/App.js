@@ -107,6 +107,7 @@ export default function App() {
                       setWordsearch(null);
                     }
                     setSubmitted(true);
+                    setHighlightedWordIds([]);
                   }}
                   valid={valid}
                   allValid={allValid(valid)}
