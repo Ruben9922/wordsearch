@@ -23,6 +23,11 @@ const useStyles = makeStyles(theme => ({
   formControl: {
     margin: theme.spacing(1),
   },
+  textWithIcon: {
+    display: 'flex',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+  },
 }));
 
 // TODO: Add error/confirmation message on form (?)
@@ -87,8 +92,9 @@ export default function FormComponent({
               />
             }
             label={
-              <>
+              <div className={classes.textWithIcon}>
                 Allow words to be placed backwards
+                &nbsp;
                 <Tooltip
                   arrow
                   placement="right"
@@ -96,7 +102,7 @@ export default function FormComponent({
                 >
                   <HelpIcon color="primary" />
                 </Tooltip>
-              </>
+              </div>
             }
           />
           <FormControlLabel
@@ -108,8 +114,9 @@ export default function FormComponent({
               />
             }
             label={
-              <>
+              <div className={classes.textWithIcon}>
                 Allow parts of words
+                &nbsp;
                 <Tooltip
                   arrow
                   placement="right"
@@ -117,7 +124,7 @@ export default function FormComponent({
                 >
                   <HelpIcon color="primary" />
                 </Tooltip>
-              </>
+              </div>
             }
           />
         </FormGroup>
