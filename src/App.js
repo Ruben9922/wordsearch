@@ -115,7 +115,7 @@ export default function App() {
               </Paper>
             </Grid>
             <Grid item md>
-              {allValid(valid) && wordsearch && (
+              {submitted && allValid(valid) && wordsearch && (
                 <Paper>
                   <Typography variant="h5" component="h1" gutterBottom>
                     Highlight Words
