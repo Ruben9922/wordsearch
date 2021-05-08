@@ -154,7 +154,7 @@ export default function App() {
                 <Typography variant="h5" component="h1" gutterBottom>
                   Wordsearch
                 </Typography>
-                <WordsearchComponent wordsearch={wordsearch} highlightedWordIds={highlightedWordIds} />
+                <WordsearchComponent wordsearch={wordsearch} words={words} highlightedWordIds={highlightedWordIds} />
               </React.Fragment>
             )}
           </Grid>

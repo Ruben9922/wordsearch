@@ -19,12 +19,16 @@ class DownloadComponent extends Component {
   }
 
   handleClick() {
-    let {wordsearch} = this.props;
+    let {wordsearch, words} = this.props;
 
     let wordsearchLetters = wordsearch.map(row => row.map(cell => cell.letter));
     let wordsearchString = wordsearchLetters.map(row => row.join(" ")).join("\n");
 
-    let url = this.makeTextFile(wordsearchString);
+    let wordsString = words.map(w => w.text).join("\n");
+
+    let textFileString = wordsearchString + "\n\n" + wordsString;
+
+    let url = this.makeTextFile(textFileString);
 
     let fileName = "wordsearch_" + DownloadComponent.formatDateAsYMDHMS(new Date()) + ".txt";
     DownloadComponent.download(url, fileName);

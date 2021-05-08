@@ -7,6 +7,7 @@ import {Paper} from "@material-ui/core";
 // TODO: Change highlighting to use word IDs instead of array indices
 export default function WordsearchComponent({
   wordsearch,
+  words,
   highlightedWordIds,
 }) {
   return (
@@ -30,7 +31,7 @@ export default function WordsearchComponent({
         </table>
       </Paper>
       <br />
-      <DownloadComponent wordsearch={wordsearch} />
+      <DownloadComponent wordsearch={wordsearch} words={words} />
     </React.Fragment>
   );
 }
