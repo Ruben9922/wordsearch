@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
   },
   highlighted: {
     backgroundColor: theme.palette.primary.main,
-    color: "white",
+    color: theme.palette.primary.contrastText,
   },
 }));
 
