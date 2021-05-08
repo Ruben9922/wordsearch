@@ -5,7 +5,7 @@ import {
   FormControl,
   FormControlLabel,
   FormGroup,
-  FormLabel, makeStyles,
+  FormLabel, Grid, makeStyles,
   TextField, Tooltip
 } from "@material-ui/core";
 import ChipInput from "material-ui-chip-input";
@@ -16,12 +16,9 @@ import HelpIcon from '@material-ui/icons/Help';
 const useStyles = makeStyles(theme => ({
   root: {
     '& > *': {
-      margin: theme.spacing(1),
-      maxWidth: "25ch",
+      // margin: theme.spacing(1),
+      // width: "100%",
     },
-  },
-  formControl: {
-    margin: theme.spacing(1),
   },
   textWithIcon: {
     display: 'flex',
@@ -55,6 +52,8 @@ export default function FormComponent({
   // TODO: Store min and max size in variables
   return (
     <form className={classes.root} autoComplete="off">
+      <Grid container direction="column" spacing={3}>
+      <Grid item>
       <TextField
         label="Size"
         name="size"
@@ -71,7 +70,10 @@ export default function FormComponent({
         onChange={(event) => onSizeChange(event.target.value)}
         error={!valid.size}
         helperText={!valid.size && helperText.size}
+        fullWidth
       />
+      </Grid>
+      <Grid item>
       <ChipInput
         label="Words"
         value={R.map(w => w.text, words)}
@@ -79,9 +81,10 @@ export default function FormComponent({
         onDelete={(chip, index) => onWordsChange(words => R.remove(index, 1, words))}
         error={!valid.words}
         helperText={helperText.words}
+        fullWidth
       />
-      <FormControl component="fieldset" className={classes.formControl}>
-        <FormLabel component="legend">Misc.</FormLabel>
+      </Grid>
+      <Grid item>
         <FormGroup>
           <FormControlLabel
             control={
@@ -94,7 +97,7 @@ export default function FormComponent({
             label={
               <div className={classes.textWithIcon}>
                 Allow words to be placed backwards
-                &nbsp;
+                &thinsp;
                 <Tooltip
                   arrow
                   placement="right"
@@ -116,7 +119,7 @@ export default function FormComponent({
             label={
               <div className={classes.textWithIcon}>
                 Allow parts of words
-                &nbsp;
+                &thinsp;
                 <Tooltip
                   arrow
                   placement="right"
@@ -128,15 +131,18 @@ export default function FormComponent({
             }
           />
         </FormGroup>
-      </FormControl>
-      <Button
-        variant="contained"
-        color="primary"
-        disabled={!allValid}
-        onClick={handleClick}
-      >
-        Create
-      </Button>
+      </Grid>
+        <Grid item style={{ textAlign: "center" }}>
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={!allValid}
+            onClick={handleClick}
+          >
+            Create
+          </Button>
+        </Grid>
+      </Grid>
     </form>
   );
 }

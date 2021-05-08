@@ -1,23 +1,21 @@
-import React, {Component} from 'react';
+import React from 'react';
 import FormComponent from "./FormComponent";
 import WordsearchComponent from "./WordsearchComponent";
 import Header from "./Header";
-import {Container, Grid, makeStyles, Paper, Stack, Typography} from "@material-ui/core";
+import {Container, Divider, Grid, makeStyles, Paper, Typography} from "@material-ui/core";
 import {generateWordsearch} from "./wordsearchGenerator";
 import {Alert, AlertTitle} from "@material-ui/lab";
 import WordsListComponent from "./WordsListComponent";
-import { v4 as uuidv4 } from "uuid";
 import * as R from "ramda";
+import DownloadComponent from "./DownloadComponent";
 
 const useStyles = makeStyles(theme => ({
-  // root: {
-  //   '& > *': {
-  //     marginTop: theme.spacing(2),
-  //     marginBottom: theme.spacing(2),
-  //   },
-  // },
   root: {
-    flexGrow: 1,
+    '& > *': {
+      marginTop: theme.spacing(4),
+      marginBottom: theme.spacing(4),
+      flexGrow: 1,
+    },
   },
 }));
 
@@ -74,50 +72,71 @@ export default function App() {
   return (
     <React.Fragment>
       <Header />
-      <Container maxWidth={false} className={classes.root}>
-        <Grid
-          container
-          spacing={3}
-          justify="space-between"
-          alignItems="flex-start"
-          // wrap="nowrap"
-        >
-          <Grid
-            item
-            container
-            md={3}
-            direction="column"
-            spacing={3}
-          >
-            <Grid item md>
-              <Paper>
-                <FormComponent
-                  size={size}
-                  words={words}
-                  allowBackwards={allowBackwards}
-                  allowParts={allowParts}
-                  onSizeChange={size => {setSize(size); setSubmitted(false);}}
-                  onWordsChange={words => {setWords(words); setSubmitted(false);}}
-                  onAllowBackwardsChange={allowBackwards => {setAllowBackwards(allowBackwards); setSubmitted(false);}}
-                  onAllowPartsChange={allowParts => {setAllowParts(allowParts); setSubmitted(false);}}
-                  onSubmit={() => {
-                    if (allValid(valid)) {
-                      setWordsearch(generateWordsearch(parseInt(size, 10), words, allowBackwards, allowParts));
-                    } else {
-                      setWordsearch(null);
-                    }
-                    setSubmitted(true);
-                    setHighlightedWordIds([]);
-                  }}
-                  valid={valid}
-                  allValid={allValid(valid)}
-                  helperText={errorMessages}
-                />
-              </Paper>
-            </Grid>
-            <Grid item md>
+      <div className={classes.root}>
+        <Container maxWidth="md">
+
+        <Paper style={{ padding: "1.3em" }}>
+          <FormComponent
+            size={size}
+            words={words}
+            allowBackwards={allowBackwards}
+            allowParts={allowParts}
+            onSizeChange={size => {setSize(size); setSubmitted(false);}}
+            onWordsChange={words => {setWords(words); setSubmitted(false);}}
+            onAllowBackwardsChange={allowBackwards => {setAllowBackwards(allowBackwards); setSubmitted(false);}}
+            onAllowPartsChange={allowParts => {setAllowParts(allowParts); setSubmitted(false);}}
+            onSubmit={() => {
+              if (allValid(valid)) {
+                setWordsearch(generateWordsearch(parseInt(size, 10), words, allowBackwards, allowParts));
+              } else {
+                setWordsearch(null);
+              }
+              setSubmitted(true);
+              setHighlightedWordIds([]);
+            }}
+            valid={valid}
+            allValid={allValid(valid)}
+            helperText={errorMessages}
+          />
+        </Paper>
+
+        </Container>        <Container maxWidth="md">
+        <Divider />
+      </Container>
+
+
+      {!submitted && (
+        <Container maxWidth="md">
+        <Alert severity="info">
+          <AlertTitle>Wordsearch not created yet</AlertTitle>
+          Choose options and click Create to generate a wordsearch.
+        </Alert>
+        </Container>
+      )}
+      {submitted && wordsearch === null && (
+        <Container maxWidth="md">
+        <Alert severity="error">
+          <AlertTitle>Failed to generate wordsearch</AlertTitle>
+          <p>Failed to generate wordsearch using the specified options.</p>
+          <p>Try simply regenerating the wordsearch a few times. If that fails, try the following:</p>
+          <ul>
+            <li>Increasing the wordsearch size</li>
+            <li>Using fewer and/or shorter words</li>
+            <li>Disabling the <i>Allow parts of words</i> option</li>
+          </ul>
+        </Alert>
+        </Container>
+      )}
+          {/*<Grid*/}
+          {/*  container*/}
+          {/*  direction="row"*/}
+          {/*  spacing={3}*/}
+          {/*>*/}
+          {/*  <Grid item xs={12} md={3}>*/}
               {submitted && allValid(valid) && wordsearch && (
-                <Paper>
+                <>
+                <Container maxWidth="md">
+                <Paper style={{ padding: "1.3em" }}>
                   <Typography variant="h5" component="h1" gutterBottom>
                     Highlight Words
                   </Typography>
@@ -127,39 +146,20 @@ export default function App() {
                     onHighlightedWordIdsChange={setHighlightedWordIds}
                   />
                 </Paper>
-              )}
-            </Grid>
-          </Grid>
-          <Grid item md>
-            {!submitted && (
-              <Alert severity="info">
-                <AlertTitle>Wordsearch not created yet</AlertTitle>
-                Choose options and click Create to generate a wordsearch.
-              </Alert>
-            )}
-            {submitted && wordsearch === null && (
-              <Alert severity="error">
-                <AlertTitle>Failed to generate wordsearch</AlertTitle>
-                <p>Failed to generate wordsearch using the specified options.</p>
-                <p>Try simply regenerating the wordsearch a few times. If that fails, try the following:</p>
-                <ul>
-                  <li>Increasing the wordsearch size</li>
-                  <li>Using fewer and/or shorter words</li>
-                  <li>Disabling the <i>Allow parts of words</i> option</li>
-                </ul>
-              </Alert>
-            )}
-            {submitted && allValid(valid) && wordsearch && (
-              <React.Fragment>
-                <Typography variant="h5" component="h1" gutterBottom>
-                  Wordsearch
-                </Typography>
+                </Container>
+            {/*</Grid>*/}
+            {/*<Grid item xs={12} md>*/}
+              <Container maxWidth={false} style={{textAlign: "center"}}>
                 <WordsearchComponent wordsearch={wordsearch} words={words} highlightedWordIds={highlightedWordIds} />
-              </React.Fragment>
-            )}
-          </Grid>
-        </Grid>
-      </Container>
+              </Container>
+                <Container maxWidth={false} style={{textAlign: "center"}}>
+                <DownloadComponent wordsearch={wordsearch} words={words} />
+                </Container>
+                </>
+                )}
+          {/*</Grid>*/}
+          {/*</Grid>*/}
+      </div>
     </React.Fragment>
   );
 }
