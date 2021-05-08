@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
     textAlign: "center",
   },
   highlighted: {
-    backgroundColor: "#0E6EB8",
+    backgroundColor: theme.palette.primary.main,
     color: "white",
   },
 }));
