@@ -1,6 +1,6 @@
 # Wordsearch
 
-[![Build Status](https://travis-ci.com/Ruben9922/wordsearch.svg?branch=master)](https://travis-ci.com/Ruben9922/wordsearch)
+![Build Status](https://github.com/Ruben9922/wordsearch/actions/workflows/build-deploy.yml/badge.svg)
 
 Web application that allows one to easily generate wordsearches, made using React.
 
