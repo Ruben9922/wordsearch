@@ -8,6 +8,10 @@ import {Alert, AlertTitle} from "@material-ui/lab";
 import WordsListComponent from "./WordsListComponent";
 import * as R from "ramda";
 import DownloadComponent from "./DownloadComponent";
+import ReactGA from "react-ga4";
+
+ReactGA.initialize("G-58BWYQWHEG");
+ReactGA.send("pageview");
 
 const useStyles = makeStyles(theme => ({
   root: {
