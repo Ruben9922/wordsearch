@@ -1,21 +1,54 @@
-# Wordsearch
+# React + TypeScript + Vite
 
-![Build Status](https://github.com/Ruben9922/wordsearch/actions/workflows/build-deploy.yml/badge.svg)
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Web application that allows one to easily generate wordsearches, made using React.
+Currently, two official plugins are available:
 
-## Features
-*   Create wordsearches by inputting a list of words and the size of the wordsearch
-*   Words are placed either vertically, horizontally, diagonally downwards or diagonally upwards
-*   Words can overlap (only on the same letter of course), as long as they don't overlap completely
-*   Choose whether words may be placed backwards
-*   Choose whether to add parts (substrings) of words to make the game more difficult (e.g. a wordsearch containing the word "awesomeness" might also contain parts of that word such as "awe" or "awesome")
-*   Download the wordsearch as a text file
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Future Updates
-*   Add ability to download the generated wordsearch as an image or PDF document
-*   Remove requirement for wordsearches to be square (i.e. number of rows and number of columns always being equal)
-*   Add option to automatically generate the word bank using a dictionary API such as Wordnik
-*   Add ability to actually play the wordsearch
-    -   Identify words using drag-and-drop or clicking (click on start and end letter)
-    -   Maybe have cooldown timer to stop this being abused
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+
+```js
+export default tseslint.config({
+  extends: [
+    // Remove ...tseslint.configs.recommended and replace with this
+    ...tseslint.configs.recommendedTypeChecked,
+    // Alternatively, use this for stricter rules
+    ...tseslint.configs.strictTypeChecked,
+    // Optionally, add this for stylistic rules
+    ...tseslint.configs.stylisticTypeChecked,
+  ],
+  languageOptions: {
+    // other options...
+    parserOptions: {
+      project: ['./tsconfig.node.json', './tsconfig.app.json'],
+      tsconfigRootDir: import.meta.dirname,
+    },
+  },
+})
+```
+
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default tseslint.config({
+  plugins: {
+    // Add the react-x and react-dom plugins
+    'react-x': reactX,
+    'react-dom': reactDom,
+  },
+  rules: {
+    // other rules...
+    // Enable its recommended typescript rules
+    ...reactX.configs['recommended-typescript'].rules,
+    ...reactDom.configs.recommended.rules,
+  },
+})
+```
